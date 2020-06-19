@@ -10,4 +10,4 @@ Data Science Student at University of New South Wales. Currently interning at Sw
 
 ### Contact me
 
-[Linkedin](https://www.linkedin.com/in/neel-iyer/)
+[hello@neel.com](mailto:neel.r.iyer@gmail.com)
