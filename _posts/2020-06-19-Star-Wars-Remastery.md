@@ -6,7 +6,7 @@ title: Remastering Star Wars using Deep Learning
 <!-- Next you can update your site name, avatar and other options using the _config.yml file in the root of your repository (shown below). -->
 <!-- ![_config.yml]({{ site.baseurl }}/images/config.png) -->
 
-
+<!-- 
 I’m a huge Star Wars fan. And like a lot of Star Wars fans I’ve been getting into Star Wars clone wars episodes on ______. It’s a phenomenal show. 
 
 I’ve watched almost every episode and I love it. Its great. 
@@ -61,3 +61,4 @@ As you can see there is room for improvement. The sky needs a bit more work. But
 In the future, I’d like to improve the sky. I’m also thinking of doing more super-resolution on the video. It would be nice to show a young Luke Skywalker in high quality. Training is still a lengthy process for me. I need to work on reducing this.
 
 Inference is also an issue. It tends to overload memory and crash. The result is that ___ is the longest I could get for this video
+ -->
