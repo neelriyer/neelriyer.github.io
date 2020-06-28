@@ -1,7 +1,9 @@
 ---
 layout: post
-title: Forecasting Food Demand: Applying Neural Networks to the Meal kit Market
+title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
 ---
+
+# Forecasting Food Demand: Applying Neural Networks to the Meal kit Market
 
 [grid_search_plot]: https://github.com/spiyer99/spiyer99.github.io/raw/master/src/common/images/mealkit/grid_search_plot.png
 
