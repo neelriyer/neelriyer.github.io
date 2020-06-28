@@ -3,6 +3,8 @@ layout: post
 title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
 ---
 
+![alt text](https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/meal_kit_intro.png?raw=true "meal_kit_intro")
+
 
 __So this is going to overfit__.
 
