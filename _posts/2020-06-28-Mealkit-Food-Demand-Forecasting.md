@@ -1,15 +1,3 @@
-[grid_search_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/grid_search_plot.png
-
-[comparison_traditional_methods_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/comparison_traditional_methods_plot.png
-
-[5_cycles]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/5_cycles.png 
-
-[plot_loss]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/plot_loss.png
-
-[second_loss]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/second_loss.png
-
-[10_cycles]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/10_cycles.png
-
 ---
 layout: post
 title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
@@ -222,6 +210,18 @@ TabularModel(
   )
 )
 ```
+
+[grid_search_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/grid_search_plot.png
+
+[comparison_traditional_methods_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/comparison_traditional_methods_plot.png
+
+[5_cycles]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/5_cycles.png 
+
+[plot_loss]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/plot_loss.png
+
+[second_loss]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/second_loss.png
+
+[10_cycles]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/10_cycles.png
 
 I’ll be using learning rate annealing here. That’s [shown to work well](https://sgugger.github.io/the-1cycle-policy.html)  
 
