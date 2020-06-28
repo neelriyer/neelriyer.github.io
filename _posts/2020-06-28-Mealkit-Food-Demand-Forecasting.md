@@ -240,7 +240,7 @@ TabularModel(
 
 [grid_search_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/grid_search_plot.png?raw=true "grid_search_plot"
 
-[comparison_traditional_methods_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/omparison_traditional_methods_plot.png?raw=true "comparison_traditional_methods_plot"
+[comparison_traditional_methods_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/comparison_traditional_methods_plot.png?raw=true "comparison_traditional_methods_plot"
 
 [5_cycles]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/5_cycles.png?raw=true "5_cycles"
 
