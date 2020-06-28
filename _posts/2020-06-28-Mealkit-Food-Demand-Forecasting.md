@@ -372,9 +372,11 @@ Fastai explictly warns you to not reduce parameters to avoid overfitting. Instea
 
 I’ve tried to do that here. But I still ended up overfitting slightly. Varying hyperparamters could probably assist in reducing overifitting further still. 
 
-Specifically, I could probably benefit from varying dropout. I'd like to vary ``ps`` - the probability of dropout - and `emb_drop` - the dropout for the embedding layer. [This paper](https://scholarworks.uark.edu/cgi/viewcontent.cgi?referer=https://www.google.com/&httpsredir=1&article=1028&context=csceuht) speaks to the effectiveness of dropout in large *deep* neural networks. Perhaps making the network deeper and applying dropout more liberally could improve the performance?
+Specifically, I could probably benefit from varying dropout. I'd like to vary `ps` - the probability of dropout - and `emb_drop` - the dropout for the embedding layer. 
 
-Furthermore, if gridsearch is the way to go then [skorch](https://skorch.readthedocs.io/en/stable/user/quickstart.html#grid-search) seems to be a good option. But at this stage I'd like to avoid a costly gridsearch if possible. 
+[This paper](https://scholarworks.uark.edu/cgi/viewcontent.cgi?referer=https://www.google.com/&httpsredir=1&article=1028&context=csceuht) speaks to the effectiveness of dropout in large *deep* neural networks. Perhaps making the network deeper and applying dropout more liberally could improve the performance?
+
+Gridsearch could be implemented randomly. This is called random search. I could do this using [skorch](https://skorch.readthedocs.io/en/stable/user/quickstart.html#grid-search) potentially.
 
 2. I’d also like to try Prophet from Facebook. It’s an open source tool for time series forecasting. I’d like to see how that performs relative to this neural network. 
 
