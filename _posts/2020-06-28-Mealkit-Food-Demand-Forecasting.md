@@ -1,17 +1,21 @@
+[grid_search_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/grid_search_plot.png
+
+[comparison_traditional_methods_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/comparison_traditional_methods_plot.png
+
+[5_cycles]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/5_cycles.png 
+
+[plot_loss]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/plot_loss.png
+
+[second_loss]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/second_loss.png
+
+[10_cycles]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/10_cycles.png
+
 ---
 layout: post
 title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
 ---
 
 # Forecasting Food Demand: Applying Neural Networks to the Meal kit Market
-
-[grid_search_plot]: https://github.com/spiyer99/spiyer99.github.io/raw/master/src/common/images/mealkit/grid_search_plot.png
-
-[comparison_traditional_methods_plot]: https://github.com/spiyer99/spiyer99.github.io/raw/master/src/common/images/mealkit/comparison_traditional_methods_plot.png
-
-[5_cycles]: https://github.com/spiyer99/spiyer99.github.io/raw/master/src/common/images/mealkit/5_cycles.png 
-
-[plot_loss]: https://github.com/spiyer99/spiyer99.github.io/raw/master/src/common/images/mealkit/plot_loss.png 
 
 ## So this is going to overfit. 
 
@@ -32,7 +36,7 @@ Getting this wrong has spell disaster for a meal kit company. Replenishment is t
 
 Since I’m going to be using a neural network feature engineering is not necessarily required. The features will be automatically created by the network. 
 
-But I’m probably going to be deploying this network in a resource constrained environment (my laptop). So, I think, a bit of feature engineering will go a long way in training the network quickly and efficiently. See [this answer]https://stats.stackexchange.com/questions/349155/why-do-neural-networks-need-feature-selection-engineering) on stackexchange for more info.
+But I’m probably going to be deploying this network in a resource constrained environment (my laptop). So, I think, a bit of feature engineering will go a long way in training the network quickly and efficiently. See [this answer](https://stats.stackexchange.com/questions/349155/why-do-neural-networks-need-feature-selection-engineering) on stackexchange for more info.
 
 I added two new features:
 - price_diff_percent
@@ -229,26 +233,29 @@ I’ll be using learning rate annealing here. That’s [shown to work well](http
 
 I’ll keep fitting more cycles until validation starts to increase.I'll save the model after fitting for a few epochs. That way I get use the best model later for inference. 
 
-[photo here]
+![alt text][10_cycles]
+![alt text][second_loss]
 
-
-The best I was able to get was a validation loss of about 0.29.
+The best I was able to get was a validation loss of about 0.29 (rounding up).
 
 In a similar fashion to Martin Alacron's [article](https://www.martinalarcon.org/2018-12-31-b-water-pumps/
 ) I'd like to compare the performance of the neural network to more traditional approaches.
 
 
-# Traditional Approaches
+# Other Approaches
 
-I’ll be looking at XGBoost, Random Forest Regressor and LightGBM. How do they performance relative to a neural network?
+I’ll be looking at XGBoost, Random Forest Regressor and LightGBM. How do they perform relative to a neural network?
 
-I will be using more or less the same data that the neural network used. Fastai has excellent pre-processing methods already built in. Fastai handled normalization, fill missing and categorical encoding. 
+I will be using more or less the same data that the neural network used. Fastai has excellent pre-processing methods already built in. 
 
-However, the categorical encoding is slightly different that what is usually done. Fastai creates a dictionary from the categorical values to their encoding values. At inference time the categorical values [are swapped](https://forums.fast.ai/t/fastai-v2-code-walk-thru-8/55068) for the encoding values. This is very smart and very useful. But it makes it slightly difficult to use Fastai pre-processed data with models outside of the Fastai ecosystem. 
+However, Fastai's categorical encoding is slightly odd. Fastai creates a dictionary from the categorical values to their encoding values. At inference time the categorical values [are swapped](https://forums.fast.ai/t/fastai-v2-code-walk-thru-8/55068) for the encoding values. 
+
+This is very smart and very useful. But it makes it slightly difficult to use Fastai pre-processed data with models outside of the Fastai ecosystem. 
 
 To fix this, I created a simple script to convert the Fastai Tabular Data Bunch to data that we can feed to another model. 
 
 ```python
+# inspired by https://www.martinalarcon.org/2018-12-31-b-water-pumps/
 class convert_tabular_learner_to_df():
 
   def __init__(self, cat_names, tabular_data_bunch):
@@ -262,7 +269,7 @@ class convert_tabular_learner_to_df():
     X_valid, y_valid = self.list_to_df(self.tabular_data_bunch.valid_ds)
 
     # label encode data
-    encoder = LabelEncoder(cols=self.cat_names)
+    encoder = BinaryEncoder(cols = self.cat_names)
     X_train = encoder.fit_transform(X_train)
     X_valid = encoder.transform(X_valid)
 
@@ -276,13 +283,14 @@ class convert_tabular_learner_to_df():
     x_df = pd.DataFrame(data=x_vals, columns=cols)
 
     # reorder cols
-    x_df = [[c for c in tabular_learner.inner_df.columns if c in cols]] 
+    x_df = x_df[[c for c in tabular_learner.inner_df.columns if c in cols]]
 
     # create y labels
     cols = [i.obj for i in tabular_learner.y]
-    y_vals = np.array(cols)
+    y_vals = np.array(cols, dtype="float64")
 
     return x_df, y_vals
+
 
 ```
 
