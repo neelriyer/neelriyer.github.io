@@ -237,17 +237,18 @@ TabularModel(
 )
 ```
 
-[grid_search_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/grid_search_plot.png "grid_search_plot"
 
-[comparison_traditional_methods_plot]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/comparison_traditional_methods_plot.png "comparison_traditional_methods_plot"
+[grid_search_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/grid_search_plot.png?raw=true "grid_search_plot"
 
-[5_cycles]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/5_cycles.png "5_cycles"
+[comparison_traditional_methods_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/omparison_traditional_methods_plot.png?raw=true "comparison_traditional_methods_plot"
 
-[plot_loss]: https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/plot_loss.png "plot_loss"
+[5_cycles]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/5_cycles.png?raw=true "5_cycles"
 
-[second_loss]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/second_loss.png "second_loss"
+[plot_loss]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/plot_loss.png?raw=true "plot_loss"
 
-[10_cycles]:https://raw.githubusercontent.com/spiyer99/spiyer99.github.io/master/images/mealkit/10_cycles.png "10_cycles"
+[second_loss]:https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/second_loss.png?raw=true "second_loss"
+
+[10_cycles]:https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/10_cycles.png?raw=true "10_cycles"
 
 I’ll be using learning rate annealing here. That’s [shown to work well](https://sgugger.github.io/the-1cycle-policy.html)  
 
