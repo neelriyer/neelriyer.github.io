@@ -372,7 +372,7 @@ Fastai explictly warns you to not reduce parameters to avoid overfitting. Instea
 
 I’ve tried to do that here. But I still ended up overfitting slightly. Varying hyperparamters could probably assist in reducing overifitting further still. 
 
-Specifically, I could probably benefit from varying dropout. I'd like to vary `ps` - the probability of dropout - and `emb_drop` - the dropout for the embedding layer. 
+Specifically, I could probably benefit from varying dropout. I'd like to vary the dropout for the embedding layer and more importantly the probability of dropout.
 
 [This paper](https://scholarworks.uark.edu/cgi/viewcontent.cgi?referer=https://www.google.com/&httpsredir=1&article=1028&context=csceuht) speaks to the effectiveness of dropout in large *deep* neural networks. Perhaps making the network deeper and applying dropout more liberally could improve the performance?
 
