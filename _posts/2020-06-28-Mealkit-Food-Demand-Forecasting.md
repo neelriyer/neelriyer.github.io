@@ -16,7 +16,7 @@ According to [this article](https://medium.com/@lankinen/fast-ai-lesson-6-notes-
 
 # Dataset
 
-The data is given by a meal kit company. As food is perishable, planning and demand prediction is extremely important. 
+The data is given by a [meal kit company](https://datahack.analyticsvidhya.com/contest/genpact-machine-learning-hackathon-1/#About). As food is perishable, planning and demand prediction is extremely important. 
 
 Getting this wrong can spell disaster for a meal kit company. Replenishment is typically done on a weekly basis. We need to forecast demand for the next 10 weeks. 
 
