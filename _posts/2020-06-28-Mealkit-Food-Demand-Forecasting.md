@@ -184,7 +184,7 @@ for i in tqdm(list(product(*params.values()))):
 
 Once we plot all out different combinations of model architectures, things become a little clearer. 
 
-![alt text](/images/mealkit/grid_search_plot.png "grid_search_plot")
+![alt text](/images/mealkit/grid_search_plot.png)
 
 Loss spikes earlier if we choose a model architecture with 0 weight decay. From the options a weight decay of `0.6` allows us to train a reasonably high learning rate with the lowest loss. 
 
