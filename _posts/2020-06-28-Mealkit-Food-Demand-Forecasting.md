@@ -3,8 +3,6 @@ layout: post
 title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
 ---
 
-![alt text](https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/meal_kit_intro.png?raw=true "meal_kit_intro")
-
 ![alt text](/images/mealkit/meal_kit_intro.png)
 
 __So this is going to overfit__.
@@ -241,17 +239,17 @@ TabularModel(
 ```
 
 
-[grid_search_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/grid_search_plot.png?raw=true "grid_search_plot"
+[grid_search_plot]: /images/mealkit/grid_search_plot.png "grid_search_plot"
 
-[comparison_traditional_methods_plot]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/comparison_traditional_methods_plot.png?raw=true "comparison_traditional_methods_plot"
+[comparison_traditional_methods_plot]: /images/mealkit/comparison_traditional_methods_plot.png "comparison_traditional_methods_plot"
 
-[5_cycles]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/5_cycles.png?raw=true "5_cycles"
+[5_cycles]: /images/mealkit/5_cycles.png "5_cycles"
 
-[plot_loss]: https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/plot_loss.png?raw=true "plot_loss"
+[plot_loss]: /images/mealkit/plot_loss.png "plot_loss"
 
-[second_loss]:https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/second_loss.png?raw=true "second_loss"
+[second_loss]:/images/mealkit/second_loss.png "second_loss"
 
-[10_cycles]:https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/10_cycles.png?raw=true "10_cycles"
+[10_cycles]:/images/mealkit/10_cycles.png "10_cycles"
 
 I’ll be using learning rate annealing here. That’s [shown to work well](https://sgugger.github.io/the-1cycle-policy.html)  
 
