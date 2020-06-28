@@ -3,7 +3,6 @@ layout: post
 title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
 ---
 
-
 \
 \
 __So this is going to overfit__.
