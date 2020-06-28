@@ -3,7 +3,7 @@ layout: post
 title: Forecasting Food Demand - Applying Neural Networks to the Meal kit Market
 ---
 
-**So this is going to overfit.** 
+__So this is going to overfit___.
 
 Time series problems usually struggle with overfitting. This entire exercise became more of a challenge to see how I could prevent overfitting in time series forecasting. 
 
