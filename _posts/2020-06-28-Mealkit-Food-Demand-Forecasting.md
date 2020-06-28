@@ -270,7 +270,7 @@ In a similar fashion to Martin Alacron's [article](https://www.martinalarcon.org
 
 # Other Approaches
 
-I’ll be looking at XGBoost, Random Forest Regressor and LightGBM. How do they perform relative to a neural network?
+XGBoost, Random Forest Regressor and LightGBM. How do they perform relative to a neural network?
 
 I will be using more or less the same data that the neural network used. Fastai has excellent pre-processing methods already built in. 
 
@@ -338,7 +338,7 @@ models = [
   RandomForestRegressor()
 ]
 
-results = pd.DataFrame(columns=["Classifier", "RMSPE"])
+results = pd.DataFrame(columns=["Regressor", "RMSPE"])
 
 for model in models:
 
@@ -346,10 +346,10 @@ for model in models:
   
   model.fit(X_train, y_train)
 
-  rmspe = rmspe(y_valid, model.predict(X_valid))
+  rmspe = rmspe_calc(y_valid, model.predict(X_valid))
   
   df2 = pd.DataFrame(
-    {"Classifier": name, \
+    {"Regressor": name, \
      "RMSPE": rmspe*100}, index = [0]
   )
 
