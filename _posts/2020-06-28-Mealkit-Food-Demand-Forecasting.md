@@ -184,7 +184,7 @@ for i in tqdm(list(product(*params.values()))):
 
 Once we plot all out different combinations of model architectures, things become a little clearer. 
 
-![alt text](https://github.com/spiyer99/spiyer99.github.io/blob/master/images/mealkit/grid_search_plot.png?raw=true "grid_search_plot")
+![alt text](/images/mealkit/grid_search_plot.png "grid_search_plot")
 
 Loss spikes earlier if we choose a model architecture with 0 weight decay. From the options a weight decay of `0.6` allows us to train a reasonably high learning rate with the lowest loss. 
 
@@ -239,7 +239,7 @@ TabularModel(
 ```
 
 
-[grid_search_plot]: /images/mealkit/grid_search_plot.png "grid_search_plot"
+<!-- [grid_search_plot]: /images/mealkit/grid_search_plot.png "grid_search_plot" -->
 
 [comparison_traditional_methods_plot]: /images/mealkit/comparison_traditional_methods_plot.png "comparison_traditional_methods_plot"
 
@@ -358,7 +358,7 @@ for model in models:
 
 Now for the results.
 
-![alt text][comparison_traditional_methods_plot]
+![alt text](comparison_traditional_methods_plot)
 
 
 On this occasion it seems that the other models outperformed the neural network. Despite this, deep learning with category embeddings are very popular on [kaggle](https://www.kaggle.com/c/rossmann-store-sales/discussion/17974). I may need to vary the amount of dropout and weight decay that I'm using. But for now RandomForestRegressor is the best model in terms of RMSPE. 
