@@ -3,13 +3,13 @@ layout: post
 title: Remastering Star Wars using Deep Learning
 ---
 
-Can we apply deep learning to remaster scenes from the first Star Wars Movie? Yes, yes we can.
+I’m a huge Star Wars fan. And like a lot of Star Wars fans I’ve been getting into [Star Wars: The Clone Wars](https://www.imdb.com/title/tt0458290/) on Cartoon Network and Disney+. It’s a phenomenal show. 
 
-Here are the deleted scenes from  Star Wars: Episode IV: A New Hope (1977). This was the very first Star Wars to be created.
+But I'm always annoyed by the drop in video quality when I watch the older stuff. For example, here are the deleted scenes from  Star Wars: Episode IV: A New Hope (1977). This was the very first Star Wars to be created.
 
 {% include youtubePlayer.html id="f00IkrWvur4?start=159" %}
 
-There's these weird black specs that keep popping up. Small wonder why these are the *deleted* scenes. 
+What are those weird black specs that keep popping up? They really ruin the experience. Small wonder why these are the *deleted* scenes. 
 
 Apparently those weird specs are called [cue marks](https://en.wikipedia.org/wiki/Cue_mark). They're marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically *old*. 
 
@@ -45,12 +45,12 @@ ffmpeg -loglevel quiet -y -i "build/grain.mp4" -vf negate 'color_inverted.mp4'
 
 # overlay video
 ffmpeg \
-    -y \
-    -loglevel quiet \
-    -i "seinfeld.mp4" \
-    -i "color_inverted.mp4" \
-    -filter_complex "[1:v][0:v]blend=all_mode='softlight':all_opacity=1" \
-    "output_test.mp4"
+	-y \
+	-loglevel quiet \
+	-i "seinfeld.mp4" \
+	-i "color_inverted.mp4" \
+	-filter_complex "[1:v][0:v]blend=all_mode='softlight':all_opacity=1" \
+	"output_test.mp4"
 ```
 
 Now we have two videos. One in perfect quality and another in shitty quality.
@@ -74,128 +74,128 @@ import sys
 
 
 def print_progress(iteration, total, prefix='', suffix='', decimals=3, bar_length=100):
-    """
-    Call in a loop to create standard out progress bar
+	"""
+	Call in a loop to create standard out progress bar
 
-    :param iteration: current iteration
-    :param total: total iterations
-    :param prefix: prefix string
-    :param suffix: suffix string
-    :param decimals: positive number of decimals in percent complete
-    :param bar_length: character length of bar
-    :return: None
-    """
+	:param iteration: current iteration
+	:param total: total iterations
+	:param prefix: prefix string
+	:param suffix: suffix string
+	:param decimals: positive number of decimals in percent complete
+	:param bar_length: character length of bar
+	:return: None
+	"""
 
-    format_str = "{0:." + str(decimals) + "f}"  # format the % done number string
-    percents = format_str.format(100 * (iteration / float(total)))  # calculate the % done
-    filled_length = int(round(bar_length * iteration / float(total)))  # calculate the filled bar length
-    bar = '#' * filled_length + '-' * (bar_length - filled_length)  # generate the bar string
-    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),  # write out the bar
-    sys.stdout.flush()  # flush to stdout
+	format_str = "{0:." + str(decimals) + "f}"  # format the % done number string
+	percents = format_str.format(100 * (iteration / float(total)))  # calculate the % done
+	filled_length = int(round(bar_length * iteration / float(total)))  # calculate the filled bar length
+	bar = '#' * filled_length + '-' * (bar_length - filled_length)  # generate the bar string
+	sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),  # write out the bar
+	sys.stdout.flush()  # flush to stdout
 
 
 def extract_frames(video_path, frames_dir, overwrite=False, start=-1, end=-1, every=1):
-    """
-    Extract frames from a video using OpenCVs VideoCapture
+	"""
+	Extract frames from a video using OpenCVs VideoCapture
 
-    :param video_path: path of the video
-    :param frames_dir: the directory to save the frames
-    :param overwrite: to overwrite frames that already exist?
-    :param start: start frame
-    :param end: end frame
-    :param every: frame spacing
-    :return: count of images saved
-    """
+	:param video_path: path of the video
+	:param frames_dir: the directory to save the frames
+	:param overwrite: to overwrite frames that already exist?
+	:param start: start frame
+	:param end: end frame
+	:param every: frame spacing
+	:return: count of images saved
+	"""
 
-    video_path = os.path.normpath(video_path)  # make the paths OS (Windows) compatible
-    frames_dir = os.path.normpath(frames_dir)  # make the paths OS (Windows) compatible
+	video_path = os.path.normpath(video_path)  # make the paths OS (Windows) compatible
+	frames_dir = os.path.normpath(frames_dir)  # make the paths OS (Windows) compatible
 
-    video_dir, video_filename = os.path.split(video_path)  # get the video path and filename from the path
+	video_dir, video_filename = os.path.split(video_path)  # get the video path and filename from the path
 
-    assert os.path.exists(video_path)  # assert the video file exists
+	assert os.path.exists(video_path)  # assert the video file exists
 
-    capture = cv2.VideoCapture(video_path)  # open the video using OpenCV
+	capture = cv2.VideoCapture(video_path)  # open the video using OpenCV
 
-    if start < 0:  # if start isn't specified lets assume 0
-        start = 0
-    if end < 0:  # if end isn't specified assume the end of the video
-        end = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+	if start < 0:  # if start isn't specified lets assume 0
+		start = 0
+	if end < 0:  # if end isn't specified assume the end of the video
+		end = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    capture.set(1, start)  # set the starting frame of the capture
-    frame = start  # keep track of which frame we are up to, starting from start
-    while_safety = 0  # a safety counter to ensure we don't enter an infinite while loop (hopefully we won't need it)
-    saved_count = 0  # a count of how many frames we have saved
+	capture.set(1, start)  # set the starting frame of the capture
+	frame = start  # keep track of which frame we are up to, starting from start
+	while_safety = 0  # a safety counter to ensure we don't enter an infinite while loop (hopefully we won't need it)
+	saved_count = 0  # a count of how many frames we have saved
 
-    while frame < end:  # lets loop through the frames until the end
+	while frame < end:  # lets loop through the frames until the end
 
-        _, image = capture.read()  # read an image from the capture
+		_, image = capture.read()  # read an image from the capture
 
-        if while_safety > 500:  # break the while if our safety maxs out at 500
-            break
+		if while_safety > 500:  # break the while if our safety maxs out at 500
+			break
 
-        # sometimes OpenCV reads None's during a video, in which case we want to just skip
-        if image is None:  # if we get a bad return flag or the image we read is None, lets not save
-            while_safety += 1  # add 1 to our while safety, since we skip before incrementing our frame variable
-            continue  # skip
+		# sometimes OpenCV reads None's during a video, in which case we want to just skip
+		if image is None:  # if we get a bad return flag or the image we read is None, lets not save
+			while_safety += 1  # add 1 to our while safety, since we skip before incrementing our frame variable
+			continue  # skip
 
-        if frame % every == 0:  # if this is a frame we want to write out based on the 'every' argument
-            while_safety = 0  # reset the safety count
-            save_path = os.path.join(frames_dir, "{:010d}.jpg".format(frame))  # create the save path
-            if not os.path.exists(save_path) or overwrite:  # if it doesn't exist or we want to overwrite anyways
-                cv2.imwrite(save_path, image)  # save the extracted image
-                saved_count += 1  # increment our counter by one
+		if frame % every == 0:  # if this is a frame we want to write out based on the 'every' argument
+			while_safety = 0  # reset the safety count
+			save_path = os.path.join(frames_dir, "{:010d}.jpg".format(frame))  # create the save path
+			if not os.path.exists(save_path) or overwrite:  # if it doesn't exist or we want to overwrite anyways
+				cv2.imwrite(save_path, image)  # save the extracted image
+				saved_count += 1  # increment our counter by one
 
-        frame += 1  # increment our frame count
+		frame += 1  # increment our frame count
 
-    capture.release()  # after the while has finished close the capture
+	capture.release()  # after the while has finished close the capture
 
-    return saved_count  # and return the count of the images we saved
+	return saved_count  # and return the count of the images we saved
 
 
 def video_to_frames(video_path, frames_dir, overwrite=False, every=1, chunk_size=1000):
-    """
-    Extracts the frames from a video using multiprocessing
+	"""
+	Extracts the frames from a video using multiprocessing
 
-    :param video_path: path to the video
-    :param frames_dir: directory to save the frames
-    :param overwrite: overwrite frames if they exist?
-    :param every: extract every this many frames
-    :param chunk_size: how many frames to split into chunks (one chunk per cpu core process)
-    :return: path to the directory where the frames were saved, or None if fails
-    """
+	:param video_path: path to the video
+	:param frames_dir: directory to save the frames
+	:param overwrite: overwrite frames if they exist?
+	:param every: extract every this many frames
+	:param chunk_size: how many frames to split into chunks (one chunk per cpu core process)
+	:return: path to the directory where the frames were saved, or None if fails
+	"""
 
-    video_path = os.path.normpath(video_path)  # make the paths OS (Windows) compatible
-    frames_dir = os.path.normpath(frames_dir)  # make the paths OS (Windows) compatible
+	video_path = os.path.normpath(video_path)  # make the paths OS (Windows) compatible
+	frames_dir = os.path.normpath(frames_dir)  # make the paths OS (Windows) compatible
 
-    video_dir, video_filename = os.path.split(video_path)  # get the video path and filename from the path
+	video_dir, video_filename = os.path.split(video_path)  # get the video path and filename from the path
 
-    # make directory to save frames, its a sub dir in the frames_dir with the video name
-    # os.makedirs(os.path.join(frames_dir, video_filename), exist_ok=True)
+	# make directory to save frames, its a sub dir in the frames_dir with the video name
+	# os.makedirs(os.path.join(frames_dir, video_filename), exist_ok=True)
 
-    capture = cv2.VideoCapture(video_path)  # load the video
-    total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))  # get its total frame count
-    capture.release()  # release the capture straight away
+	capture = cv2.VideoCapture(video_path)  # load the video
+	total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))  # get its total frame count
+	capture.release()  # release the capture straight away
 
-    if total < 1:  # if video has no frames, might be and opencv error
-        print("Video has no frames. Check your OpenCV + ffmpeg installation, can't read videos!!!\n"
-              "You may need to install OpenCV by source not pip")
-        return None  # return None
+	if total < 1:  # if video has no frames, might be and opencv error
+		print("Video has no frames. Check your OpenCV + ffmpeg installation, can't read videos!!!\n"
+			  "You may need to install OpenCV by source not pip")
+		return None  # return None
 
-    frame_chunks = [[i, i+chunk_size] for i in range(0, total, chunk_size)]  # split the frames into chunk lists
-    frame_chunks[-1][-1] = min(frame_chunks[-1][-1], total-1)  # make sure last chunk has correct end frame
+	frame_chunks = [[i, i+chunk_size] for i in range(0, total, chunk_size)]  # split the frames into chunk lists
+	frame_chunks[-1][-1] = min(frame_chunks[-1][-1], total-1)  # make sure last chunk has correct end frame
 
-    prefix_str = "Extracting frames from {}".format(video_filename)  # a prefix string to be printed in progress bar
+	prefix_str = "Extracting frames from {}".format(video_filename)  # a prefix string to be printed in progress bar
 
-    # execute across multiple cpu cores to speed up processing, get the count automatically
-    with ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
+	# execute across multiple cpu cores to speed up processing, get the count automatically
+	with ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
 
-        futures = [executor.submit(extract_frames, video_path, frames_dir, overwrite, f[0], f[1], every)
-                   for f in frame_chunks]  # submit the processes: extract_frames(...)
+		futures = [executor.submit(extract_frames, video_path, frames_dir, overwrite, f[0], f[1], every)
+				   for f in frame_chunks]  # submit the processes: extract_frames(...)
 
-        for i, f in enumerate(as_completed(futures)):  # as each process completes
-            print_progress(i, len(frame_chunks)-1, prefix=prefix_str, suffix='Complete')  # print it's progress
+		for i, f in enumerate(as_completed(futures)):  # as each process completes
+			print_progress(i, len(frame_chunks)-1, prefix=prefix_str, suffix='Complete')  # print it's progress
 
-    return os.path.join(frames_dir, video_filename)  # when done return the directory containing the frames
+	return os.path.join(frames_dir, video_filename)  # when done return the directory containing the frames
 
 ```
 
@@ -205,9 +205,9 @@ Great. Now we have two datasets. One of crappy quality images (taken from the ru
 ```python
 def resize_one(img, size):
 
-    targ_sz = resize_to(img, size, use_min = True)
-    img = img.resize(targ_sz, resample = PIL.Image.BILINEAR).convert('RGB')
-    return img
+	targ_sz = resize_to(img, size, use_min = True)
+	img = img.resize(targ_sz, resample = PIL.Image.BILINEAR).convert('RGB')
+	return img
 ```
 
 This is what the crappy and normal images looked like now. Side note: this is a great scene from seinfeld.
@@ -235,17 +235,17 @@ tfms = get_transforms(do_flip=True, flip_vert=True, max_zoom = 1.1, max_lighting
 
 def get_data(bs,size=None):
 
-    if(size is None):
-      data = (src.label_from_func(lambda x: path_hr/x.name)
-            .transform(tfms, tfm_y=True)
-            .databunch(bs=bs).normalize(imagenet_stats, do_y=True))
-    else:
-      data = (src.label_from_func(lambda x: path_hr/x.name)
-            .transform(tfms,size=size, tfm_y=True)
-            .databunch(bs=bs).normalize(imagenet_stats, do_y=True))
+	if(size is None):
+	  data = (src.label_from_func(lambda x: path_hr/x.name)
+			.transform(tfms, tfm_y=True)
+			.databunch(bs=bs).normalize(imagenet_stats, do_y=True))
+	else:
+	  data = (src.label_from_func(lambda x: path_hr/x.name)
+			.transform(tfms,size=size, tfm_y=True)
+			.databunch(bs=bs).normalize(imagenet_stats, do_y=True))
 
-    data.c = 3
-    return data
+	data.c = 3
+	return data
 
 data = get_data(bs,size)
 
@@ -266,9 +266,9 @@ t = data.valid_ds[0][1].data
 t = torch.stack([t,t])
 
 def gram_matrix(x):
-    n,c,h,w = x.size()
-    x = x.view(n, c, -1)
-    return (x @ x.transpose(1,2))/(c*h*w)
+	n,c,h,w = x.size()
+	x = x.view(n, c, -1)
+	return (x @ x.transpose(1,2))/(c*h*w)
 
 base_loss = F.l1_loss
 
@@ -279,31 +279,31 @@ blocks = [i-1 for i,o in enumerate(children(vgg_m)) if isinstance(o,nn.MaxPool2d
 blocks, [vgg_m[i] for i in blocks]
 
 class FeatureLoss(nn.Module):
-    def __init__(self, m_feat, layer_ids, layer_wgts):
-        super().__init__()
-        self.m_feat = m_feat
-        self.loss_features = [self.m_feat[i] for i in layer_ids]
-        self.hooks = hook_outputs(self.loss_features, detach=False)
-        self.wgts = layer_wgts
-        self.metric_names = ['pixel',] + [f'feat_{i}' for i in range(len(layer_ids))
-              ] + [f'gram_{i}' for i in range(len(layer_ids))]
+	def __init__(self, m_feat, layer_ids, layer_wgts):
+		super().__init__()
+		self.m_feat = m_feat
+		self.loss_features = [self.m_feat[i] for i in layer_ids]
+		self.hooks = hook_outputs(self.loss_features, detach=False)
+		self.wgts = layer_wgts
+		self.metric_names = ['pixel',] + [f'feat_{i}' for i in range(len(layer_ids))
+			  ] + [f'gram_{i}' for i in range(len(layer_ids))]
 
-    def make_features(self, x, clone=False):
-        self.m_feat(x)
-        return [(o.clone() if clone else o) for o in self.hooks.stored]
-    
-    def forward(self, input, target):
-        out_feat = self.make_features(target, clone=True)
-        in_feat = self.make_features(input)
-        self.feat_losses = [base_loss(input,target)]
-        self.feat_losses += [base_loss(f_in, f_out)*w
-                             for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
-        self.feat_losses += [base_loss(gram_matrix(f_in), gram_matrix(f_out))*w**2 * 5e3
-                             for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
-        self.metrics = dict(zip(self.metric_names, self.feat_losses))
-        return sum(self.feat_losses)
-    
-    def __del__(self): self.hooks.remove()
+	def make_features(self, x, clone=False):
+		self.m_feat(x)
+		return [(o.clone() if clone else o) for o in self.hooks.stored]
+	
+	def forward(self, input, target):
+		out_feat = self.make_features(target, clone=True)
+		in_feat = self.make_features(input)
+		self.feat_losses = [base_loss(input,target)]
+		self.feat_losses += [base_loss(f_in, f_out)*w
+							 for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
+		self.feat_losses += [base_loss(gram_matrix(f_in), gram_matrix(f_out))*w**2 * 5e3
+							 for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
+		self.metrics = dict(zip(self.metric_names, self.feat_losses))
+		return sum(self.feat_losses)
+	
+	def __del__(self): self.hooks.remove()
 
 feat_loss = FeatureLoss(vgg_m, blocks[2:5], [5,15,2])
 ```
@@ -336,9 +336,9 @@ I picked a learning rate of `1e-2` for this. I wanted something aggressive, but 
 lr = 1e-2
 
 def do_fit(save_name, lrs=slice(lr), pct_start=0.9, cycles = 10):
-    learn.fit_one_cycle(cycles, lrs, pct_start=pct_start)
-    learn.save(save_name)
-    learn.show_results(rows=2, imgsize=7)
+	learn.fit_one_cycle(cycles, lrs, pct_start=pct_start)
+	learn.save(save_name)
+	learn.show_results(rows=2, imgsize=7)
 
 do_fit('1a', slice(lr))
 ``` 
@@ -514,18 +514,18 @@ files = sorted(glob.glob('seinfeld_inference/high_res/*_unsquared.*g'), key = la
 print(len(files))
 
 for i in range(len(files)):
-    filename=files[i]
-    # reading each files
-    img = cv2.imread(filename)
-    height, width, layers = img.shape
-    size = (width,height)
-    
-    # inserting the frames into an image array
-    frame_array.append(img)
+	filename=files[i]
+	# reading each files
+	img = cv2.imread(filename)
+	height, width, layers = img.shape
+	size = (width,height)
+	
+	# inserting the frames into an image array
+	frame_array.append(img)
 out = cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'MP4V'), fps, size)
 for i in range(len(frame_array)):
-    # writing to a image array
-    out.write(frame_array[i])
+	# writing to a image array
+	out.write(frame_array[i])
 out.release()
 ```
 
