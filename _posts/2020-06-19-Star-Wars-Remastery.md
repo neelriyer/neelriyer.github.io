@@ -19,18 +19,19 @@ I googled them. Apparently they’re [cue marks](https://en.wikipedia.org/wiki/C
 
 <!-- For the most part that not a huge problem. The series has been remastered [several times](https://en.wikipedia.org/wiki/Changes_in_Star_Wars_re-releases). "A New Hope" was most recently remastered in 2011 and the results are [so much better than the original](https://www.youtube.com/watch?v=RNbzSH84mj0).  -->
 
-Video restoration is a difficult field to get into. A bit of googling had me all over the place. Photo restoration is done manually for the most part. People use photoshop and a variety of different image editing tools and restore old photos. You can find them [here](https://www.reddit.com/r/estoration/). 
+Video restoration is a difficult field to get into. 
 
-But video restoration is another matter altogether. We would need to restore each frame in the video on photoshop or any other image editing tool.
+A bit of googling had me all over the place. Photo restoration is done manually for the most part. People use photoshop and a variety of different image editing tools and restore old photos. You can find them [here](https://www.reddit.com/r/estoration/). 
 
-Big studios do some magic with the original film used to create the movie. But I don’t have the original film. I just have the video from youtube.
+But video restoration is another matter altogether. Big studios do some witchcraft with the original film that was used to create the movie. But I don’t have the original film. I just have the video from youtube.
 
-But could we apply deep learning? Probably. It’s worth a shot. 
+Recently Deep Learning has been applied in this field. The results have been very promising. [Deoldify](https://github.com/jantic/DeOldify) for example, allows users to colorize old videos and images. [NVIDIA's Noise2Noise model](https://www.youtube.com/watch?v=P0fMwA3X5KI) allows people to restore old images to their former glory. 
 
+But so far there's nothing I know of that can specifically remove 'cue marks' and grainy spots from old film. So let's build it!
 
 # Creating the Dataset
 
-Creating the dataset was tricky- but doable. Here's what I did. I downloaded high quality videos into from youtube. Then I ruined them. I added black specs and reduced the resolution of the video. [Ffmpeg](https://ffmpeg.org/) was very useful in doing this. 
+Creating the dataset was tricky- but still doable. Here's what I did. I downloaded high quality videos into from youtube. Then I ruined them. I added black specs and reduced the resolution of the video. [Ffmpeg](https://ffmpeg.org/) was very useful in doing this. 
 
 First I'll download the video.
 
