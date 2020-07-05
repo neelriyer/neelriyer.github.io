@@ -9,7 +9,7 @@ Here are the deleted scenes from  Star Wars: Episode IV: A New Hope (1977). This
 
 {% include youtubePlayer.html id="f00IkrWvur4?start=159" %}
 
-It's full of weird black specs! Small wonder why these are the *deleted* scenes. 
+There's these weird black specs that keep popping up. Small wonder why these are the *deleted* scenes. 
 
 Apparently those weird specs are called [cue marks](https://en.wikipedia.org/wiki/Cue_mark). They're marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically *old*. 
 
