@@ -11,7 +11,7 @@ Don’t get me wrong: I’m a huge fan of Star Wars. And for the most part I was
 
 But that all changed when I watched the deleted scenes. 
 
-{% include youtubePlayer.html id="f00IkrWvur4?t=159" %}
+{% include youtubePlayer.html id="f00IkrWvur4?start=159" %}
 
 What the hell are these black specs that keep appearing on my screen when I’m watching a movie? Why are they all different shapes and sizes? What are they?
 
