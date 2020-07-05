@@ -15,7 +15,7 @@ But that all changed when I watched the deleted scenes.
 
 What the hell are these black specs that keep appearing on my screen when I’m watching a movie? Why are they all different shapes and sizes? What are they?
 
-I googled them. Apparently they’re [cue marks](https://en.wikipedia.org/wiki/Cue_mark). Marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically old (italics). 
+I googled them. Apparently they’re [cue marks](https://en.wikipedia.org/wiki/Cue_mark). Marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically *old*. 
 
 <!-- For the most part that not a huge problem. The series has been remastered [several times](https://en.wikipedia.org/wiki/Changes_in_Star_Wars_re-releases). "A New Hope" was most recently remastered in 2011 and the results are [so much better than the original](https://www.youtube.com/watch?v=RNbzSH84mj0).  -->
 
