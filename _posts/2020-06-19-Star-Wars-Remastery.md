@@ -11,7 +11,7 @@ Don’t get me wrong: I’m a huge fan of Star Wars. And for the most part I was
 
 But that all changed when I watched the deleted scenes. 
 
-{% include youtubePlayer.html id="4EU7vvSvV-0" %}
+{% include youtubePlayer.html id="f00IkrWvur4?t=159" %}
 
 What the hell are these black specs that keep appearing on my screen when I’m watching a movie? Why are they all different shapes and sizes? What are they?
 
@@ -579,7 +579,5 @@ I’m also thinking of doing more super-resolution on the video. It would be nic
 Or (and this is probably a better option) I could use a ready-made upscaler such as [VapourSynth](https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper). This is probably the best option as the original video (star wars deleted scenes) are already in poor quality.
 
 Inference is also an issue. It tends to overload memory and crash. The result is that `42` seconds is the longest I could get for this video. I'm not completely sure how to solve this problem. But I'll need to solve it if I'm going to be using this further.
-
-
 
 
