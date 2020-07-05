@@ -2,6 +2,7 @@
 layout: post
 title: Remastering Star Wars using Deep Learning
 ---
+__A New Hope for the Deleted Scenes__.
 
 I’m a huge Star Wars fan. And like a lot of Star Wars fans I’ve been getting into [Star Wars: The Clone Wars](https://www.imdb.com/title/tt0458290/) on Cartoon Network and Disney+. It’s a phenomenal show. 
 
