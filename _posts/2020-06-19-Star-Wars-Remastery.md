@@ -3,37 +3,25 @@ layout: post
 title: Remastering Star Wars using Deep Learning
 ---
 
-I’m a huge Star Wars fan. And like a lot of Star Wars fans I’ve been getting into Star Wars clone wars episodes on cartoon network and disney. I might be too old for it, but it’s a phenomenal show. 
+Can we apply deep learning to remaster scenes from the first Star Wars Movie? Yes, yes we can.
 
-But when I go back to watch the old movies I’m annoyed by the drop in quality. Why does Obi Wan’s skin look papery? Why do the space scenes look terrible? Why does the armour on storm troopers look so ‘boxy’?
-
-Don’t get me wrong: I’m a huge fan of Star Wars. And for the most part I was more than happy to overlook these small imperfections when re-watching ‘A New Hope’. 
-
-But that all changed when I watched the deleted scenes. 
+Here are the deleted scenes from  Star Wars: Episode IV: A New Hope (1977). This was the very first Star Wars to be created.
 
 {% include youtubePlayer.html id="f00IkrWvur4?start=159" %}
 
-What the hell are these black specs that keep appearing on my screen when I’m watching a movie? Why are they all different shapes and sizes? What are they?
+It's full of weird black specs! Small wonder why these are the *deleted* scenes. 
 
-I googled them. Apparently they’re [cue marks](https://en.wikipedia.org/wiki/Cue_mark). Marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically *old*. 
+Apparently those weird specs are called [cue marks](https://en.wikipedia.org/wiki/Cue_mark). They're marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically *old*. 
 
-<!-- For the most part that not a huge problem. The series has been remastered [several times](https://en.wikipedia.org/wiki/Changes_in_Star_Wars_re-releases). "A New Hope" was most recently remastered in 2011 and the results are [so much better than the original](https://www.youtube.com/watch?v=RNbzSH84mj0).  -->
-
-Video restoration is a difficult field to get into. 
-
-A bit of googling had me all over the place. Photo restoration is done manually for the most part. People use photoshop and a variety of different image editing tools and restore old photos. You can find them [here](https://www.reddit.com/r/estoration/). 
-
-But video restoration is another matter altogether. Big studios do some witchcraft with the original film that was used to create the movie. But I don’t have the original film. I just have the video from youtube.
-
-Recently Deep Learning has been applied in this field. The results have been very promising. [Deoldify](https://github.com/jantic/DeOldify) for example, allows users to colorize old videos and images. [NVIDIA's Noise2Noise model](https://www.youtube.com/watch?v=P0fMwA3X5KI) allows people to restore old images to their former glory. 
+Deep Learning has recently been used for video restoration. The results have been very promising. [Deoldify](https://github.com/jantic/DeOldify) for example, allows users to colorize old videos and images. [NVIDIA's Noise2Noise model](https://www.youtube.com/watch?v=P0fMwA3X5KI) allows people to restore old images to their former glory. 
 
 But so far there's nothing I know of that can specifically remove 'cue marks' and grainy spots from old film. So let's build it!
 
 # Creating the Dataset
 
-Creating the dataset was tricky- but still doable. Here's what I did. I downloaded high quality videos into from youtube. Then I ruined them. I added black specs and reduced the resolution of the video. [Ffmpeg](https://ffmpeg.org/) was very useful in doing this. 
+Creating the dataset was tricky - but still doable. Here's what I did. I downloaded high quality videos into from youtube. Then I ruined them. I added black specs and reduced the resolution of the video. [Ffmpeg](https://ffmpeg.org/) was very useful in doing this. 
 
-First I'll download the video.
+First we'll download the video.
 
 ```shell
 youtube-dl --format best -o seinfeld.mp4 https://www.youtube.com/watch?v=nEAO60ON7yo 
@@ -43,7 +31,7 @@ I'm using this video. I'm using a clip from [seinfeld](https://en.wikipedia.org/
 
 {% include youtubePlayer.html id="nEAO60ON7yo " %}
 
-Then I'll need to ruin it. To do this I downloaded a grainy film overlay from youtube. Then I overlayed the video using ffmpeg with the blend setting set to [``softlight``](https://ffmpeg.org/ffmpeg-filters.html#blend-1). Finding the right blend setting took a lot of trial and error. The ffmpeg [docs](https://ffmpeg.org/documentation.html) don't have a lot of examples. 
+Then we'll need to ruin it. To do this I downloaded a grainy film overlay from youtube. Then I overlayed the video using ffmpeg with the blend setting set to [``softlight``](https://ffmpeg.org/ffmpeg-filters.html#blend-1). Finding the right blend setting took a lot of trial and error. The ffmpeg [docs](https://ffmpeg.org/documentation.html) don't have a lot of examples. 
 
 ```shell
 # download grain video
@@ -65,15 +53,15 @@ ffmpeg \
     "output_test.mp4"
 ```
 
-Now I had two videos. One in perfect quality and another in shitty quality.
+Now we have two videos. One in perfect quality and another in shitty quality.
 
 {% include youtubePlayer.html id="l8Z3T9w0yBY " %}
 {% include youtubePlayer.html id="MaIDJO5ar1c " %}
 
 
-Then I extracted frames from each video. Initially I adopted a naive approach for doing this. Where I would do through the video in python and scrape each frame individually. But that took too long. 
+Now we'll extract frames from each video. Initially I adopted a naive approach for doing this. Where I would do through the video in python and scrape each frame individually. But that took too long. 
 
-I used multi-processing here to really speed things up. This was adapted from [Hayden Faulker's](https://gist.github.com/HaydenFaulkner/54318fd3e9b9bdb66c5440c44e4e08b8#file-video_to_frames-py) script.
+We can use multi-processing here to really speed things up. This was adapted from [Hayden Faulker's](https://gist.github.com/HaydenFaulkner/54318fd3e9b9bdb66c5440c44e4e08b8#file-video_to_frames-py) script.
 
 ```python
 # from https://gist.github.com/HaydenFaulkner/54318fd3e9b9bdb66c5440c44e4e08b8#file-video_to_frames-py
@@ -212,7 +200,7 @@ def video_to_frames(video_path, frames_dir, overwrite=False, every=1, chunk_size
 ```
 
 
-Great. Now I had two datasets. One of crappy quality images (taken from the ruined video) and one of good quality images (taken from the high quality video). First, the make the crappy images crappier, I downscaled them.
+Great. Now we have two datasets. One of crappy quality images (taken from the ruined video) and one of good quality images (taken from the high quality video). To make the crappy images crappier, I'll downscale them (this isn't a necessary step though).
 
 ```python
 def resize_one(img, size):
@@ -269,7 +257,7 @@ Here are some of the image transforms.
 
 Not bad! 
 
-Then I trained the [NoGAN network](https://www.fast.ai/2019/05/03/decrappify/) pioneered by fastai and jason antic on this data. This code was inspired by [lesson 7](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb) of the fastai course.
+We'll use the [NoGAN network](https://www.fast.ai/2019/05/03/decrappify/) pioneered by fastai and jason antic on this data. This code was inspired by [lesson 7](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb) of the fastai course.
 
 ```python
 # taken from: https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb
@@ -552,23 +540,21 @@ And the original video
 
 # Improvements
 
-1. As you can see there is room for improvement. The sky needs a bit more work. But I like the vibrancy of the background. That is an interesting (and completely unplanned) effect. The goal was to remove the ‘cue marks’ (annoying black specs) from the video. I think its done okay in that respect - but there's still more to do.
+1) As you can see there is room for improvement. The sky needs a bit more work. But I like the vibrancy of the background. That is an interesting (and completely unplanned) effect. The goal was to remove the ‘cue marks’ (annoying black specs) from the video. I think its done okay in that respect - but there's still more to do.
 
 I like how the network has intensified the sun though. It completely changes the the scene between Luke and Biggs when Biggs says he's joining the rebellion. 
 
 ![alt text](/images/star_wars/a_new_sun.png)
 ![alt text](/images/star_wars/no_sun.png) 
 
-# More improvements
-
-2. There's a weird horizontal bar line that shows up around the ``22`` second mark. I didn't add any horizontal bars in the training set so it's completely understandable that the network didn't remove that at all. But in the future I'll need to add more horizontal bars to my training set to fix these.  
+2) There's a weird horizontal bar line that shows up around the ``22`` second mark. I didn't add any horizontal bars in the training set so it's completely understandable that the network didn't remove that at all. But in the future I'll need to add more horizontal bars to my training set to fix these.  
 
 
-3. I’m also thinking of doing more super-resolution on the video. It would be nice to show a young Luke Skywalker in high quality. To do that I could resize the images before training further. I've already downscaled the image, but potentially I could downscale it further. 
+3) I’m also thinking of doing more super-resolution on the video. It would be nice to show a young Luke Skywalker in high quality. To do that I could resize the images before training further. I've already downscaled the image, but potentially I could downscale it further. 
 
 Alternatively, to achieve superres I could potentially use a ready-made upscaler such as [VapourSynth](https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper). This is probably the best option as the original video is already in poor quality.
 
-4. Inference is also an issue. It tends to overload memory and crash. The result is that `42` seconds is the longest I could get for this video. I'm not completely sure how to solve this problem. But I'll need to solve it if I'm going to be using this further.
+4) Inference is also an issue. It tends to overload memory and crash. The result is that `42` seconds is the longest I could get for this video. I'm not completely sure how to solve this problem. But I'll need to solve it if I'm going to be using this further.
 
 So much to do!
 
