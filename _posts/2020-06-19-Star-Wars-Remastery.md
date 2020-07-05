@@ -558,6 +558,8 @@ I like how the network has intensified the sun though. It completely changes the
 ![alt text](/images/star_wars/a_new_sun.png)
 ![alt text](/images/star_wars/no_sun.png) 
 
+# More improvements
+
 2. There's a weird horizontal bar line that shows up around the ``22`` second mark. I didn't add any horizontal bars in the training set so it's completely understandable that the network didn't remove that at all. But in the future I'll need to add more horizontal bars to my training set to fix these.  
 
 
