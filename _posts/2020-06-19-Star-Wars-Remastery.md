@@ -34,7 +34,7 @@ Creating the dataset was tricky- but doable. Here's what I did. I downloaded hig
 
 First I'll download the video.
 
-```
+```shell
 youtube-dl --format best -o seinfeld.mp4 https://www.youtube.com/watch?v=nEAO60ON7yo 
 ```
 
@@ -42,9 +42,9 @@ I'm using this video. I'm using a clip from [seinfeld](https://en.wikipedia.org/
 
 {% include youtubePlayer.html id="nEAO60ON7yo " %}
 
-Then I'll need to ruin it. To do this I downloaded a grainy film overlay from youtube. Then I overlayed the video using ffmpeg with the blend setting set to [``softlight``](https://ffmpeg.org/ffmpeg-filters.html#blend-1). Finding the right blend setting took a lot of trial and error. The ffmpeg docs don't have a lot of examples. 
+Then I'll need to ruin it. To do this I downloaded a grainy film overlay from youtube. Then I overlayed the video using ffmpeg with the blend setting set to [``softlight``](https://ffmpeg.org/ffmpeg-filters.html#blend-1). Finding the right blend setting took a lot of trial and error. The ffmpeg [docs](https://ffmpeg.org/documentation.html) don't have a lot of examples. 
 
-```
+```shell
 # download grain video
 rm -Rf build
 YT_GRAIN_OVERLAY="https://www.youtube.com/watch?v=J_MZb7qTenE"
@@ -224,6 +224,7 @@ def resize_one(img, size):
 This is what the crappy and normal images looked like now. Side note: this is a great scene from seinfeld.
 
 ![alt text](/images/star_wars/crappy_vs_clean_comparison.png)
+![alt text](/images/star_wars/crappy_vs_clean_comparison1.png)
 
 A quick check shows that we have a dataset of about `10014` files. Pretty good.
 
