@@ -382,5 +382,7 @@ Gridsearch could be implemented randomly. This is called random search. I could 
 
 3. Blending. A first place solution on kaggle used a neural network blended with a lightGBM model. This could be promising for future research.
 
+The full code for this is available on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/medium_food_demand_prediction_mealkit.ipynb)
+
 
 
