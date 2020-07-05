@@ -561,7 +561,6 @@ I like how the network has intensified the sun though. It completely changes the
 ![alt text](/images/star_wars/no_sun.png) 
 
 
-
 I’m also thinking of doing more super-resolution on the video. It would be nice to show a young Luke Skywalker in high quality. To do that I could resize the images before training further. I've already downscaled the image, but potentially I could downscale it further. 
 
 Alternatively, to achieve superres I could potentially use a ready-made upscaler such as [VapourSynth](https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper). This is probably the best option as the original video is already in poor quality.
