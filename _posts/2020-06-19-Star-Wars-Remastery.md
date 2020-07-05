@@ -568,6 +568,6 @@ Alternatively, to achieve superres I could potentially use a ready-made upscaler
 
 Inference is also an issue. It tends to overload memory and crash. The result is that `42` seconds is the longest I could get for this video. I'm not completely sure how to solve this problem. But I'll need to solve it if I'm going to be using this further.
 
-All in all, a decent effort I think.
+So much to do!
 
 
