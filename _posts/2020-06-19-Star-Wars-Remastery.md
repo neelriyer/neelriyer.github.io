@@ -231,9 +231,9 @@ A quick check shows that we have a dataset of about `10014` files. Pretty good.
 
 # Model
 
-Creating the dataset turned out to be really time intensive. But the next part was far more interesting.
+Let's make the most of those `10014` files by using transforms.
 
-I wanted to add appropriate image transforms to make the most of my dataset. So I added horizontal and vertical flips, zoom changes, lighting changes and rotation changes. With Fastai this is really easy to do.
+I added horizontal and vertical flips, zoom changes, lighting changes and rotation changes. With Fastai this is really easy to do.
 
 ```python
 bs,size=64,128
@@ -325,11 +325,11 @@ I trained the model on [google colab’s free gpus](https://colab.research.googl
 
 # Training
 
-The interesting thing that fastai recommends is increasing the size of your images gradually. 
+The interesting thing that fastai [recommends](https://www.youtube.com/watch?v=9spwoDYwW_I) is increasing the size of your images gradually. 
 
 So at first you train on small size images, then you upscale your images and retrain on the larger images. It saves you a lot of time. Pretty smart. 
 
-First we'll train on images of size 128x128.
+First we'll train on images of size 128x128. Because the images are so small I can up the batch size to 64. 
 
 ```python
 data = get_data(bs=64,size=128)
@@ -354,14 +354,13 @@ def do_fit(save_name, lrs=slice(lr), pct_start=0.9, cycles = 10):
 do_fit('1a', slice(lr))
 ``` 
 
-![alt text](/images/star_wars/lr_find.png)
 ![alt text](/images/star_wars/train_loss.png)
 
-The network will print the results during training. The initial results look very promising!
+The network will print the results during training. The input is on the left, the prediction in the middle and the target on the right. The results look very promising!
 
 ![alt text](/images/star_wars/first_train.png)
 
-I resized and trained again. And again. Every time I make the resize slightly larger than it was previously. I moved from 128x128 to 480x480. Finally I used the original size of the video frames.
+I resized and trained again. And again. Every time I make the resize slightly larger than it was previously. I moved from 128x128 to 480x480 to the original size of the video frames. 
 
 ```python
 data = get_data(bs=1)
@@ -438,15 +437,15 @@ def adjust_brightness(img, factor, dest):
 
 I added some hacks here. 
 
-First, I added a render factor. This was taken from [Deoldify](https://github.com/jantic/DeOldify). The idea is that I downscale the image and convert it to a square. Then I run inference on that image. The model is more receptive to images that are square shaped. This has been [shown]I(https://github.com/jantic/DeOldify#stuff-that-should-probably-be-in-a-paper) to reduce 'glitches' considerably. 
+First, I added a render factor. This was taken from [Deoldify](https://github.com/jantic/DeOldify). The idea is that I downscale the image and convert it to a square. Then I run inference on that image. The model is more receptive to images that are square shaped. This has been [shown](https://github.com/jantic/DeOldify#stuff-that-should-probably-be-in-a-paper) to reduce 'glitches' considerably. 
 
 After running inference on the square shaped image I convert it back to its original shape. I found this to reduce glitches and generally result in a smoother video output. I set the `render_factor` to `40`, although it can be higher if we want higher res output. I may need a larger RAM for that though. 
 
 Second, I adjust brightness. This isn't really a hack. Seems like more of a mistake that I'm correctly manually. For some reason the model inference results in images that are very low in brightness. 
 
-I suspect it's something to with the `softlight` filter we used for ffmpeg earlier. But I'm having to manually correct that here. 
+I suspect it's something to with the `softlight` filter we used for ffmpeg earlier. But I'm having to manually correct that here. I'll need to look into this further.  
 
-Third, I'm using matplotlib's save functionality. I found fastai's [save image](https://docs.fast.ai/vision.image.html#Image.save) functionality to give me very weird results (luke clothes were fluroscent blue and red). But strangely matplotlib's save functionality gives me okay results. I'll need to look into this further. 
+Third, I'm using matplotlib's save functionality. I found fastai's [save image](https://docs.fast.ai/vision.image.html#Image.save) functionality to give me very weird results (luke clothes were fluroscent blue and red). But strangely matplotlib's save functionality gives me okay results. I'll need to look into this. I suspect that I may be loosing quality on the image because I'm using matplotlib's `savefig` functionality. 
 
 ```python
 import PIL
@@ -477,35 +476,20 @@ for i in tqdm(range(1000)):
   file = files[i]
   dest = 'seinfeld_inference/high_res/'+os.path.basename(file)
 
-  # plt.imshow(PIL.Image.open(file))
-  # plt.show()
-
   # scale to square
   new_path = scale_to_square(PIL.Image.open(file), render_factor*16, dest = dest.split('.')[0]+'_square.jpg')
-
-  # plt.imshow(PIL.Image.open(new_path))
-  # plt.show()
 
   # run inference
   run_inference_images(new_path, dest)
 
-  # plt.imshow(PIL.Image.open(dest))
-  # plt.show()
-
   # unsquare
   dest = unsquare(PIL.Image.open(dest), PIL.Image.open(file), dest = dest.split('.')[0]+'_unsquared.jpg')
-
-  # plt.imshow(PIL.Image.open(dest))
-  # plt.show()
 
   # write to txt
   write_to_txt(dest)
 
   # increase brightness
   adjust_brightness(PIL.Image.open(dest),factor = 1.75, dest=dest)
-
-  # plt.imshow(PIL.Image.open(dest))
-  # plt.show()
 
 ```
 
@@ -560,25 +544,30 @@ out.release()
 
 {% include youtubePlayer.html id="2BcoLsuJMP0" %}
 
+And the original video
+
+{% include youtubePlayer.html id="f00IkrWvur4?start=159" %}
+
 
 # Improvements
 
 As you can see there is room for improvement. The sky needs a bit more work. But I like the vibrancy of the background. That is an interesting (and completely unplanned) effect. The goal was to remove the ‘cue marks’ (annoying black specs) from the video. I think its done okay in that respect - but there's still more to do.
 
-There's a weird horizontal bar line that shows up around the ``22`` second mark. I didn't add any horizontal bars in the training set so it's completely understandable that the network didn't remove that at all. 
+There's a weird horizontal bar line that shows up around the ``22`` second mark. I didn't add any horizontal bars in the training set so it's completely understandable that the network didn't remove that at all. But in the future I'll need to add more horizontal bars to my training set to fix these.  
 
 I like how the network has intensified the sun though. It completely changes the the scene between Luke and Biggs when Biggs says he's joining the rebellion. 
 
-![alt text](/images/star_wars/no_sun.png) 
 ![alt text](/images/star_wars/a_new_sun.png)
+![alt text](/images/star_wars/no_sun.png) 
 
 
-In the future, I’d like to improve the sky. It's too glitchy for my liking. I'm not completely sure how I could fix this though. 
 
 I’m also thinking of doing more super-resolution on the video. It would be nice to show a young Luke Skywalker in high quality. To do that I could resize the images before training further. I've already downscaled the image, but potentially I could downscale it further. 
 
-Or (and this is probably a better option) I could use a ready-made upscaler such as [VapourSynth](https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper). This is probably the best option as the original video (star wars deleted scenes) are already in poor quality.
+Alternatively, to achieve superres I could potentially use a ready-made upscaler such as [VapourSynth](https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper). This is probably the best option as the original video is already in poor quality.
 
 Inference is also an issue. It tends to overload memory and crash. The result is that `42` seconds is the longest I could get for this video. I'm not completely sure how to solve this problem. But I'll need to solve it if I'm going to be using this further.
+
+All in all, a decent effort I think.
 
 
