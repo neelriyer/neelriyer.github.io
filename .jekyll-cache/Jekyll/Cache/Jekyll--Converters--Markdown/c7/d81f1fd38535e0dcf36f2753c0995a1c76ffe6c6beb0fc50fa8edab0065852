@@ -1,0 +1,198 @@
+I"^m<p>Building a Neural Network to understand user preferences</p>
+
+<p><img src="/images/pytorch_recommendation/intro.jpeg" alt="alt text" />
+photo from <a href="https://mc.ai/deep-learning-for-collaborative-filtering-using-fastai/">mc.ai</a></p>
+
+<p><em>“You’re the average of the five people spend the most time with.”</em> - <a href="https://en.wikipedia.org/wiki/Jim_Rohn">Jim Rohn</a></p>
+
+<p>Collaborative filtering is a tool that companies are increasingly using. Netflix uses it to recommend shows for us to watch. <a href="https://engineering.fb.com/core-data/recommending-items-to-more-than-a-billion-people/">Facebook</a> uses it to recommend who we should be friends with. <a href="https://medium.com/s/story/spotifys-discover-weekly-how-machine-learning-finds-your-new-music-19a41ab76efe">Spotify</a> uses it to recommend playlists and songs for us. It’s incredibly useful in recommending products to customers.</p>
+
+<p>In this post, I construct a collaborative filtering neural network with embeddings to understand how users would feel towards certain movies. From this we can recommend movies for them to watch.</p>
+
+<p>The dataset is taken from <a href="http://files.grouplens.org/datasets/movielens/">here</a>. This code is loosely based of the <a href="https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb">fastai notebook</a>.</p>
+
+<h1 id="data-prep">Data Prep</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'ratings.csv'</span><span class="p">)</span>
+<span class="n">movies</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">'movies.csv'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>First, let get rid of the annoyingly complex user ids. We can make do with plain old integers. They’re much easier to handle.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">u_uniq</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">.</span><span class="n">userId</span><span class="p">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">user2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">u_uniq</span><span class="p">)}</span>
+<span class="n">ratings</span><span class="p">.</span><span class="n">userId</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">.</span><span class="n">userId</span><span class="p">.</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">user2idx</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>Then we’ll do the same thing for movie ids as well.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m_uniq</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">.</span><span class="n">movieId</span><span class="p">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">movie2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">m_uniq</span><span class="p">)}</span>
+<span class="n">ratings</span><span class="p">.</span><span class="n">movieId</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">.</span><span class="n">movieId</span><span class="p">.</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">movie2idx</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>We’ll need to get the number of users and the number of movies.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">n_users</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">ratings</span><span class="p">.</span><span class="n">userId</span><span class="p">.</span><span class="n">nunique</span><span class="p">())</span>
+<span class="n">n_movies</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">ratings</span><span class="p">.</span><span class="n">movieId</span><span class="p">.</span><span class="n">nunique</span><span class="p">())</span>
+</code></pre></div></div>
+
+<h1 id="the-neural-net-with-embeddings">The Neural Net with Embeddings</h1>
+
+<p>First let’s create some random weights. We need to call <a href="https://docs.python.org/2/library/functions.html#super"><code class="language-plaintext highlighter-rouge">super().__init__()</code></a>. This allows us to avoid calling the base class explicitly. This makes the code more maintainable.</p>
+
+<p>These weights will be uniformly distributed between 0 and 0.05. The <code class="language-plaintext highlighter-rouge">_</code> operator at the end of <code class="language-plaintext highlighter-rouge">uniform_</code> denotes an inplace operation.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">EmbeddingDot</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">pass</span>
+</code></pre></div></div>
+
+<p>Next we add our Embedding matrices and latent factors.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">EmbeddingDot</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+		
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">):</span>
+		<span class="k">pass</span>
+</code></pre></div></div>
+
+<p>We’re creating an embedding matrix for our user ids and our movie ids. An embedding is basically an array lookup. When we mulitply our one-hot encoded user ids by our weights most calculations cancel to <code class="language-plaintext highlighter-rouge">0</code> <code class="language-plaintext highlighter-rouge">(0 * number = 0)</code>. All we’re left with is a particular row in the weight matrix. That’s basically <a href="https://youtu.be/CJKnDu2dxOE?t=1625">just an array lookup</a>.</p>
+
+<p>So we can skip the matrix mulitply and we can skip the one-hot encoded. Instead we can just do an array lookup. This <a href="https://arxiv.org/pdf/1604.06737">reduces memory usage</a> and speeds up the neural network relative. It also reveals the intrinsic properties of the categorical variables. This was applied in a recent <a href="https://www.kaggle.com/c/rossmann-store-sales">Kaggle competition</a> and <a href="https://www.kaggle.com/c/rossmann-store-sales/discussion/17974">achieved 3rd place</a>.</p>
+
+<p>The size of these embedding matrices will be determined by n_factors. These factors determine the number of latent factors in our dataset.</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Latent_variable">Latent factors</a>. are immensely useful in our network. They reduce the need for feature engineering. For example, if <code class="language-plaintext highlighter-rouge">User_id</code> <code class="language-plaintext highlighter-rouge">554</code> likes Tom cruise and <code class="language-plaintext highlighter-rouge">Tom cruise</code> appears in a movie. User <code class="language-plaintext highlighter-rouge">554</code> will probably like the movie. <code class="language-plaintext highlighter-rouge">Tom cruise</code> appearing in a movie would be a latent feature. We didn’t specify it before training. It just showed up.</p>
+
+<p>Finally, we’ll need to add our <code class="language-plaintext highlighter-rouge">forward</code> function.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">EmbeddingDot</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+		
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">):</span>
+		<span class="n">users</span><span class="p">,</span><span class="n">movies</span> <span class="o">=</span> <span class="n">cats</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">cats</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">u</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">u</span><span class="p">(</span><span class="n">users</span><span class="p">),</span><span class="bp">self</span><span class="p">.</span><span class="n">m</span><span class="p">(</span><span class="n">movies</span><span class="p">)</span>
+		<span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="o">*</span><span class="n">m</span><span class="p">).</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>As the name of this class would suggest we’re doing a dot product of embedding matrices.</p>
+
+<p><code class="language-plaintext highlighter-rouge">users,movies = cats[:,0],cats[:,1]</code> gives us a minibatch of users and movies. We only look at categorical variables for embeddings. <code class="language-plaintext highlighter-rouge">conts</code> refers to continous variables.</p>
+
+<p>This minibatch size will be determined by the batchsize that you set. According to <a href="https://arxiv.org/abs/1609.04836">this</a> paper a large batch size can actually the quality of the model. But according to <a href="https://arxiv.org/abs/1706.02677">this</a> paper a large batch size assists model training. There is no consensus at the moment. Many people are reporting <a href="https://stats.stackexchange.com/questions/436878/choosing-optimal-batch-size-contradicting-results">contradictory results</a>. So I’m just going to go with a batch size of <code class="language-plaintext highlighter-rouge">64</code>.</p>
+
+<p>From that minibatch we want to do an array lookup in our embedding matrix.</p>
+
+<p><code class="language-plaintext highlighter-rouge">self.u(users),self.m(movies)</code> allows us to do that array lookup. This lookupis less computionally intensive that a matrix mulitply of a one-hot encoded matrix and a weight matrix.</p>
+
+<p><code class="language-plaintext highlighter-rouge">(u*m).sum(1).view(-1, 1)</code> is a cross product of the embeddings for users and movies and returns a single number. This is the predicted rating for that movie.</p>
+
+<h1 id="training-the-net">Training the Net</h1>
+
+<p>Next we need to create a <code class="language-plaintext highlighter-rouge">ColumnarModelData</code> object</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">fastai.collab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.tabular</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">user_name</span> <span class="o">=</span> <span class="s">'userId'</span>
+<span class="n">item_name</span> <span class="o">=</span> <span class="s">'movieId'</span>
+<span class="n">rating_name</span> <span class="o">=</span> <span class="s">'rating'</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="n">rating_name</span><span class="p">,</span> <span class="s">'timestamp'</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">[</span><span class="n">rating_name</span><span class="p">].</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ColumnarModelData</span><span class="p">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">],</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>Then I’ll setup an optimiser. I’ll use stochastic gradient descent for this.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDot</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">).</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">optim</span><span class="p">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">optim.SGD</code> implements <a href="https://pytorch.org/docs/stable/optim.html#torch.optim.SGD">stochastic gradient descent</a>. 
+Stochastistic gradient descent is computationally less intensive thatn gradient descent.</p>
+
+<p>Then we fit for a <code class="language-plaintext highlighter-rouge">3</code> epochs.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">F</span><span class="p">.</span><span class="n">mse_loss</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>MSE loss is simply mean square error loss. This is calculated automatically.</p>
+
+<h1 id="adding-in-bias-and-dropout">Adding in Bias and Dropout</h1>
+
+<p>Fastai creates a neural net automatically behind the scenes. You can call a <a href="https://docs.fast.ai/collab.html#collab_learner"><code class="language-plaintext highlighter-rouge">collab_learner</code></a> which automatically creates a neural network for collaborative filtering. Fastai also has options for introducing <a href="https://dev.fast.ai/tutorial.collab#Movie-bias">Bias</a> and <a href="https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf">dropout</a> through this collab learner.</p>
+
+<p>Using fastai we can create a collab learner easily:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user_name</span> <span class="o">=</span> <span class="s">'userId'</span>
+<span class="n">item_name</span> <span class="o">=</span> <span class="s">'movieId'</span>
+<span class="n">rating_name</span> <span class="o">=</span> <span class="s">'rating'</span>
+
+<span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">,</span> <span class="n">rating_name</span><span class="p">]</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">CollabDataBunch</span><span class="p">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">[</span><span class="n">cols</span><span class="p">],</span>
+								<span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">,</span>
+								<span class="n">item_name</span><span class="o">=</span><span class="n">item_name</span><span class="p">,</span>
+								<span class="n">rating_name</span><span class="o">=</span><span class="n">rating_name</span><span class="p">,</span>
+								<span class="n">seed</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+								<span class="n">valid_pct</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+								<span class="n">bs</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">11</span><span class="p">))</span> <span class="c1"># up to batch size
+</span>
+<span class="n">y_range</span> <span class="o">=</span> <span class="p">((</span><span class="n">ratings</span><span class="p">[</span><span class="n">rating_name</span><span class="p">].</span><span class="nb">min</span><span class="p">(),</span>
+			<span class="n">ratings</span><span class="p">[</span><span class="n">rating_name</span><span class="p">].</span><span class="nb">max</span><span class="p">()</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span>
+
+<span class="n">learn</span> <span class="o">=</span> <span class="n">collab_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_factors</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="n">y_range</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Bias is very useful. We need to find user bias and movie bias. User bias would account for people who give high ratings for every movie. Movie bias would account for people who 
+tend to give high ratings for a certain type of movie. Fastai adds in Bias automatically.</p>
+
+<p>Interestingly, fastai notes that you should be increase the <code class="language-plaintext highlighter-rouge">y_range</code> <a href="https://youtu.be/CJKnDu2dxOE?t=2609">slightly</a>. A <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid function</a> is used to ensure that the final output is between the numbers specified in <code class="language-plaintext highlighter-rouge">y_range</code>. The issue is that a sigmoid function asymtotes. So we’ll need to increase our <code class="language-plaintext highlighter-rouge">y_range</code> slightly. Fastai recommends increasing by <code class="language-plaintext highlighter-rouge">0.5</code>.</p>
+
+<p><img src="/images/pytorch_recommendation/lr_find.png" alt="alt text" /></p>
+
+<p>I’m using the suggested learning rate here with a small amount of weight decay. This is the combination that I found to work really well.</p>
+
+<p><img src="/images/pytorch_recommendation/training.png" alt="alt text" /></p>
+
+<p>We can train some more</p>
+
+<p><img src="/images/pytorch_recommendation/more_training.png" alt="alt text" />
+<img src="/images/pytorch_recommendation/plot_losses.png" alt="alt text" /></p>
+
+<p>We finally get a MSE of <code class="language-plaintext highlighter-rouge">0.784105</code>. But it’s a very bumpy ride. Our loss jumps up and down considerably. That said <code class="language-plaintext highlighter-rouge">0.784105</code> is actually a better score than some of the <a href="https://www.librec.net/release/v1.3/example.html">LibRec system</a> for collborative filtering. They were getting <code class="language-plaintext highlighter-rouge">0.91**2 = 0.83</code> MSE.</p>
+
+<p>It’s also actually better than the model that fastai created in their <a href="https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb">colloborative filtering lesson</a>. They were getting <code class="language-plaintext highlighter-rouge">0.814652</code> at their lowest.</p>
+
+<h1 id="improvements">Improvements</h1>
+
+<ol>
+  <li>
+    <p>We can adjust the size of the embedding by sending in a dictionary called <code class="language-plaintext highlighter-rouge">emb_szs</code>. This could be a useful parameter to adjust.</p>
+  </li>
+  <li>
+    <p>Content-based recommendation. Collaborative filtering is just one method of building a recommendation system. <a href="https://www.kaggle.com/ibtesama/getting-started-with-a-movie-recommendation-system#Content-Based-Filtering">Other methods</a> could be more useful. A Content-based system is something I’m keeping in mind. That could look at metadata such as cast, crew, genre and director to make recommendations. I think some kind of <a href="https://www.kaggle.com/rounakbanik/movie-recommender-systems#Movies-Recommender-System">hybrid</a> solution would be optimal. This would combin a content-based recommendation system and a collaborative filtering system.</p>
+  </li>
+  <li>
+    <p>Collaborative filtering is thwarted by the [cold-start problem](https://en.wikipedia.org/wiki/Cold_start_(recommender_systems). To overcome this we could potentially look at the users metadata. For example we could look at things like: gender, age, city, time they accessed the site, etc. Just all the things they entered on the sign up form. Building a model on that data could be tricky, but if it works well it could be useful.</p>
+  </li>
+</ol>
+
+:ET

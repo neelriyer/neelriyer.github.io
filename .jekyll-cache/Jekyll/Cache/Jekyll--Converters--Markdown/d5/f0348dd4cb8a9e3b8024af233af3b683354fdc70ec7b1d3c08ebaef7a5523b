@@ -1,0 +1,363 @@
+I"	�<p>Applying Neural Networks to the Meal kit Market.</p>
+
+<p><img src="/images/mealkit/meal_kit_intro.png" alt="alt text" /></p>
+
+<p>So this is going to overfit.</p>
+
+<p>Time series problems usually struggle with overfitting. This entire exercise became more of a challenge to see how I could prevent overfitting in time series forecasting.</p>
+
+<p>I added <a href="https://www.fast.ai/2018/07/02/adam-weight-decay/">weight decay</a> and <a href="https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf">dropout</a>. This should work to prevent overfitting. The network has embedding layers for categorical variables (which I vary in size) followed by dropout and <a href="https://arxiv.org/abs/1502.03167">batch normalisation</a> (for continuous variables).</p>
+
+<p>According to <a href="https://medium.com/@lankinen/fast-ai-lesson-6-notes-part-1-v3-646edf916c04">this article</a> ideally, you want lower amounts of dropout and larger amounts of weight decay.</p>
+
+<h1 id="dataset">Dataset</h1>
+
+<p>The data is given by a <a href="https://datahack.analyticsvidhya.com/contest/genpact-machine-learning-hackathon-1/#ProblemStatement">meal kit company</a>. As food is perishable, planning and demand prediction is extremely important.</p>
+
+<p>Getting this wrong can spell disaster for a meal kit company. Replenishment is typically done on a weekly basis. We need to forecast demand for the next 10 weeks.</p>
+
+<!-- # Feature Engineering
+
+Since I’m going to be using a neural network feature engineering is not necessarily required. The features will be automatically created by the network. 
+
+But I’m probably going to be deploying this network in a resource constrained environment (my laptop). So, I think, a bit of feature engineering will go a long way in training the network [quickly and efficiently](https://stats.stackexchange.com/questions/349155/why-do-neural-networks-need-feature-selection-engineering).
+
+I added two new features:
+- `price_diff_percent`
+The percent difference between the base price and the checkout price
+
+- `email_plus_homepage`
+Tells us if the meal was promoted over email and on the homepage.
+ -->
+
+<h1 id="pre-processing">Pre-processing</h1>
+
+<p>Thanks to Fastai, normalizing, filling missing values and encoding categorical variables is now a relatively simple process.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Fill Missing values
+# Encode categorical variables
+# Normalize continous variables
+</span><span class="n">procs</span><span class="o">=</span><span class="p">[</span><span class="n">FillMissing</span><span class="p">,</span> <span class="n">Categorify</span><span class="p">,</span> <span class="n">Normalize</span><span class="p">]</span>
+
+<span class="n">cont_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s">'checkout_price'</span><span class="p">,</span> 
+             <span class="s">'base_price'</span><span class="p">,</span> 
+             <span class="s">'Elapsed'</span><span class="p">,</span>
+             <span class="s">'week_sin'</span><span class="p">,</span> 
+             <span class="s">'week_cos'</span><span class="p">,</span>  
+             <span class="s">'price_diff_percent'</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">train_df</span><span class="p">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">test_df</span><span class="p">.</span><span class="n">columns</span><span class="p">]</span>
+
+<span class="n">cat_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s">'week'</span><span class="p">,</span> <span class="s">'center_id'</span><span class="p">,</span> <span class="s">'meal_id'</span><span class="p">,</span>
+       <span class="s">'emailer_for_promotion'</span><span class="p">,</span> <span class="s">'homepage_featured'</span><span class="p">,</span> 
+       <span class="s">'category'</span><span class="p">,</span> <span class="s">'cuisine'</span><span class="p">,</span> <span class="s">'city_code'</span><span class="p">,</span> <span class="s">'region_code'</span><span class="p">,</span> <span class="s">'center_type'</span><span class="p">,</span>
+       <span class="s">'op_area'</span><span class="p">,</span> <span class="s">'Year'</span><span class="p">,</span> <span class="s">'Month'</span><span class="p">,</span> <span class="s">'Week'</span><span class="p">,</span> <span class="s">'Day'</span><span class="p">,</span> <span class="s">'Dayofweek'</span><span class="p">,</span> <span class="s">'Dayofyear'</span><span class="p">,</span>
+       <span class="s">'Is_month_end'</span><span class="p">,</span> <span class="s">'Is_month_start'</span><span class="p">,</span> <span class="s">'Is_quarter_end'</span><span class="p">,</span> <span class="s">'Is_quarter_start'</span><span class="p">,</span>
+       <span class="s">'Is_year_end'</span><span class="p">,</span> <span class="s">'Is_year_start'</span><span class="p">,</span>
+       <span class="s">'email_plus_homepage'</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">train_df</span><span class="p">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">test_df</span><span class="p">.</span><span class="n">columns</span><span class="p">]</span>
+
+<span class="n">dep_var</span> <span class="o">=</span> <span class="s">'num_orders'</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">train_df</span><span class="p">[</span><span class="n">cat_vars</span> <span class="o">+</span> <span class="n">cont_vars</span> <span class="o">+</span> <span class="p">[</span><span class="n">dep_var</span><span class="p">,</span><span class="s">'Date'</span><span class="p">]].</span><span class="n">copy</span><span class="p">()</span>
+
+
+<span class="n">bs</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">11</span> <span class="c1"># max this out
+</span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s">'.'</span><span class="p">)</span>
+
+<span class="c1"># create tabular data bunch
+# validation set will be 5000 rows (ordered)
+# label cls
+</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">TabularList</span><span class="p">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_vars</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_vars</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">procs</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">split_by_idx</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="o">+</span><span class="mi">5000</span><span class="p">)))</span> 
+                <span class="p">.</span><span class="n">label_from_df</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="n">dep_var</span><span class="p">,</span> <span class="n">label_cls</span><span class="o">=</span><span class="n">FloatList</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">TabularList</span><span class="p">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_vars</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">cont_vars</span><span class="p">,</span> <span class="n">procs</span> <span class="o">=</span> <span class="n">procs</span><span class="p">))</span>
+                <span class="p">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<p>Next we’ll create embeddings for each categorical variable. The question is though, how large should each categorical embedding be? Fastai has a good rule of thumb where the categorical embedding is given by the following:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cardinality</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">cat_vars</span><span class="p">[</span><span class="mi">0</span><span class="p">]].</span><span class="n">value_counts</span><span class="p">().</span><span class="n">index</span><span class="p">)</span>
+<span class="n">emb_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This means, the size of the embedding would be either the number of unique values in the categorical variable, divided by 2 and rounded down. Or it could be 50. Whichever one is smallest.</p>
+
+<p>Our final embedding size dictionary looks like this</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">emb_szs</span> <span class="o">=</span> <span class="p">{</span><span class="n">cat_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">cat_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]].</span><span class="n">value_counts</span><span class="p">().</span><span class="n">index</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_size</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cat_vars</span><span class="p">))}</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{'Day': 15,
+ 'Dayofweek': 0,
+ 'Dayofyear': 50,
+ 'Is_month_end': 1,
+ 'Is_month_start': 1,
+ 'Is_quarter_end': 1,
+ 'Is_quarter_start': 1,
+ 'Is_year_end': 1,
+ 'Is_year_start': 1,
+ 'Month': 6,
+ 'Week': 26,
+ 'Year': 1,
+ 'category': 7,
+ 'center_id': 38,
+ 'center_type': 1,
+ 'city_code': 25,
+ 'cuisine': 2,
+ 'email_plus_homepage': 1,
+ 'emailer_for_promotion': 1,
+ 'homepage_featured': 1,
+ 'meal_id': 25,
+ 'op_area': 15,
+ 'region_code': 4}
+</code></pre></div></div>
+
+<p>We’ll need to adjust our model architecture. This is always the hardest part. Several articles highlight the importance of getting the model architecture right. In many ways this could be seen as the <a href="https://smerity.com/articles/2016/architectures_are_the_new_feature_engineering.html">‘new’ feature engineering</a>.</p>
+
+<p><a href="https://arxiv.org/abs/1803.09820">This paper</a> by <a href="https://scholar.google.com/citations?user=pwh7Pw4AAAAJ&amp;hl=en">Leslie Smith</a> poses an interesting way to approach to select hyper parameters in a more disciplined way. I’ll be modelling the implemention from <a href="https://www.kaggle.com/qitvision/a-complete-ml-pipeline-fast-ai">this kaggle kernel</a>.</p>
+
+<p>We need to find the optimal learning rate, weight decay and embedding dropout. According to Leslie Smith, to select the optimal hyper parameters we need to run a learning rate finder for a few different values of weight decay and dropout. Then we select the largest combination that has the lowest loss, highest learning rate (before rapidly increasing) and highest weight decay.</p>
+
+<p>That’s a lot to consider. What’s more there are a few other hyperparameters we haven’t considered. For those I’ll be borrowing a model architecture with relatively large layers. <a href="https://github.com/fastai/fastai/blob/master/courses/dl1/lesson3-rossman.ipynb">This model</a> was used to rank 3rd place in the Rossman Kaggle competition.</p>
+
+<p>Finally, I’ll need to consider batch size. According to Leslie this should be set as high as possible to fit onto all available memory. I’m only too happy to do that. That reduces my training time significantly.</p>
+
+<p>I used the learning rate finder in fastai to visualise the loss as we change the model architecture. From there, I created a rudimentary gridsearch. I don’t want to implement a crazy in depth grid search- that would be computationally expensive. A more manual approach is best I think.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">tqdm.notebook</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="k">def</span> <span class="nf">get_learner</span><span class="p">(</span><span class="n">emb_szs</span><span class="o">=</span><span class="n">emb_szs</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span><span class="mi">500</span><span class="p">],</span> <span class="n">ps</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span><span class="mf">0.04</span><span class="p">],</span> <span class="n">emb_drop</span><span class="o">=</span><span class="mf">0.08</span><span class="p">):</span>
+
+  <span class="k">return</span> <span class="p">(</span><span class="n">tabular_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+                          <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+                          <span class="n">ps</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span>
+                          <span class="n">emb_drop</span><span class="o">=</span><span class="n">emb_drop</span><span class="p">,</span>
+                          <span class="n">y_range</span><span class="o">=</span><span class="n">y_range</span><span class="p">,</span>
+                          <span class="n">emb_szs</span><span class="o">=</span><span class="n">emb_szs</span><span class="p">,</span>
+                          <span class="n">metrics</span><span class="o">=</span><span class="n">exp_rmspe</span><span class="p">))</span>
+
+
+<span class="n">lrs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">wds</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">iter_count</span> <span class="o">=</span> <span class="mi">600</span> <span class="c1"># anything over 300 seems to work well.
+</span><span class="n">curr_wd</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span><span class="mi">500</span><span class="p">]</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.002</span><span class="p">,</span><span class="mf">0.02</span><span class="p">]</span>
+<span class="n">emb_drop</span> <span class="o">=</span> <span class="mf">0.04</span>
+
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'wd'</span><span class="p">:[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">7</span><span class="p">)]</span>
+<span class="p">}</span>
+
+<span class="n">parameter_combinations</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">.</span><span class="n">values</span><span class="p">()))):</span>
+
+  <span class="n">curr_wd</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="k">print</span><span class="p">(</span><span class="s">"curr_wd = {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+  <span class="n">learner</span> <span class="o">=</span> <span class="n">get_learner</span><span class="p">(</span><span class="n">emb_szs</span><span class="o">=</span><span class="n">emb_szs</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span><span class="p">,</span> <span class="n">ps</span> <span class="o">=</span> <span class="n">ps</span><span class="p">,</span> <span class="n">emb_drop</span> <span class="o">=</span> <span class="n">emb_drop</span><span class="p">)</span> 
+
+  <span class="n">learner</span><span class="p">.</span><span class="n">lr_find</span><span class="p">(</span><span class="n">wd</span><span class="o">=</span><span class="n">curr_wd</span><span class="p">,</span> <span class="n">num_it</span><span class="o">=</span><span class="n">iter_count</span><span class="p">)</span>
+
+  <span class="n">lrs</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">learner</span><span class="p">.</span><span class="n">recorder</span><span class="p">.</span><span class="n">lrs</span><span class="p">)</span>
+  <span class="n">losses</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">learner</span><span class="p">.</span><span class="n">recorder</span><span class="p">.</span><span class="n">losses</span><span class="p">)</span>
+
+  <span class="n">combination</span> <span class="o">=</span> <span class="p">[[</span><span class="n">curr_wd</span><span class="p">]]</span>
+  <span class="n">parameter_combinations</span> <span class="o">+=</span> <span class="n">combination</span>
+
+</code></pre></div></div>
+
+<p>Once we plot all out different combinations of model architectures, things become a little clearer.</p>
+
+<p><img src="/images/mealkit/grid_search_plot.png" alt="alt text" title="grid_search_plot" /></p>
+
+<p>Loss spikes earlier if we choose a model architecture with 0 weight decay. From the options a weight decay of <code class="language-plaintext highlighter-rouge">0.6</code> allows us to train a reasonably high learning rate with the lowest loss.</p>
+
+<p>While the learning rate that corresponds with the lowest level of loss is in the 1e-1 region, I won’t be using that learning rate. Instead I’ll be choosing the 1e-2 value for the learning rate. That’s a value on the safe side of explosion. This has been <a href="https://sgugger.github.io/how-do-you-find-a-good-learning-rate.html">shown</a> to help in training.</p>
+
+<p>Here’s our final model:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span> <span class="o">=</span> <span class="n">get_learner</span><span class="p">(</span><span class="n">emb_szs</span><span class="o">=</span><span class="n">emb_szs</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span><span class="mi">500</span><span class="p">],</span> <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.4</span><span class="p">],</span> <span class="n">emb_drop</span> <span class="o">=</span> <span class="mf">0.04</span><span class="p">)</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TabularModel(
+  (embeds): ModuleList(
+    (0): Embedding(146, 26)
+    (1): Embedding(78, 38)
+    (2): Embedding(52, 25)
+    (3): Embedding(3, 1)
+    (4): Embedding(3, 1)
+    (5): Embedding(15, 7)
+    (6): Embedding(5, 2)
+    (7): Embedding(52, 25)
+    (8): Embedding(9, 4)
+    (9): Embedding(4, 1)
+    (10): Embedding(31, 15)
+    (11): Embedding(4, 1)
+    (12): Embedding(13, 6)
+    (13): Embedding(53, 26)
+    (14): Embedding(32, 15)
+    (15): Embedding(2, 0)
+    (16): Embedding(146, 50)
+    (17): Embedding(3, 1)
+    (18): Embedding(3, 1)
+    (19): Embedding(3, 1)
+    (20): Embedding(3, 1)
+    (21): Embedding(3, 1)
+    (22): Embedding(3, 1)
+    (23): Embedding(4, 1)
+  )
+  (emb_drop): Dropout(p=0.04, inplace=False)
+  (bn_cont): BatchNorm1d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (layers): Sequential(
+    (0): Linear(in_features=256, out_features=1000, bias=True)
+    (1): ReLU(inplace=True)
+    (2): BatchNorm1d(1000, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=1000, out_features=500, bias=True)
+    (5): ReLU(inplace=True)
+    (6): BatchNorm1d(500, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (7): Dropout(p=0.4, inplace=False)
+    (8): Linear(in_features=500, out_features=1, bias=True)
+  )
+)
+</code></pre></div></div>
+
+<p>I’ll be using learning rate annealing here. That’s <a href="https://sgugger.github.io/the-1cycle-policy.html">shown to work well</a></p>
+
+<p><img src="/images/mealkit/5_cycles.png" alt="alt text" title="5_cycles" /></p>
+
+<p><img src="/images/mealkit/plot_loss.png" alt="alt text" title="plot_loss" /></p>
+
+<p>I’ll keep fitting more cycles until validation starts to increase.I’ll save the model after fitting for a few epochs. That way I get use the best model later for inference.</p>
+
+<p><img src="/images/mealkit/10_cycles.png" alt="alt text" title="10_cycles" />
+<img src="/images/mealkit/second_loss.png" alt="alt text" title="second_loss" /></p>
+
+<p>The best I was able to get was a validation loss of about 0.29 (rounding up).</p>
+
+<p>In a similar fashion to Martin Alacron’s <a href="https://www.martinalarcon.org/2018-12-31-b-water-pumps/">article</a> I’d like to compare the performance of the neural network to more traditional approaches.</p>
+
+<h1 id="other-approaches">Other Approaches</h1>
+
+<p>XGBoost, Random Forest Regressor and LightGBM. How do they perform relative to a neural network?</p>
+
+<p>I will be using more or less the same data that the neural network used. Fastai has excellent pre-processing methods already built in.</p>
+
+<p>However, Fastai’s categorical encoding is slightly odd. Fastai creates a dictionary from the categorical values to their encoding values. At inference time the categorical values <a href="https://forums.fast.ai/t/fastai-v2-code-walk-thru-8/55068">are swapped</a> for the encoding values.</p>
+
+<p>This is very smart and very useful. But it makes it slightly difficult to use Fastai pre-processed data with models outside of the Fastai ecosystem.</p>
+
+<p>To fix this, I created a simple script to convert the Fastai Tabular Data Bunch to data that we can feed to another model.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># inspired by https://www.martinalarcon.org/2018-12-31-b-water-pumps/
+</span><span class="k">class</span> <span class="nc">convert_tabular_learner_to_df</span><span class="p">():</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cat_names</span><span class="p">,</span> <span class="n">tabular_data_bunch</span><span class="p">):</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">cat_names</span> <span class="o">=</span> <span class="n">cat_names</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">tabular_data_bunch</span> <span class="o">=</span> <span class="n">tabular_data_bunch</span>
+
+  <span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="c1"># convert tabular data to dataframe
+</span>    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">list_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">tabular_data_bunch</span><span class="p">.</span><span class="n">train_ds</span><span class="p">)</span>
+    <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">list_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">tabular_data_bunch</span><span class="p">.</span><span class="n">valid_ds</span><span class="p">)</span>
+
+    <span class="c1"># label encode data
+</span>    <span class="n">encoder</span> <span class="o">=</span> <span class="n">BinaryEncoder</span><span class="p">(</span><span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">cat_names</span><span class="p">)</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">X_valid</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_valid</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span>
+
+  <span class="k">def</span> <span class="nf">list_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabular_learner</span><span class="p">):</span>
+
+    <span class="c1"># create X df
+</span>    <span class="n">x_vals</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">tabular_learner</span><span class="p">.</span><span class="n">x</span><span class="p">.</span><span class="n">codes</span><span class="p">,</span> <span class="n">tabular_learner</span><span class="p">.</span><span class="n">x</span><span class="p">.</span><span class="n">conts</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">tabular_learner</span><span class="p">.</span><span class="n">x</span><span class="p">.</span><span class="n">cat_names</span> <span class="o">+</span> <span class="n">tabular_learner</span><span class="p">.</span><span class="n">x</span><span class="p">.</span><span class="n">cont_names</span>
+    <span class="n">x_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x_vals</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+
+    <span class="c1"># reorder cols
+</span>    <span class="n">x_df</span> <span class="o">=</span> <span class="n">x_df</span><span class="p">[[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tabular_learner</span><span class="p">.</span><span class="n">inner_df</span><span class="p">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]]</span>
+
+    <span class="c1"># create y labels
+</span>    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">.</span><span class="n">obj</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tabular_learner</span><span class="p">.</span><span class="n">y</span><span class="p">]</span>
+    <span class="n">y_vals</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">"float64"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x_df</span><span class="p">,</span> <span class="n">y_vals</span>
+
+
+</code></pre></div></div>
+
+<p>Now we’ll throw a bunch of regressors at the data. Each using the default values. I’d like to know how the neural network performs relative to the standard approach of regression. Is it better? Worse?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="n">xgb</span>
+<span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="n">lgb</span>
+
+<span class="k">def</span> <span class="nf">rmspe_calc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="c1"># Compute Root Mean Square Percentage Error between two arrays.
+</span>    <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">square</span><span class="p">(((</span><span class="n">y_true</span> <span class="o">-</span> <span class="n">y_pred</span><span class="p">)</span> <span class="o">/</span> <span class="n">y_true</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="n">xgb</span><span class="p">.</span><span class="n">XGBRegressor</span><span class="p">(),</span>
+  <span class="n">lgb</span><span class="p">.</span><span class="n">LGBMRegressor</span><span class="p">(),</span>
+  <span class="n">RandomForestRegressor</span><span class="p">()</span>
+<span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">"Regressor"</span><span class="p">,</span> <span class="s">"RMSPE"</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+
+  <span class="n">name</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">__class__</span><span class="p">.</span><span class="n">__name__</span>
+  
+  <span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+  <span class="n">rmspe</span> <span class="o">=</span> <span class="n">rmspe_calc</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_valid</span><span class="p">))</span>
+  
+  <span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s">"Regressor"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> \
+     <span class="s">"RMSPE"</span><span class="p">:</span> <span class="n">rmspe</span><span class="o">*</span><span class="mi">100</span><span class="p">},</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="p">)</span>
+
+  <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Now for the results.</p>
+
+<p><img src="/images/mealkit/comparison_traditional_methods_plot.png" alt="alt text" title="comparison_traditional_methods_plot" /></p>
+
+<p>On this occasion it seems that the other models outperformed the neural network. Despite this, deep learning with category embeddings are very popular on <a href="https://www.kaggle.com/c/rossmann-store-sales/discussion/17974">kaggle</a>. I may need to vary the amount of dropout and weight decay that I’m using. But for now RandomForestRegressor is the best model in terms of RMSPE.</p>
+
+<h1 id="improvements">Improvements</h1>
+
+<ol>
+  <li>Model Architecture. I’d like to vary more hyperparamters, while avoiding a costly grid search. This could be the single most useful thing in improving the model further.</li>
+</ol>
+
+<p>Fastai explictly warns you to not reduce parameters to avoid overfitting. Instead use dropout and weight decay liberally.</p>
+
+<p>I’ve tried to do that here. But I still ended up overfitting slightly. Varying hyperparamters could probably assist in reducing overifitting further still.</p>
+
+<p>Specifically, I could probably benefit from varying dropout. I’d like to vary the dropout for the embedding layer and more importantly the probability of dropout.</p>
+
+<p><a href="https://scholarworks.uark.edu/cgi/viewcontent.cgi?referer=https://www.google.com/&amp;httpsredir=1&amp;article=1028&amp;context=csceuht">This paper</a> speaks to the effectiveness of dropout in large <em>deep</em> neural networks. Perhaps making the network deeper and applying dropout more liberally could improve the performance?</p>
+
+<p>Gridsearch could be implemented randomly. This is called random search. I could do this using <a href="https://skorch.readthedocs.io/en/stable/user/quickstart.html#grid-search">skorch</a> potentially.</p>
+
+<ol>
+  <li>
+    <p>I’d also like to try Prophet from Facebook. It’s an open source tool for time series forecasting. I’d like to see how that performs relative to this neural network.</p>
+  </li>
+  <li>
+    <p>Blending. A first place solution on kaggle used a neural network blended with a lightGBM model. This could be promising for future research.</p>
+  </li>
+</ol>
+
+<p>The full code for this is available on <a href="https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/medium_food_demand_prediction_mealkit.ipynb">Github</a></p>
+
+:ET

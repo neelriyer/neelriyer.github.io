@@ -1,0 +1,543 @@
+I"�<p>A New Hope for the Deleted Scenes.</p>
+
+<p>I’m a huge Star Wars fan. And like a lot of Star Wars fans I’ve been getting into <a href="https://www.imdb.com/title/tt0458290/">Star Wars: The Clone Wars</a> on Cartoon Network and Disney+. It’s a phenomenal show.</p>
+
+<p>But I’m always annoyed by the drop in video quality when I watch the older stuff. For example, here are the deleted scenes from  Star Wars: Episode IV: A New Hope (1977). This was the very first Star Wars to be created.</p>
+
+<iframe src="https://www.youtube.com/embed/f00IkrWvur4?start=159" width="560" height="315" frameborder="0" allowfullscreen="">
+</iframe>
+
+<p>What are those weird black specs that keep popping up? They really ruin the experience. Small wonder why these are the <em>deleted</em> scenes.</p>
+
+<p>Apparently those weird specs are called <a href="https://en.wikipedia.org/wiki/Cue_mark">cue marks</a>. They’re marks that come from scratches on film. Star Wars is a fantastic series, but it’s also fantastically <em>old</em>.</p>
+
+<p>Deep Learning has recently been used for video restoration. The results have been very promising. <a href="https://github.com/jantic/DeOldify">Deoldify</a> for example, allows users to colorize old videos and images. <a href="https://www.youtube.com/watch?v=P0fMwA3X5KI">NVIDIA’s Noise2Noise model</a> allows people to restore old images to their former glory.</p>
+
+<p>But so far there’s nothing I know of that can specifically remove ‘cue marks’ and grainy spots from old film. So let’s build it!</p>
+
+<h1 id="creating-the-dataset">Creating the Dataset</h1>
+
+<p>Creating the dataset was tricky - but still doable. Here’s what I did. I downloaded high quality videos into from youtube. Then I ruined them. I added black specs and reduced the resolution of the video. <a href="https://ffmpeg.org/">Ffmpeg</a> was very useful in doing this.</p>
+
+<p>First we’ll download the video.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>youtube-dl <span class="nt">--format</span> best <span class="nt">-o</span> seinfeld.mp4 https://www.youtube.com/watch?v<span class="o">=</span>nEAO60ON7yo 
+</code></pre></div></div>
+
+<p>I’m using this video. I’m using a clip from <a href="https://en.wikipedia.org/wiki/Seinfeld">seinfeld</a>. Cause why not?</p>
+
+<iframe src="https://www.youtube.com/embed/nEAO60ON7yo " width="560" height="315" frameborder="0" allowfullscreen="">
+</iframe>
+
+<p>Then we’ll need to ruin it. To do this I downloaded a grainy film overlay from youtube. Then I overlayed the video using ffmpeg with the blend setting set to <a href="https://ffmpeg.org/ffmpeg-filters.html#blend-1"><code class="language-plaintext highlighter-rouge">softlight</code></a>. Finding the right blend setting took a lot of trial and error. The ffmpeg <a href="https://ffmpeg.org/documentation.html">docs</a> don’t have a lot of examples.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># download grain video</span>
+<span class="nb">rm</span> <span class="nt">-Rf</span> build
+<span class="nv">YT_GRAIN_OVERLAY</span><span class="o">=</span><span class="s2">"https://www.youtube.com/watch?v=J_MZb7qTenE"</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> build
+youtube-dl <span class="s2">"</span><span class="nv">$YT_GRAIN_OVERLAY</span><span class="s2">"</span> <span class="nt">-f</span> mp4 <span class="nt">--output</span> <span class="s2">"build/grain.mp4"</span>
+
+<span class="c"># invert colors</span>
+ffmpeg <span class="nt">-loglevel</span> quiet <span class="nt">-y</span> <span class="nt">-i</span> <span class="s2">"build/grain.mp4"</span> <span class="nt">-vf</span> negate <span class="s1">'color_inverted.mp4'</span>
+
+<span class="c"># overlay video</span>
+ffmpeg <span class="se">\</span>
+	<span class="nt">-y</span> <span class="se">\</span>
+	<span class="nt">-loglevel</span> quiet <span class="se">\</span>
+	<span class="nt">-i</span> <span class="s2">"seinfeld.mp4"</span> <span class="se">\</span>
+	<span class="nt">-i</span> <span class="s2">"color_inverted.mp4"</span> <span class="se">\</span>
+	<span class="nt">-filter_complex</span> <span class="s2">"[1:v][0:v]blend=all_mode='softlight':all_opacity=1"</span> <span class="se">\</span>
+	<span class="s2">"output_test.mp4"</span>
+</code></pre></div></div>
+
+<p>Now we have two videos. One in perfect quality and another in shitty quality.</p>
+
+<iframe src="https://www.youtube.com/embed/l8Z3T9w0yBY " width="560" height="315" frameborder="0" allowfullscreen="">
+</iframe>
+
+<iframe src="https://www.youtube.com/embed/MaIDJO5ar1c " width="560" height="315" frameborder="0" allowfullscreen="">
+</iframe>
+
+<p>Now we’ll extract frames from each video. Initially I adopted a naive approach for doing this. Where I would do through the video in python and scrape each frame individually. But that took too long.</p>
+
+<p>We can use multi-processing here to really speed things up. This was adapted from <a href="https://gist.github.com/HaydenFaulkner/54318fd3e9b9bdb66c5440c44e4e08b8#file-video_to_frames-py">Hayden Faulker’s</a> script.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># from https://gist.github.com/HaydenFaulkner/54318fd3e9b9bdb66c5440c44e4e08b8#file-video_to_frames-py
+</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="k">def</span> <span class="nf">print_progress</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s">''</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">''</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bar_length</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+	<span class="s">"""
+	Call in a loop to create standard out progress bar
+
+	:param iteration: current iteration
+	:param total: total iterations
+	:param prefix: prefix string
+	:param suffix: suffix string
+	:param decimals: positive number of decimals in percent complete
+	:param bar_length: character length of bar
+	:return: None
+	"""</span>
+
+	<span class="n">format_str</span> <span class="o">=</span> <span class="s">"{0:."</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">decimals</span><span class="p">)</span> <span class="o">+</span> <span class="s">"f}"</span>  <span class="c1"># format the % done number string
+</span>	<span class="n">percents</span> <span class="o">=</span> <span class="n">format_str</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)))</span>  <span class="c1"># calculate the % done
+</span>	<span class="n">filled_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">bar_length</span> <span class="o">*</span> <span class="n">iteration</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)))</span>  <span class="c1"># calculate the filled bar length
+</span>	<span class="n">bar</span> <span class="o">=</span> <span class="s">'#'</span> <span class="o">*</span> <span class="n">filled_length</span> <span class="o">+</span> <span class="s">'-'</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_length</span> <span class="o">-</span> <span class="n">filled_length</span><span class="p">)</span>  <span class="c1"># generate the bar string
+</span>	<span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\r</span><span class="s">%s |%s| %s%s %s'</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">percents</span><span class="p">,</span> <span class="s">'%'</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)),</span>  <span class="c1"># write out the bar
+</span>	<span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>  <span class="c1"># flush to stdout
+</span>
+
+<span class="k">def</span> <span class="nf">extract_frames</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">frames_dir</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+	<span class="s">"""
+	Extract frames from a video using OpenCVs VideoCapture
+
+	:param video_path: path of the video
+	:param frames_dir: the directory to save the frames
+	:param overwrite: to overwrite frames that already exist?
+	:param start: start frame
+	:param end: end frame
+	:param every: frame spacing
+	:return: count of images saved
+	"""</span>
+
+	<span class="n">video_path</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># make the paths OS (Windows) compatible
+</span>	<span class="n">frames_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">frames_dir</span><span class="p">)</span>  <span class="c1"># make the paths OS (Windows) compatible
+</span>
+	<span class="n">video_dir</span><span class="p">,</span> <span class="n">video_filename</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># get the video path and filename from the path
+</span>
+	<span class="k">assert</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># assert the video file exists
+</span>
+	<span class="n">capture</span> <span class="o">=</span> <span class="n">cv2</span><span class="p">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># open the video using OpenCV
+</span>
+	<span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if start isn't specified lets assume 0
+</span>		<span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">if</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if end isn't specified assume the end of the video
+</span>		<span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">capture</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="p">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">))</span>
+
+	<span class="n">capture</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>  <span class="c1"># set the starting frame of the capture
+</span>	<span class="n">frame</span> <span class="o">=</span> <span class="n">start</span>  <span class="c1"># keep track of which frame we are up to, starting from start
+</span>	<span class="n">while_safety</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># a safety counter to ensure we don't enter an infinite while loop (hopefully we won't need it)
+</span>	<span class="n">saved_count</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># a count of how many frames we have saved
+</span>
+	<span class="k">while</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>  <span class="c1"># lets loop through the frames until the end
+</span>
+		<span class="n">_</span><span class="p">,</span> <span class="n">image</span> <span class="o">=</span> <span class="n">capture</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># read an image from the capture
+</span>
+		<span class="k">if</span> <span class="n">while_safety</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>  <span class="c1"># break the while if our safety maxs out at 500
+</span>			<span class="k">break</span>
+
+		<span class="c1"># sometimes OpenCV reads None's during a video, in which case we want to just skip
+</span>		<span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c1"># if we get a bad return flag or the image we read is None, lets not save
+</span>			<span class="n">while_safety</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># add 1 to our while safety, since we skip before incrementing our frame variable
+</span>			<span class="k">continue</span>  <span class="c1"># skip
+</span>
+		<span class="k">if</span> <span class="n">frame</span> <span class="o">%</span> <span class="n">every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if this is a frame we want to write out based on the 'every' argument
+</span>			<span class="n">while_safety</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># reset the safety count
+</span>			<span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">frames_dir</span><span class="p">,</span> <span class="s">"{:010d}.jpg"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>  <span class="c1"># create the save path
+</span>			<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">overwrite</span><span class="p">:</span>  <span class="c1"># if it doesn't exist or we want to overwrite anyways
+</span>				<span class="n">cv2</span><span class="p">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>  <span class="c1"># save the extracted image
+</span>				<span class="n">saved_count</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># increment our counter by one
+</span>
+		<span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># increment our frame count
+</span>
+	<span class="n">capture</span><span class="p">.</span><span class="n">release</span><span class="p">()</span>  <span class="c1"># after the while has finished close the capture
+</span>
+	<span class="k">return</span> <span class="n">saved_count</span>  <span class="c1"># and return the count of the images we saved
+</span>
+
+<span class="k">def</span> <span class="nf">video_to_frames</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">frames_dir</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+	<span class="s">"""
+	Extracts the frames from a video using multiprocessing
+
+	:param video_path: path to the video
+	:param frames_dir: directory to save the frames
+	:param overwrite: overwrite frames if they exist?
+	:param every: extract every this many frames
+	:param chunk_size: how many frames to split into chunks (one chunk per cpu core process)
+	:return: path to the directory where the frames were saved, or None if fails
+	"""</span>
+
+	<span class="n">video_path</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># make the paths OS (Windows) compatible
+</span>	<span class="n">frames_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">frames_dir</span><span class="p">)</span>  <span class="c1"># make the paths OS (Windows) compatible
+</span>
+	<span class="n">video_dir</span><span class="p">,</span> <span class="n">video_filename</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># get the video path and filename from the path
+</span>
+	<span class="c1"># make directory to save frames, its a sub dir in the frames_dir with the video name
+</span>	<span class="c1"># os.makedirs(os.path.join(frames_dir, video_filename), exist_ok=True)
+</span>
+	<span class="n">capture</span> <span class="o">=</span> <span class="n">cv2</span><span class="p">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># load the video
+</span>	<span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">capture</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="p">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">))</span>  <span class="c1"># get its total frame count
+</span>	<span class="n">capture</span><span class="p">.</span><span class="n">release</span><span class="p">()</span>  <span class="c1"># release the capture straight away
+</span>
+	<span class="k">if</span> <span class="n">total</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># if video has no frames, might be and opencv error
+</span>		<span class="k">print</span><span class="p">(</span><span class="s">"Video has no frames. Check your OpenCV + ffmpeg installation, can't read videos!!!</span><span class="se">\n</span><span class="s">"</span>
+			  <span class="s">"You may need to install OpenCV by source not pip"</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">None</span>  <span class="c1"># return None
+</span>
+	<span class="n">frame_chunks</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">chunk_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)]</span>  <span class="c1"># split the frames into chunk lists
+</span>	<span class="n">frame_chunks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">frame_chunks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">total</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># make sure last chunk has correct end frame
+</span>
+	<span class="n">prefix_str</span> <span class="o">=</span> <span class="s">"Extracting frames from {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">video_filename</span><span class="p">)</span>  <span class="c1"># a prefix string to be printed in progress bar
+</span>
+	<span class="c1"># execute across multiple cpu cores to speed up processing, get the count automatically
+</span>	<span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">multiprocessing</span><span class="p">.</span><span class="n">cpu_count</span><span class="p">())</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+
+		<span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">extract_frames</span><span class="p">,</span> <span class="n">video_path</span><span class="p">,</span> <span class="n">frames_dir</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">every</span><span class="p">)</span>
+				   <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frame_chunks</span><span class="p">]</span>  <span class="c1"># submit the processes: extract_frames(...)
+</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">)):</span>  <span class="c1"># as each process completes
+</span>			<span class="n">print_progress</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_chunks</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix_str</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">'Complete'</span><span class="p">)</span>  <span class="c1"># print it's progress
+</span>
+	<span class="k">return</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">frames_dir</span><span class="p">,</span> <span class="n">video_filename</span><span class="p">)</span>  <span class="c1"># when done return the directory containing the frames
+</span>
+</code></pre></div></div>
+
+<p>Great. Now we have two datasets. One of crappy quality images (taken from the ruined video) and one of good quality images (taken from the high quality video). To make the crappy images crappier, I’ll downscale them (this isn’t a necessary step though).</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">resize_one</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+
+	<span class="n">targ_sz</span> <span class="o">=</span> <span class="n">resize_to</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">use_min</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+	<span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">targ_sz</span><span class="p">,</span> <span class="n">resample</span> <span class="o">=</span> <span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="n">BILINEAR</span><span class="p">).</span><span class="n">convert</span><span class="p">(</span><span class="s">'RGB'</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">img</span>
+</code></pre></div></div>
+
+<p>This is what the crappy and normal images looked like now. Side note: this is a great scene from seinfeld.</p>
+
+<p><img src="/images/star_wars/crappy_vs_clean_comparison.png" alt="alt text" />
+<img src="/images/star_wars/crappy_vs_clean_comparison1.png" alt="alt text" /></p>
+
+<p>A quick check shows that we have a dataset of about <code class="language-plaintext highlighter-rouge">10014</code> files. Pretty good.</p>
+
+<h1 id="neural-network">Neural Network</h1>
+
+<p>Let’s make the most of those <code class="language-plaintext highlighter-rouge">10014</code> files by using transforms.</p>
+
+<p>I added horizontal and vertical flips, zoom changes, lighting changes and rotation changes. With Fastai this is really easy to do.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bs</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span><span class="mi">128</span>
+<span class="c1"># bs,size=8,480
+</span><span class="n">arch</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">resnet34</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">ImageImageList</span><span class="p">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_lr</span><span class="p">).</span><span class="n">split_by_rand_pct</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">tfms</span> <span class="o">=</span> <span class="n">get_transforms</span><span class="p">(</span><span class="n">do_flip</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">flip_vert</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">max_zoom</span> <span class="o">=</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">max_rotate</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+	<span class="k">if</span><span class="p">(</span><span class="n">size</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+	  <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">src</span><span class="p">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">path_hr</span><span class="o">/</span><span class="n">x</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+			<span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tfms</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+			<span class="p">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">).</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">,</span> <span class="n">do_y</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+	<span class="k">else</span><span class="p">:</span>
+	  <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">src</span><span class="p">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">path_hr</span><span class="o">/</span><span class="n">x</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+			<span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tfms</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+			<span class="p">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">).</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">,</span> <span class="n">do_y</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+	<span class="n">data</span><span class="p">.</span><span class="n">c</span> <span class="o">=</span> <span class="mi">3</span>
+	<span class="k">return</span> <span class="n">data</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span><span class="n">size</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>Here are some of the image transforms.</p>
+
+<p><img src="/images/star_wars/transforms.png" alt="alt text" /></p>
+
+<p>Not bad!</p>
+
+<p>We’ll use the <a href="https://www.fast.ai/2019/05/03/decrappify/">NoGAN network</a> pioneered by fastai and jason antic on this data. This code was inspired by <a href="https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb">lesson 7</a> of the fastai course.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># taken from: https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb
+</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">valid_ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">].</span><span class="n">data</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">stack</span><span class="p">([</span><span class="n">t</span><span class="p">,</span><span class="n">t</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">gram_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+	<span class="n">n</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">view</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">x</span><span class="p">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">w</span><span class="p">)</span>
+
+<span class="n">base_loss</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">l1_loss</span>
+
+<span class="n">vgg_m</span> <span class="o">=</span> <span class="n">vgg16_bn</span><span class="p">(</span><span class="bp">True</span><span class="p">).</span><span class="n">features</span><span class="p">.</span><span class="n">cuda</span><span class="p">().</span><span class="nb">eval</span><span class="p">()</span>
+<span class="n">requires_grad</span><span class="p">(</span><span class="n">vgg_m</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+<span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">(</span><span class="n">vgg_m</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">nn</span><span class="p">.</span><span class="n">MaxPool2d</span><span class="p">)]</span>
+<span class="n">blocks</span><span class="p">,</span> <span class="p">[</span><span class="n">vgg_m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">FeatureLoss</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_feat</span><span class="p">,</span> <span class="n">layer_ids</span><span class="p">,</span> <span class="n">layer_wgts</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m_feat</span> <span class="o">=</span> <span class="n">m_feat</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">loss_features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">.</span><span class="n">m_feat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">layer_ids</span><span class="p">]</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">hooks</span> <span class="o">=</span> <span class="n">hook_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">loss_features</span><span class="p">,</span> <span class="n">detach</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">wgts</span> <span class="o">=</span> <span class="n">layer_wgts</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">metric_names</span> <span class="o">=</span> <span class="p">[</span><span class="s">'pixel'</span><span class="p">,]</span> <span class="o">+</span> <span class="p">[</span><span class="s">f'feat_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_ids</span><span class="p">))</span>
+			  <span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s">f'gram_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_ids</span><span class="p">))]</span>
+
+	<span class="k">def</span> <span class="nf">make_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">m_feat</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+		<span class="k">return</span> <span class="p">[(</span><span class="n">o</span><span class="p">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">if</span> <span class="n">clone</span> <span class="k">else</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">hooks</span><span class="p">.</span><span class="n">stored</span><span class="p">]</span>
+	
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+		<span class="n">out_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">make_features</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+		<span class="n">in_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">make_features</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">feat_losses</span> <span class="o">=</span> <span class="p">[</span><span class="n">base_loss</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">target</span><span class="p">)]</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">feat_losses</span> <span class="o">+=</span> <span class="p">[</span><span class="n">base_loss</span><span class="p">(</span><span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span><span class="o">*</span><span class="n">w</span>
+							 <span class="k">for</span> <span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">in_feat</span><span class="p">,</span> <span class="n">out_feat</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">wgts</span><span class="p">)]</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">feat_losses</span> <span class="o">+=</span> <span class="p">[</span><span class="n">base_loss</span><span class="p">(</span><span class="n">gram_matrix</span><span class="p">(</span><span class="n">f_in</span><span class="p">),</span> <span class="n">gram_matrix</span><span class="p">(</span><span class="n">f_out</span><span class="p">))</span><span class="o">*</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">5e3</span>
+							 <span class="k">for</span> <span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">in_feat</span><span class="p">,</span> <span class="n">out_feat</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">wgts</span><span class="p">)]</span>
+		<span class="bp">self</span><span class="p">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">metric_names</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">feat_losses</span><span class="p">))</span>
+		<span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">feat_losses</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="p">.</span><span class="n">hooks</span><span class="p">.</span><span class="n">remove</span><span class="p">()</span>
+
+<span class="n">feat_loss</span> <span class="o">=</span> <span class="n">FeatureLoss</span><span class="p">(</span><span class="n">vgg_m</span><span class="p">,</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>I trained the model on <a href="https://colab.research.google.com/">google colab’s free gpus</a>. They’re a great resource and I can’t believe they are free.</p>
+
+<h1 id="training">Training</h1>
+
+<p>The interesting thing that fastai <a href="https://www.youtube.com/watch?v=9spwoDYwW_I">recommends</a> is increasing the size of your images gradually.</p>
+
+<p>So at first you train on small size images, then you upscale your images and retrain on the larger images. It saves you a lot of time. Pretty smart.</p>
+
+<p>First we’ll train on images of size 128x128. Because the images are so small I can up the batch size to 64.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+
+<span class="n">learn</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">gc</span><span class="p">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="n">wd</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">unet_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="n">wd</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">feat_loss</span><span class="p">,</span> <span class="n">callback_fns</span><span class="o">=</span><span class="n">LossMetrics</span><span class="p">,</span><span class="n">blur</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">norm_type</span><span class="o">=</span><span class="n">NormType</span><span class="p">.</span><span class="n">Weight</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I picked a learning rate of <code class="language-plaintext highlighter-rouge">1e-2</code> for this. I wanted something aggressive, but still on the safe side of explosion. This has been <a href="https://sgugger.github.io/how-do-you-find-a-good-learning-rate.html">shown</a> to be very useful.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-2</span>
+
+<span class="k">def</span> <span class="nf">do_fit</span><span class="p">(</span><span class="n">save_name</span><span class="p">,</span> <span class="n">lrs</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="n">lr</span><span class="p">),</span> <span class="n">pct_start</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">cycles</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+	<span class="n">learn</span><span class="p">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span> <span class="n">lrs</span><span class="p">,</span> <span class="n">pct_start</span><span class="o">=</span><span class="n">pct_start</span><span class="p">)</span>
+	<span class="n">learn</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_name</span><span class="p">)</span>
+	<span class="n">learn</span><span class="p">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">imgsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="n">do_fit</span><span class="p">(</span><span class="s">'1a'</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="n">lr</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><img src="/images/star_wars/train_loss.png" alt="alt text" /></p>
+
+<p>The network will print the results during training. The input is on the left, the prediction in the middle and the target on the right. The results look very promising!</p>
+
+<p><img src="/images/star_wars/first_train.png" alt="alt text" /></p>
+
+<p>I resized and trained again. And again. Every time I make the resize slightly larger than it was previously. I moved from 128x128 to 480x480 to the original size of the video frames.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">learn</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<span class="n">learn</span><span class="p">.</span><span class="n">freeze</span><span class="p">()</span>
+<span class="n">gc</span><span class="p">.</span><span class="n">collect</span><span class="p">()</span>
+
+<span class="n">learn</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">'2b'</span><span class="p">)</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-6</span>
+
+<span class="n">do_fit</span><span class="p">(</span><span class="s">'3b'</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">),</span> <span class="n">pct_start</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">cycles</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/images/star_wars/final_train.png" alt="alt text" /></p>
+
+<p>This was the final train. For this I used <code class="language-plaintext highlighter-rouge">pct_start = 0.3</code>. I wanted to learning rate to reduce 70% of the time during training. I prefer a lower learning rate when fine tuning models. The results from this piece of training look really good.</p>
+
+<p><img src="/images/star_wars/final_results.png" alt="alt text" /></p>
+
+<h1 id="inference-applying-to-star-wars">Inference: Applying to Star Wars</h1>
+
+<p>Once this network had trained, I ran inference. This was more involved than I originally thought.</p>
+
+<p>I had to download the Star Wars deleted scenes (using <a href="https://github.com/ytdl-org/youtube-dl">youtube-dl</a>) and then extract all the frames in this video. I extracted the frames using the same method previously.</p>
+
+<p><img src="/images/star_wars/star_wars_frame.png" alt="alt text" /></p>
+
+<p>Then I had to run inference from the learner on each individual frame of the video. That takes a long time.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># learn = load_learner("/content/drive/My Drive/video_restorer/")
+# learn = load_learner("/content/drive/My Drive/video_restorer3/")
+</span><span class="n">learn</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s">"/content/drive/My Drive/video_restorer4/"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">run_inference_images</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+
+  <span class="n">img</span> <span class="o">=</span> <span class="n">open_image</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+  <span class="n">p</span><span class="p">,</span><span class="n">img_hr</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">learn</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+  <span class="c1"># Image(img_hr).save(dest)
+</span>  <span class="c1"># plt.figure(figsize=(25,25))
+</span>  <span class="n">Image</span><span class="p">(</span><span class="n">img_hr</span><span class="p">).</span><span class="n">show</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="mi">25</span><span class="p">))</span>
+  <span class="n">plt</span><span class="p">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">bbox_inches</span> <span class="o">=</span> <span class="s">'tight'</span><span class="p">,</span> <span class="n">pad_inches</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">plt</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">scale_to_square</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+  <span class="c1"># a simple stretch to fit a square really makes a big difference in rendering quality/consistency.
+</span>  <span class="c1"># I've tried padding to the square as well (reflect, symetric, constant, etc).  Not as good!
+</span>  <span class="n">targ_sz</span> <span class="o">=</span> <span class="p">(</span><span class="n">targ</span><span class="p">,</span> <span class="n">targ</span><span class="p">)</span>
+  <span class="n">orig</span> <span class="o">=</span> <span class="n">orig</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">targ_sz</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="n">BILINEAR</span><span class="p">)</span>
+  <span class="n">orig</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">dest</span>
+
+<span class="k">def</span> <span class="nf">unsquare</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">orig</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+  <span class="n">targ_sz</span> <span class="o">=</span> <span class="n">orig</span><span class="p">.</span><span class="n">size</span>
+  <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">targ_sz</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="n">BILINEAR</span><span class="p">)</span>
+  <span class="n">image</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">dest</span>
+
+
+<span class="k">def</span> <span class="nf">adjust_brightness</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+
+  <span class="n">enhancer</span> <span class="o">=</span> <span class="n">PIL</span><span class="p">.</span><span class="n">ImageEnhance</span><span class="p">.</span><span class="n">Brightness</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+  <span class="n">img</span> <span class="o">=</span> <span class="n">enhancer</span><span class="p">.</span><span class="n">enhance</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+  <span class="n">os</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+  <span class="n">img</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">img</span>
+
+</code></pre></div></div>
+
+<p>I added some hacks here.</p>
+
+<p>First, I added a render factor. This was taken from <a href="https://github.com/jantic/DeOldify">Deoldify</a>. The idea is that I downscale the image and convert it to a square. Then I run inference on that image. The model is more receptive to images that are square shaped. This has been <a href="https://github.com/jantic/DeOldify#stuff-that-should-probably-be-in-a-paper">shown</a> to reduce ‘glitches’ considerably.</p>
+
+<p>After running inference on the square shaped image I convert it back to its original shape. I found this to reduce glitches and generally result in a smoother video output. I set the <code class="language-plaintext highlighter-rouge">render_factor</code> to <code class="language-plaintext highlighter-rouge">40</code>, although it can be higher if we want higher res output. I may need a larger RAM for that though.</p>
+
+<p>Second, I adjust brightness. This isn’t really a hack. Seems like more of a mistake that I’m correctly manually. For some reason the model inference results in images that are very low in brightness.</p>
+
+<p>I suspect it’s something to with the <code class="language-plaintext highlighter-rouge">softlight</code> filter we used for ffmpeg earlier. But I’m having to manually correct that here. I’ll need to look into this further.</p>
+
+<p>Third, I’m using matplotlib’s save functionality. I found fastai’s <a href="https://docs.fast.ai/vision.image.html#Image.save">save image</a> functionality to give me very weird results (luke clothes were fluroscent blue and red). But strangely matplotlib’s save functionality gives me okay results. I’ll need to look into this. I suspect that I may be loosing quality on the image because I’m using matplotlib’s <code class="language-plaintext highlighter-rouge">savefig</code> functionality.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">PIL</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">tqdm.notebook</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">render_factor</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="s">'imagepaths.txt'</span><span class="p">):</span>
+  <span class="n">os</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="s">'imagepaths.txt'</span><span class="p">)</span>
+
+<span class="err">!</span><span class="n">rm</span> <span class="o">-</span><span class="n">Rf</span> <span class="n">seinfeld_inference</span><span class="o">/</span><span class="n">high_res</span><span class="o">/</span>
+<span class="err">!</span><span class="n">mkdir</span> <span class="n">seinfeld_inference</span><span class="o">/</span><span class="n">high_res</span><span class="o">/</span>
+
+<span class="k">def</span> <span class="nf">write_to_txt</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
+  <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">"imagepaths.txt"</span><span class="p">,</span> <span class="s">"a"</span><span class="p">)</span> 
+  <span class="n">write</span> <span class="o">=</span> <span class="s">"file '"</span> <span class="o">+</span> <span class="n">dest</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s">"'"</span> <span class="o">+</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span>
+  <span class="nb">file</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">write</span><span class="p">)</span> 
+  <span class="nb">file</span><span class="p">.</span><span class="n">close</span><span class="p">()</span> 
+
+<span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">.</span><span class="n">glob</span><span class="p">(</span><span class="s">'seinfeld_inference/images/*.*g'</span><span class="p">),</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="mi">300</span><span class="p">:]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)):</span>
+
+  <span class="c1"># file = random.choice(files)
+</span>  <span class="nb">file</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+  <span class="n">dest</span> <span class="o">=</span> <span class="s">'seinfeld_inference/high_res/'</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">basename</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+  <span class="c1"># scale to square
+</span>  <span class="n">new_path</span> <span class="o">=</span> <span class="n">scale_to_square</span><span class="p">(</span><span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">),</span> <span class="n">render_factor</span><span class="o">*</span><span class="mi">16</span><span class="p">,</span> <span class="n">dest</span> <span class="o">=</span> <span class="n">dest</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">'_square.jpg'</span><span class="p">)</span>
+
+  <span class="c1"># run inference
+</span>  <span class="n">run_inference_images</span><span class="p">(</span><span class="n">new_path</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+
+  <span class="c1"># unsquare
+</span>  <span class="n">dest</span> <span class="o">=</span> <span class="n">unsquare</span><span class="p">(</span><span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span> <span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">),</span> <span class="n">dest</span> <span class="o">=</span> <span class="n">dest</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">'_unsquared.jpg'</span><span class="p">)</span>
+
+  <span class="c1"># write to txt
+</span>  <span class="n">write_to_txt</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+
+  <span class="c1"># increase brightness
+</span>  <span class="n">adjust_brightness</span><span class="p">(</span><span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span><span class="n">factor</span> <span class="o">=</span> <span class="mf">1.75</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>Here’s some of the outputs from the model.</p>
+
+<p><img src="/images/star_wars/model_inference.png" alt="alt text" /> 
+<img src="/images/star_wars/model_inference2.png" alt="alt text" />
+<img src="/images/star_wars/model_inference3.png" alt="alt text" /></p>
+
+<p>Then I had to stitch all these frames together to create a video. To do that I initially used ffmpeg but I ended up overloading my RAM. Instead I used opencv2’s <code class="language-plaintext highlighter-rouge">VideoWriter</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">clean</span> <span class="o">=</span> <span class="s">'seinfeld_inference.mp4'</span>
+<span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="p">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">clean</span><span class="p">)</span>
+<span class="n">clean_fps</span> <span class="o">=</span> <span class="n">cap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="p">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">clean_fps</span><span class="p">)</span>
+
+<span class="n">pathOut</span> <span class="o">=</span> <span class="s">'video.mp4'</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">os</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pathOut</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+  <span class="k">pass</span>
+
+<span class="n">fps</span> <span class="o">=</span> <span class="n">clean_fps</span>
+<span class="n">frame_array</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">.</span><span class="n">glob</span><span class="p">(</span><span class="s">'seinfeld_inference/high_res/*_unsquared.*g'</span><span class="p">),</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="n">split</span><span class="p">(</span><span class="s">'_'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)):</span>
+	<span class="n">filename</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+	<span class="c1"># reading each files
+</span>	<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="p">.</span><span class="n">imread</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+	<span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">img</span><span class="p">.</span><span class="n">shape</span>
+	<span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">)</span>
+	
+	<span class="c1"># inserting the frames into an image array
+</span>	<span class="n">frame_array</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="p">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">pathOut</span><span class="p">,</span><span class="n">cv2</span><span class="p">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s">'MP4V'</span><span class="p">),</span> <span class="n">fps</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame_array</span><span class="p">)):</span>
+	<span class="c1"># writing to a image array
+</span>	<span class="n">out</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">frame_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="n">out</span><span class="p">.</span><span class="n">release</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Here is the final output.</p>
+
+<iframe src="https://www.youtube.com/embed/2BcoLsuJMP0" width="560" height="315" frameborder="0" allowfullscreen="">
+</iframe>
+
+<p>And the original video</p>
+
+<iframe src="https://www.youtube.com/embed/f00IkrWvur4?start=159" width="560" height="315" frameborder="0" allowfullscreen="">
+</iframe>
+
+<h1 id="improvements">Improvements</h1>
+
+<p>1) As you can see there is room for improvement. The sky needs a bit more work. But I like the vibrancy of the background. That is an interesting (and completely unplanned) effect. The goal was to remove the ‘cue marks’ (annoying black specs) from the video. I think its done okay in that respect - but there’s still more to do.</p>
+
+<p>I like how the network has intensified the sun though. It completely changes the the scene between Luke and Biggs when Biggs says he’s joining the rebellion.</p>
+
+<p><img src="/images/star_wars/a_new_sun.png" alt="alt text" />
+<img src="/images/star_wars/no_sun.png" alt="alt text" /></p>
+
+<p>2) There’s a weird horizontal bar line that shows up around the <code class="language-plaintext highlighter-rouge">22</code> second mark. I didn’t add any horizontal bars in the training set so it’s completely understandable that the network didn’t remove that at all. But in the future I’ll need to add more horizontal bars to my training set to fix these.</p>
+
+<p>3) I’m also thinking of doing more super-resolution on the video. It would be nice to show a young Luke Skywalker in high quality. To do that I could resize the images before training further. I’ve already downscaled the image, but potentially I could downscale it further.</p>
+
+<p>Alternatively, to achieve superres I could potentially use a ready-made upscaler such as <a href="https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper">VapourSynth</a>. This is probably the best option as the original video is already in poor quality.</p>
+
+<p>4) Inference is also an issue. It tends to overload memory and crash. The result is that <code class="language-plaintext highlighter-rouge">42</code> seconds is the longest I could get for this video. I’m not completely sure how to solve this problem. But I’ll need to solve it if I’m going to be using this further.</p>
+
+<p>So much to do!</p>
+
+:ET
