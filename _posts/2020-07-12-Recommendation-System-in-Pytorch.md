@@ -14,7 +14,7 @@ Collaborative filtering is a tool that tech companies are increasingly using. Ne
 
 In this post, I construct a collaborative filtering neural network with embeddings to understand how users would feel towards certain movies. From this we can recommend movies for them to watch.
 
-The dataset is taken from [here]( http://files.grouplens.org/datasets/movielens/ml-latest-small.zip). This code is loosely based of the [fastai notebook](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb).
+The dataset is taken from [here](http://files.grouplens.org/datasets/movielens/). This code is loosely based of the [fastai notebook](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb).
 
 # Data Prep
 
