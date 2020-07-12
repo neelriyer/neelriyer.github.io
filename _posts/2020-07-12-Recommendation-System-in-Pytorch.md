@@ -165,14 +165,15 @@ rating_name = 'rating'
 cols = [user_name, item_name, rating_name]
 
 data = (CollabDataBunch.from_df(ratings[cols],
-							   user_name=user_name,
-							   item_name=item_name,
-							   rating_name=rating_name,
-							   seed = 42,
-							   valid_pct = 0.2,
-							   bs=2**11)) # up to batch size
+								user_name=user_name,
+								item_name=item_name,
+								rating_name=rating_name,
+								seed = 42,
+								valid_pct = 0.2,
+								bs=2**11)) # up to batch size
 
-y_range = (ratings[rating_name].min(), ratings[rating_name].max()+0.5)
+y_range = ((ratings[rating_name].min(),
+			ratings[rating_name].max()+0.5))
 
 learn = collab_learner(data, n_factors=50, y_range=y_range)
 ```
