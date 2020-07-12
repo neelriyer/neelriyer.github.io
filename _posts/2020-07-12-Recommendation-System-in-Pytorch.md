@@ -167,7 +167,7 @@ data = (CollabDataBunch.from_df(ratings[cols],
 								rating_name=rating_name,
 								seed = 42,
 								valid_pct = 0.2,
-								bs=2**11)) # up to batch size
+								bs=2**11)) # up the batch size
 
 y_range = ((ratings[rating_name].min(),
 			ratings[rating_name].max()+0.5))
@@ -179,6 +179,8 @@ Bias is very useful. We need to find user bias and movie bias. User bias would a
 tend to give high ratings for a certain type of movie. Fastai adds in Bias automatically. 
 
 Interestingly, fastai notes that you should be increase the `y_range` [slightly](https://youtu.be/CJKnDu2dxOE?t=2609). A [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used to ensure that the final output is between the numbers specified in `y_range`. The issue is that a sigmoid function asymtotes. So we'll need to increase our `y_range` slightly. Fastai recommends increasing by `0.5`.
+
+![alt text](/images/pytorch_recommendation/sigmoid.png)
 
 ![alt text](/images/pytorch_recommendation/lr_find.png)
 
