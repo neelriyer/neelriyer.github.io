@@ -181,27 +181,15 @@ learn = collab_learner(data, n_factors=50, y_range=y_range)
 Bias is very useful. We need to find user bias and movie bias. User bias would account for people who give high ratings for every movie. Movie bias would account for people who 
 tend to give high ratings for a certain type of movie. Fastai adds in Bias automatically. 
 
-Interestingly, fastai notes that you should be increase the `y_range` [slightly](https://youtu.be/CJKnDu2dxOE?t=2609). A [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used to ensure that the final output is between the numbers specified in y_range. The issue is that a sigmoid function asymtotes. So we'll need to increase our y_range slightly. Fastai recommends increasing by `0.5`.
+Interestingly, fastai notes that you should be increase the `y_range` [slightly](https://youtu.be/CJKnDu2dxOE?t=2609). A [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used to ensure that the final output is between the numbers specified in `y_range`. The issue is that a sigmoid function asymtotes. So we'll need to increase our `y_range` slightly. Fastai recommends increasing by `0.5`.
 
-```python
-learn.lr_find()
-learn.recorder.plot(suggestion=True)
-```
 ![alt text](/images/pytorch_recommendation/lr_find.png)
 
 I'm using the suggested learning rate here with a small amount of weight decay. This is the combination that I found to work really well. 
 
-```python
-learn.fit_one_cycle(5, 4.79E-02, wd = 1e-1)
-```
-
 ![alt text](/images/pytorch_recommendation/training.png)
 
 We can train some more
-
-```python
-learn.fit_one_cycle(5, 4.79E-02, wd = 1e-1)
-```
 
 ![alt text](/images/pytorch_recommendation/more_training.png)
 ![alt text](/images/pytorch_recommendation/plot_losses.png)
