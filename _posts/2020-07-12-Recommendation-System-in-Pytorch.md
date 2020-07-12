@@ -21,7 +21,7 @@ The dataset is taken from [here](http://files.grouplens.org/datasets/movielens/)
 ```python
 import pandas as pd
 ratings = pd.read_csv('ratings.csv')
-movies = pd.read_csv(path+'movies.csv')
+movies = pd.read_csv('movies.csv')
 ``` 
 
 First, let get rid of the annoyingly complex user ids. We can make do with plain old integers. They're much easier to handle.
