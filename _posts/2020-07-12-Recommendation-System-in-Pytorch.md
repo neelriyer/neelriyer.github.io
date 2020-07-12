@@ -55,8 +55,8 @@ These weights will be uniformly distributed between 0 and 0.05. The `_` operator
 
 ```python
 class EmbeddingDot(nn.Module):
-    def __init__(self):
-        super().__init__()
+	def __init__(self):
+		super().__init__()
 		self.u.weight.data.uniform_(0,0.05)
 		self.m.weight.data.uniform_(0,0.05)
 	def forward(self):
@@ -67,15 +67,15 @@ Next we add our Embedding matrices and latent factors.
 
 ```python
 class EmbeddingDot(nn.Module):
-    def __init__(self, n_users, n_movies):
-        super().__init__()
-        self.u = nn.Embedding(n_users, n_factors)
-        self.m = nn.Embedding(n_movies, n_factors)
-        self.u.weight.data.uniform_(0,0.05)
-        self.m.weight.data.uniform_(0,0.05)
-        
-    def forward(self, cats, conts):
-        pass
+	def __init__(self, n_users, n_movies):
+		super().__init__()
+		self.u = nn.Embedding(n_users, n_factors)
+		self.m = nn.Embedding(n_movies, n_factors)
+		self.u.weight.data.uniform_(0,0.05)
+		self.m.weight.data.uniform_(0,0.05)
+		
+	def forward(self, cats, conts):
+		pass
 ```
 
 We're creating an embedding matrix for our user ids and our movie ids. An embedding is basically an array lookup. When we mulitply our one-hot encoded user ids by our weights most calculations cancel to `0` `(0 * number = 0)`. All we're left with is a particular row in the weight matrix. That's basically [just an array lookup](https://youtu.be/CJKnDu2dxOE?t=1625).
@@ -86,22 +86,21 @@ The size of these embedding matrices will be determined by n_factors. These fact
 
 [Latent factors](https://en.wikipedia.org/wiki/Latent_variable). are immensely useful in our network. They reduce the need for feature engineering. For example, if `User_id` `554` likes Tom cruise and `Tom cruise` appears in a movie. User `554` will probably like the movie. `Tom cruise` appearing in a movie would be a latent feature. We didn't specify it before training. It just showed up.
 
-
 Finally, we'll need to add our `forward` function.
 
 ```python
 class EmbeddingDot(nn.Module):
-    def __init__(self, n_users, n_movies):
-        super().__init__()
-        self.u = nn.Embedding(n_users, n_factors)
-        self.m = nn.Embedding(n_movies, n_factors)
-        self.u.weight.data.uniform_(0,0.05)
-        self.m.weight.data.uniform_(0,0.05)
-        
-    def forward(self, cats, conts):
+	def __init__(self, n_users, n_movies):
+		super().__init__()
+		self.u = nn.Embedding(n_users, n_factors)
+		self.m = nn.Embedding(n_movies, n_factors)
+		self.u.weight.data.uniform_(0,0.05)
+		self.m.weight.data.uniform_(0,0.05)
+		
+	def forward(self, cats, conts):
 		users,movies = cats[:,0],cats[:,1]
-        u,m = self.u(users),self.m(movies)
-        return (u*m).sum(1).view(-1, 1)
+		u,m = self.u(users),self.m(movies)
+		return (u*m).sum(1).view(-1, 1)
 ```
 
 As the name of this class would suggest we're doing a dot product of embedding matrices. 
@@ -166,12 +165,12 @@ rating_name = 'rating'
 cols = [user_name, item_name, rating_name]
 
 data = (CollabDataBunch.from_df(ratings[cols],
-                               user_name=user_name,
-                               item_name=item_name,
-                               rating_name=rating_name,
-                               seed = 42,
-                               valid_pct = 0.2,
-                               bs=2**11)) # up to batch size
+							   user_name=user_name,
+							   item_name=item_name,
+							   rating_name=rating_name,
+							   seed = 42,
+							   valid_pct = 0.2,
+							   bs=2**11)) # up to batch size
 
 y_range = (ratings[rating_name].min(), ratings[rating_name].max()+0.5)
 
