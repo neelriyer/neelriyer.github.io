@@ -80,7 +80,7 @@ class EmbeddingDot(nn.Module):
 
 We're creating an embedding matrix for our user ids and our movie ids. An embedding is basically an array lookup. When we mulitply our one-hot encoded user ids by our weights most calculations cancel to `0` `(0 * number = 0)`. All we're left with is a particular row in the weight matrix. That's basically [just an array lookup](https://youtu.be/CJKnDu2dxOE?t=1625).
 
-So we can skip the matrix mulitply and we can skip the one-hot encoded. Instead we can just do an array lookup. This [reduces memory usage](https://arxiv.org/pdf/1604.06737) and speeds up the neural network relative. It also reveals the intrinsic properties of the categorical variables. This was applied in a recent [Kaggle competition](https://www.kaggle.com/c/rossmann-store-sales) and [achieved 3rd place](https://www.kaggle.com/c/rossmann-store-sales/discussion/17974).
+So we don't need the matrix mulitply and we don't need the one-hot encoded array. Instead we can just do an array lookup. This [reduces memory usage](https://arxiv.org/pdf/1604.06737) and speeds up the neural network. It also reveals the intrinsic properties of the categorical variables. This idea was applied in a recent [Kaggle competition](https://www.kaggle.com/c/rossmann-store-sales) and [achieved 3rd place](https://www.kaggle.com/c/rossmann-store-sales/discussion/17974).
 
 The size of these embedding matrices will be determined by n_factors. These factors determine the number of latent factors in our dataset. 
 
