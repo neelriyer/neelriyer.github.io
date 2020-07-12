@@ -10,7 +10,7 @@ photo from [mc.ai](https://mc.ai/deep-learning-for-collaborative-filtering-using
 
 *"You’re the average of the five people spend the most time with."* - [Jim Rohn](https://en.wikipedia.org/wiki/Jim_Rohn)
 
-Collaborative filtering is a tool that tech companies are increasingly using. Netflix uses it to recommend shows for us to watch. [Facebook](https://engineering.fb.com/core-data/recommending-items-to-more-than-a-billion-people/) uses it to recommend who we should be friends with. [Spotify](https://medium.com/s/story/spotifys-discover-weekly-how-machine-learning-finds-your-new-music-19a41ab76efe) uses it to recommend playlists and songs for us. It's incredibly useful in recommending products to customers. 
+Collaborative filtering is a tool that companies are increasingly using. Netflix uses it to recommend shows for us to watch. [Facebook](https://engineering.fb.com/core-data/recommending-items-to-more-than-a-billion-people/) uses it to recommend who we should be friends with. [Spotify](https://medium.com/s/story/spotifys-discover-weekly-how-machine-learning-finds-your-new-music-19a41ab76efe) uses it to recommend playlists and songs for us. It's incredibly useful in recommending products to customers. 
 
 In this post, I construct a collaborative filtering neural network with embeddings to understand how users would feel towards certain movies. From this we can recommend movies for them to watch.
 
