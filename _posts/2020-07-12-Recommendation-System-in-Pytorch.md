@@ -105,7 +105,7 @@ class EmbeddingDot(nn.Module):
 
 As the name of this class would suggest we're doing a dot product of embedding matrices. 
 
-`users,movies = cats[:,0],cats[:,1]` gives us a minibatch of users and movies. We only look at categorical variables for embeddings. `conts` refers to continous variables. 
+```users,movies = cats[:,0],cats[:,1]``` gives us a minibatch of users and movies. We only look at categorical variables for embeddings. `conts` refers to continous variables. 
 
 This minibatch size will be determined by the batchsize that you set. According to [this](https://arxiv.org/abs/1609.04836) paper a large batch size can actually the quality of the model. But according to [this](https://arxiv.org/abs/1706.02677) paper a large batch size assists model training. There is no consensus at the moment. Many people are reporting [contradictory results](https://stats.stackexchange.com/questions/436878/choosing-optimal-batch-size-contradicting-results). So I'm just going to go with a batch size of `64`. 
 
