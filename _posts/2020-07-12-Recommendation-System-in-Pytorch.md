@@ -91,7 +91,7 @@ This minibatch size will be determined by the batchsize that you set. According 
 
 From that minibatch we want to do an array lookup in our embedding matrix. 
 
-`self.u(users),self.m(movies)` allows us to do that array lookup. This lookupis less computionally intensive that a matrix mulitply of a one-hot encoded matrix and a weight matrix. 
+`self.u(users),self.m(movies)` allows us to do that array lookup. This lookup is less computionally intensive that a matrix mulitply of a one-hot encoded matrix and a weight matrix. 
 
 `(u*m).sum(1).view(-1, 1)` is a cross product of the embeddings for users and movies and returns a single number. This is the predicted rating for that movie.
 
@@ -127,15 +127,15 @@ data = ColumnarModelData.from_data_frame(path, val_idxs, x, y, [user_name, item_
 
 ```
 
-Then I'll setup an optimiser. I'll use stochastic gradient descent for this.  
+Then I'll setup an optimiser. I'll use stochastic gradient descent for this. `optim.SGD` implements [stochastic gradient descent](https://pytorch.org/docs/stable/optim.html#torch.optim.SGD). 
+Stochastistic gradient descent is computationally less intensive thatn gradient descent. We could also use `optim.Adam`. That implements [rmsprop](https://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf) and [momentum](https://www.youtube.com/watch?v=YU_W8PFkY2U). In turn that results in an adaptive learning rate. But [this](https://arxiv.org/abs/1705.08292) paper shows that the solutions derived from SGD generalize far better than the solutions obtained from Adam. Plus it doesn't take that long to train anyway, so SGD isn't a bad option. 
 
 ```python
 model = EmbeddingDot(n_users, n_movies).cuda()
 opt = optim.SGD(model.parameters(), 1e-1, weight_decay=1e-5, momentum=0.9)
 ```
 
-`optim.SGD` implements [stochastic gradient descent](https://pytorch.org/docs/stable/optim.html#torch.optim.SGD). 
-Stochastistic gradient descent is computationally less intensive thatn gradient descent. 
+
 
 
 Then we fit for a `3` epochs. 
