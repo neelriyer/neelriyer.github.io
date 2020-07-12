@@ -3,7 +3,7 @@ layout: post
 title:  Collaborative Filtering in Pytorch
 ---
 
-###### Building a Neural Network to understand user preferences in movie choices
+Building a Neural Network to understand user preferences in movie choices
 
 ![alt text](/images/pytorch_recommendation/intro.jpeg)
 photo from [mc.ai](https://mc.ai/deep-learning-for-collaborative-filtering-using-fastai/)
