@@ -138,8 +138,6 @@ opt = optim.SGD(model.parameters(), 1e-1, weight_decay=1e-5, momentum=0.9)
 ```
 
 
-
-
 Then we fit for a `3` epochs. 
 
 ```python
@@ -184,7 +182,7 @@ tend to give high ratings for a certain type of movie. Fastai adds in Bias autom
 
 Interestingly, fastai notes that you should be increase the `y_range` [slightly](https://youtu.be/CJKnDu2dxOE?t=2609). A [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used to ensure that the final output is between the numbers specified in `y_range`. The issue is that a sigmoid function asymtotes. So we'll need to increase our `y_range` slightly. Fastai recommends increasing by `0.5`.
 
-![alt text](/images/pytorch_recommendation/sigmoid.png)
+![alt text](/images/pytorch_recommendation/sigmoid1.png)
 
 ![alt text](/images/pytorch_recommendation/lr_find.png)
 
