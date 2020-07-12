@@ -219,7 +219,7 @@ This is what the crappy and normal images looked like now. Side note: this is a 
 A quick check shows that we have a dataset of about `10014` files. Pretty good.
 
 
-# Model
+# Neural Network
 
 Let's make the most of those `10014` files by using transforms.
 
