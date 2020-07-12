@@ -152,6 +152,9 @@ MSE loss is simply mean square error loss. This is calculated automatically.
 
 Fastai creates a neural net automatically behind the scenes. You can call a [`collab_learner`](https://docs.fast.ai/collab.html#collab_learner) which automatically creates a neural network for collaborative filtering. Fastai also has options for introducing [Bias](https://dev.fast.ai/tutorial.collab#Movie-bias) and [dropout](https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf) through this collab learner. 
 
+Bias is very useful. We need to find user bias and movie bias. User bias would account for people who give high ratings for every movie. Movie bias would account for people who 
+tend to give high ratings for a certain type of movie. Fastai adds in Bias automatically. 
+
 Using fastai we can create a collab learner easily:
 
 ```python
@@ -161,13 +164,14 @@ rating_name = 'rating'
 
 cols = [user_name, item_name, rating_name]
 
-data = (CollabDataBunch.from_df(ratings[cols],
-								user_name=user_name,
-								item_name=item_name,
-								rating_name=rating_name,
-								seed = 42,
-								valid_pct = 0.2,
-								bs=2**11)) # up the batch size
+data = (CollabDataBunch.from_df(
+		ratings[cols],
+		user_name=user_name,
+		item_name=item_name,
+		rating_name=rating_name,
+		seed = 42,
+		valid_pct = 0.2,
+		bs=2**11)) # up the batch size
 
 y_range = ((ratings[rating_name].min(),
 			ratings[rating_name].max()+0.5))
