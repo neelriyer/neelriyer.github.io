@@ -10,7 +10,7 @@ photo from [mc.ai](https://mc.ai/deep-learning-for-collaborative-filtering-using
 
 *"You’re the average of the five people you spend the most time with."* - [Jim Rohn](https://en.wikipedia.org/wiki/Jim_Rohn)
 
-Collaborative filtering is a tool that companies are increasingly using. Netflix uses it to recommend shows for us to watch. [Facebook](https://engineering.fb.com/core-data/recommending-items-to-more-than-a-billion-people/) uses it to recommend who we should be friends with. [Spotify](https://medium.com/s/story/spotifys-discover-weekly-how-machine-learning-finds-your-new-music-19a41ab76efe) uses it to recommend playlists and songs for us. It's incredibly useful in recommending products to customers. 
+Collaborative filtering is a tool that companies are increasingly using. Netflix uses it to recommend shows for you to watch. [Facebook](https://engineering.fb.com/core-data/recommending-items-to-more-than-a-billion-people/) uses it to recommend who you should be friends with. [Spotify](https://medium.com/s/story/spotifys-discover-weekly-how-machine-learning-finds-your-new-music-19a41ab76efe) uses it to recommend playlists and songs. It's incredibly useful in recommending products to customers. 
 
 In this post, I construct a collaborative filtering neural network with embeddings to understand how users would feel towards certain movies. From this we can recommend movies for them to watch.
 
@@ -59,11 +59,17 @@ class EmbeddingDot(nn.Module):
 		super().__init__()
 		self.u.weight.data.uniform_(0,0.05)
 		self.m.weight.data.uniform_(0,0.05)
-	def forward(self):
-		pass
 ```
 
-Next we add our Embedding matrices and latent factors. 
+Next we add our Embedding matrices and latent factors.
+
+We're creating an embedding matrix for our user ids and our movie ids. An embedding is basically an array lookup. When we mulitply our one-hot encoded user ids by our weights most calculations cancel to `0` `(0 * number = 0)`. All we're left with is a particular row in the weight matrix. That's basically [just an array lookup](https://youtu.be/CJKnDu2dxOE?t=1625).
+
+So we don't need the matrix mulitply and we don't need the one-hot encoded array. Instead we can just do an array lookup. This [reduces memory usage](https://arxiv.org/pdf/1604.06737) and speeds up the neural network. It also reveals the intrinsic properties of the categorical variables. This idea was applied in a recent [Kaggle competition](https://www.kaggle.com/c/rossmann-store-sales) and [achieved 3rd place](https://www.kaggle.com/c/rossmann-store-sales/discussion/17974).
+
+The size of these embedding matrices will be determined by n_factors. These factors determine the number of latent factors in our dataset. 
+
+[Latent factors](https://en.wikipedia.org/wiki/Latent_variable) are immensely useful in our network. They reduce the need for feature engineering. For example, if `User_id` `554` likes `Tom cruise` and `Tom cruise` appears in a movie. User `554` will probably like the movie. `Tom cruise` appearing in a movie would be a latent feature. We didn't specify it before training. It just showed up. And we're glad that it did. 
 
 ```python
 class EmbeddingDot(nn.Module):
@@ -73,20 +79,21 @@ class EmbeddingDot(nn.Module):
 		self.m = nn.Embedding(n_movies, n_factors)
 		self.u.weight.data.uniform_(0,0.05)
 		self.m.weight.data.uniform_(0,0.05)
-		
-	def forward(self, cats, conts):
-		pass
 ```
 
-We're creating an embedding matrix for our user ids and our movie ids. An embedding is basically an array lookup. When we mulitply our one-hot encoded user ids by our weights most calculations cancel to `0` `(0 * number = 0)`. All we're left with is a particular row in the weight matrix. That's basically [just an array lookup](https://youtu.be/CJKnDu2dxOE?t=1625).
-
-So we don't need the matrix mulitply and we don't need the one-hot encoded array. Instead we can just do an array lookup. This [reduces memory usage](https://arxiv.org/pdf/1604.06737) and speeds up the neural network. It also reveals the intrinsic properties of the categorical variables. This idea was applied in a recent [Kaggle competition](https://www.kaggle.com/c/rossmann-store-sales) and [achieved 3rd place](https://www.kaggle.com/c/rossmann-store-sales/discussion/17974).
-
-The size of these embedding matrices will be determined by n_factors. These factors determine the number of latent factors in our dataset. 
-
-[Latent factors](https://en.wikipedia.org/wiki/Latent_variable). are immensely useful in our network. They reduce the need for feature engineering. For example, if `User_id` `554` likes `Tom cruise` and `Tom cruise` appears in a movie. User `554` will probably like the movie. `Tom cruise` appearing in a movie would be a latent feature. We didn't specify it before training. It just showed up.
-
 Finally, we'll need to add our `forward` function.
+
+As the name of this class would suggest we're doing a dot product of embedding matrices. 
+
+```users,movies = cats[:,0],cats[:,1]``` gives us a minibatch of users and movies. We only look at categorical variables for embeddings. `conts` refers to continous variables. 
+
+This minibatch size will be determined by the batchsize that you set. According to [this](https://arxiv.org/abs/1609.04836) paper a large batch size can actually the quality of the model. But according to [this](https://arxiv.org/abs/1706.02677) paper a large batch size assists model training. There is no consensus at the moment. Many people are reporting [contradictory results](https://stats.stackexchange.com/questions/436878/choosing-optimal-batch-size-contradicting-results). So I'm just going to go with a batch size of `64`. 
+
+From that minibatch we want to do an array lookup in our embedding matrix. 
+
+`self.u(users),self.m(movies)` allows us to do that array lookup. This lookupis less computionally intensive that a matrix mulitply of a one-hot encoded matrix and a weight matrix. 
+
+`(u*m).sum(1).view(-1, 1)` is a cross product of the embeddings for users and movies and returns a single number. This is the predicted rating for that movie.
 
 ```python
 class EmbeddingDot(nn.Module):
@@ -101,19 +108,7 @@ class EmbeddingDot(nn.Module):
 		users,movies = cats[:,0],cats[:,1]
 		u,m = self.u(users),self.m(movies)
 		return (u*m).sum(1).view(-1, 1)
-```
-
-As the name of this class would suggest we're doing a dot product of embedding matrices. 
-
-```users,movies = cats[:,0],cats[:,1]``` gives us a minibatch of users and movies. We only look at categorical variables for embeddings. `conts` refers to continous variables. 
-
-This minibatch size will be determined by the batchsize that you set. According to [this](https://arxiv.org/abs/1609.04836) paper a large batch size can actually the quality of the model. But according to [this](https://arxiv.org/abs/1706.02677) paper a large batch size assists model training. There is no consensus at the moment. Many people are reporting [contradictory results](https://stats.stackexchange.com/questions/436878/choosing-optimal-batch-size-contradicting-results). So I'm just going to go with a batch size of `64`. 
-
-From that minibatch we want to do an array lookup in our embedding matrix. 
-
-`self.u(users),self.m(movies)` allows us to do that array lookup. This lookupis less computionally intensive that a matrix mulitply of a one-hot encoded matrix and a weight matrix. 
-
-`(u*m).sum(1).view(-1, 1)` is a cross product of the embeddings for users and movies and returns a single number. This is the predicted rating for that movie. 
+``` 
 
 # Training the Net
 
