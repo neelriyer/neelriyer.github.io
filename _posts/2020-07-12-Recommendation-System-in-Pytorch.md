@@ -6,8 +6,9 @@ title:  Collaborative Filtering in Pytorch
 __Building a Neural Network to understand user preferences in movie choices__
 
 ![alt text](/images/pytorch_recommendation/intro.jpeg)
+photo from [mc.ai](https://mc.ai/deep-learning-for-collaborative-filtering-using-fastai/)
 
-*"You are the average of your 5 friends. "* - Jim Rohn
+*"You’re the average of the five people spend the most time with."* - [Jim Rohn](https://en.wikipedia.org/wiki/Jim_Rohn)
 
 Collaborative filtering is a tool that tech companies are increasingly using. Netflix uses it to recommend shows for us to watch. [Facebook](https://engineering.fb.com/core-data/recommending-items-to-more-than-a-billion-people/) uses it to recommend who we should be friends with. [Spotify](https://medium.com/s/story/spotifys-discover-weekly-how-machine-learning-finds-your-new-music-19a41ab76efe) uses it to recommend playlists and songs for us. It's incredibly useful in recommending products to customers. 
 
