@@ -5,10 +5,7 @@ title: Forecasting Food Demand
 
 __Applying Neural Networks to the Meal kit Market__.
 
-
-
 ![alt text](/images/mealkit/meal_kit_intro.png)
-
 
 So this is going to overfit.
 
