@@ -84,7 +84,7 @@ So we can skip the matrix mulitply and we can skip the one-hot encoded. Instead 
 
 The size of these embedding matrices will be determined by n_factors. These factors determine the number of latent factors in our dataset. 
 
-[Latent factors](https://en.wikipedia.org/wiki/Latent_variable#:~:text=In%20statistics%2C%20latent%20variables%20(from,are%20observed%20(directly%20measured).) are immensely useful in our network. They reduce the need for feature engineering. For example, if User_id 554 likes Tom cruise and Tom cruise appears in a movie. User 554 will probably like the movie. Tom cruise appearing in a movie would be a latent feature. We didn't specify it before training. It just showed up. And we're glad it did.
+[Latent factors](https://en.wikipedia.org/wiki/Latent_variable). are immensely useful in our network. They reduce the need for feature engineering. For example, if User_id 554 likes Tom cruise and Tom cruise appears in a movie. User 554 will probably like the movie. Tom cruise appearing in a movie would be a latent feature. We didn't specify it before training. It just showed up. And we're glad it did.
 
 
 Finally, we'll need to add our `forward` function.
