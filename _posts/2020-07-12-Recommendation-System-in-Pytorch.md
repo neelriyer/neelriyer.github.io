@@ -198,18 +198,18 @@ We can train some more
 ![alt text](/images/pytorch_recommendation/plot_losses.png)
 
 
-We finally get a MSE of `0.784105`. But it's a very bumpy ride. Our loss jumps up and down considerably. That said `0.784105` is actually a better score than some of the [LibRec system](https://www.librec.net/release/v1.3/example.html) for collborative filtering. They were getting `0.91**2 = 0.83` MSE.  
+We finally get a MSE of `0.784105`. But it's a very bumpy ride. Our loss jumps up and down considerably. That said `0.784105` is actually a better score than the [LibRec system](https://www.librec.net/release/v1.3/example.html) for collborative filtering. They were getting `0.91**2 = 0.83` MSE.  
 
-It's also actually better than the model that fastai created in their [colloborative filtering lesson](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb). They were getting `0.814652` at their lowest. 
+It's also actually slightly better than the model that fastai created in their [colloborative filtering lesson](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb). They were getting `0.814652` MSE.
 
 
 # Improvements
 
 1. We can adjust the size of the embedding by sending in a dictionary called `emb_szs`. This could be a useful parameter to adjust. 
 
-2. Content-based recommendation. Collaborative filtering is just one method of building a recommendation system. [Other methods](https://www.kaggle.com/ibtesama/getting-started-with-a-movie-recommendation-system#Content-Based-Filtering) could be more useful. A Content-based system is something I'm keeping in mind. That could look at metadata such as cast, crew, genre and director to make recommendations. I think some kind of [hybrid](https://www.kaggle.com/rounakbanik/movie-recommender-systems#Movies-Recommender-System) solution would be optimal. This would combin a content-based recommendation system and a collaborative filtering system. 
+2. Content-based recommendation. Collaborative filtering is just one method of building a recommendation system. [Other methods](https://www.kaggle.com/ibtesama/getting-started-with-a-movie-recommendation-system#Content-Based-Filtering) could be more useful. A Content-based system is something I'm keeping in mind. That could look at metadata such as cast, crew, genre and director to make recommendations. I think some kind of [hybrid](https://www.kaggle.com/rounakbanik/movie-recommender-systems#Movies-Recommender-System) solution would be optimal. This would combination a content-based recommendation system and a collaborative filtering system. 
 
-3. Collaborative filtering is thwarted by the [cold-start problem](https://en.wikipedia.org/wiki/Cold_start_(recommender_systems). To overcome this we could potentially look at the users metadata. For example we could look at things like: gender, age, city, time they accessed the site, etc. Just all the things they entered on the sign up form. Building a model on that data could be tricky, but if it works well it could be useful.
+3. Collaborative filtering is thwarted by the [cold-start problem](https://www.kdnuggets.com/2019/01/data-scientist-dilemma-cold-start-machine-learning.html). To overcome this we could potentially look at the users metadata. For example we could look at things like: gender, age, city, time they accessed the site, etc. Just all the things they entered on the sign up form. Building a model on that data could be tricky, but if it works well it could be useful.
 
 
 
