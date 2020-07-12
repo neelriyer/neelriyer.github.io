@@ -3,7 +3,8 @@ layout: post
 title: Forecasting Food Demand
 ---
 
-__Applying Neural Networks to the Meal kit Market__.
+Applying Neural Networks to the Meal kit Market.
+================================================
 
 ![alt text](/images/mealkit/meal_kit_intro.png)
 
