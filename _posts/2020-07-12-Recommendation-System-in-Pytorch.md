@@ -128,7 +128,9 @@ data = ColumnarModelData.from_data_frame(path, val_idxs, x, y, [user_name, item_
 ```
 
 Then I'll setup an optimiser. I'll use stochastic gradient descent for this. `optim.SGD` implements [stochastic gradient descent](https://pytorch.org/docs/stable/optim.html#torch.optim.SGD). 
-Stochastistic gradient descent is computationally less intensive thatn gradient descent. We could also use `optim.Adam`. That implements [rmsprop](https://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf) and [momentum](https://www.youtube.com/watch?v=YU_W8PFkY2U). In turn that results in an adaptive learning rate. But [this](https://arxiv.org/abs/1705.08292) paper shows that the solutions derived from SGD generalize far better than the solutions obtained from Adam. Plus it doesn't take that long to train anyway, so SGD isn't a bad option. 
+Stochastistic gradient descent is computationally less intensive than gradient descent. This is because we introduce randomness when [selecting the data point](https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31) to calculate the derivative. 
+
+ We could also use `optim.Adam`. That implements [rmsprop](https://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf) and [momentum](https://www.youtube.com/watch?v=YU_W8PFkY2U). In turn that results in an adaptive learning rate. But [this](https://arxiv.org/abs/1705.08292) paper shows that the solutions derived from SGD generalize far better than the solutions obtained from Adam. Plus it doesn't take that long to train anyway, so SGD isn't a bad option. 
 
 ```python
 model = EmbeddingDot(n_users, n_movies).cuda()
