@@ -5,7 +5,7 @@ title:  Instance Segmentation Web App
 
 Building a Web App for Instance Segmentation using in Docker, Flask and Detectron2
 
-{% include youtubePlayer.html id="VVLkB-vYmCc" %}
+{% include youtubePlayer.html id="VVLkB-vYmCc?autoplay=1&mute=1" %}
 
 <iframe id="ytplayer" type="text/html" width="640" height="360"
   src="https://www.youtube.com/embed/VVLkB-vYmCc?autoplay=1"
