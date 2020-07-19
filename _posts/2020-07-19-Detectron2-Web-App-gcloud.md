@@ -5,6 +5,8 @@ title:  Low Memory Instance Segmentation
  
 Hacks to deploy an instance segmentation web app to google cloud
 
+![alt text](/images/detectron2_web_app/basketball.jpeg)
+
 Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. I kept seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
 
 The immediate solution that comes to mind is increasing the memory of the VM instance. But I'd rather not spend more money that I have to. This is a side project, after all. 
