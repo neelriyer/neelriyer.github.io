@@ -17,31 +17,8 @@ So, in this post we'll create a web app for detectron2's instance segmentation.
 
 First, we'll create the machine learning backend. This will use basic [flask](https://flask.palletsprojects.com/en/1.1.x/). We'll start from some fairly standard [boilerplate code](https://github.com/realpython/flask-boilerplate/blob/master/app.py)
 
-```python
-import io
-from flask import Flask, render_template, request, send_from_directory, send_file
-from PIL import Image
-import requests
-import os
-import urllib.request
+<script src="https://gist.github.com/spiyer99/bbf1ddea54ed9acc45e6aec398e97e54.js"></script>
 
-app = Flask(__name__)
-
-@app.route("/")
-def index():
-
-	# render the index.html template
-	return render_template('index.html')
-
-if __name__ == "__main__":
-
-	# get port. Default to 8080
-	port = int(os.environ.get('PORT', 8080))
-
-	# run app
-	app.run(host='0.0.0.0', port=port)
-
-```
 This app will simply render the template `index.html`. I've specified the port manually. 
 
 Next we'll add functions to get the image. We want to be able to upload an image to the website. We also want to be able to supply the website with a url and the image will be downloaded automatically. I've created the code do to exactly that below.
