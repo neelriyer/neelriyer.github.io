@@ -413,7 +413,7 @@ CMD ["python3", "app.py"]
 
 I've bascially used the dockerfile supplied in detectron2's [github repo](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile). But I made a few changes. 
 
-I've added a `requirements.txt` [file](insert_link_here_later). I do a `pip install` from that requirements file. That installs a few libaries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
+I've added a `requirements.txt` [file](https://github.com/spiyer99/detectron2_web_app/blob/master/requirements.txt). I do a `pip install` from that requirements file. That installs a few libaries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
 
 
 Now we can start the docker container. We can do this using the following:
