@@ -102,46 +102,9 @@ If the code can't download the image for whatever reason - It will return the `f
 
 Also, I've specified a different `@app.route` (/detect). This will need to refelcted in the `index.html` file. 
 
-# Frontend
 
-Now I'll create the frontend `html` code. Through this inferface the user can upload an image, and also specify a url to the image. 
 
-```
 
-<!DOCTYPE html>
-<html lang="en">
-
-<body>
-
-<h1 style="text-align:center;">Detectron2 Web App</h1>
-<br>
-<h2>Detectron2 Instance Segmentation</h2>
-
-<form action = "/detect" method = "POST" enctype = "multipart/form-data">
-	<input type = "file" name = "file" />
-	<input name = "submit" type = "submit"/>
-</form>
-<form action = "/detect" method = "GET" enctype = "multipart/form-data">
-	<input type="text" name="url">
-	<input type = "submit"/>
-</form>
-
-```
- 
-
-```
-
-{% block content %}
-<body>
-
-    <p> Error in retrieving image </p>
-
-</body>
-{% endblock %}
-
-```
-
-Now we can move on the actual deep learning part. 
 
 # The Model
 
