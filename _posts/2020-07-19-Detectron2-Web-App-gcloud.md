@@ -1,12 +1,12 @@
 ---
 layout: post
-title:  Instance Segmentation on Google Cloud
+title:  Low Memory Instance Segmentation
 ---
 
-Various hacks that helped me deploy an instance segmentation web app to google cloud inexpensively
+Various hacks that helped me deploy an instance segmentation web app to google cloud
 
 
-Machine Learning Models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory at least. That makes it difficult to deploy to the cloud. I kept seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory), when deploying to the cloud.
+Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. I kept seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
 
 The immediate solution that comes to mind is increasing the memory of the VM instance. But I'd rather not spend more money that I have to. This is a side project, after all. 
 
@@ -88,7 +88,7 @@ After this we can finally deploy on most cloud platforms without any OOM issues.
 
 # Deployment on Google Cloud
 
-There are [various hacks](https://medium.com/@jaychapel/4-ways-to-get-google-cloud-credits-c4b7256ff862) to get promotional credits for Google Cloud. So I'm going to be using their services for this tutorial. The plan is that everything that I will do on google cloud will be covered by those free credits :). 
+There are [many ways](https://medium.com/@jaychapel/4-ways-to-get-google-cloud-credits-c4b7256ff862) to get promotional credits for Google Cloud. So I'm going to be using their services for this project. The plan is that everything that I will do on google cloud will be covered by those free credits :). 
 
 The details of how to do this are included in google cloud's [documentation](https://cloud.google.com/run/docs/quickstarts/build-and-deploy). I'll be mainly following their docs. 
 
@@ -119,11 +119,7 @@ gcloud beta run deploy $APP_NAME \
 
 ```
 
-After deploying this to google cloud we run into an issue. Detectron2 uses far too much memory for the 2G that we've allocated. A quick google search [reveals](https://cloud.google.com/run/docs/configuring/memory-limits) that 2G is the maximum that can be used by a Cloud run.
-
-We could upgrade to a VM instance with more memory. But like I said I'd rather not spend money unless I really have to. So I've come up with a solution. 
-
-# The Hack
+After implementing the render factor hack described above this web app finally works on google cloud. 
 
 
 
