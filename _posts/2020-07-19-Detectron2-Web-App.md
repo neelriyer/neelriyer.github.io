@@ -356,22 +356,7 @@ I created a nice shell script which:
 
 This script is *incredibly* useful. 
 
-```shell
-# stop containers
-docker stop $(docker ps -a -q) 
-
-# remove containers
-docker rm $(docker ps -a -q) && docker rmi $(docker images | grep '^<none>' | awk '{print $3}')
-
-# build container
-docker build . -f Dockerfile -t detectron2
-
-# run contrainer on port 8080
-docker run -d -p 8080:8080 detectron2
-
-# see logs
-docker logs -f -t $(docker ps -q)
-```
+<script src="https://gist.github.com/spiyer99/927fc75cf90bd0060f8073a71e4fc878.js"></script>
 
 Run this script from terminal. It will build and run the detectron2 web app. The web app should show up at `localhost:8080` on your browser.
 
