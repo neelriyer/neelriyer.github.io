@@ -6,6 +6,7 @@ title:  Instance Segmentation Web App
 Building a Web App for Instance Segmentation using in Docker, Flask and Detectron2
 
 (show video here)
+![alt text](/images/detectron2_web_app/video.mov)
 
 Detectron2 offers state of the art instance segmentation models. It's very [quick to train](https://detectron2.readthedocs.io/notes/benchmarks.html) and offers very good results. 
 
@@ -23,57 +24,7 @@ This app will simply render the template `index.html`. I've specified the port m
 
 Next we'll add functions to get the image. We want to be able to upload an image to the website. We also want to be able to supply the website with a url and the image will be downloaded automatically. I've created the code do to exactly that below.
 
-```python
-import io
-from flask import Flask, render_template, request, send_from_directory, send_file
-from PIL import Image
-import requests
-import os
-
-# function to load img from url
-def load_image_url(url):
-	response = requests.get(url)
-	img = Image.open(io.BytesIO(response.content))
-	return img
-
-@app.route("/detect", methods=['POST', 'GET'])
-def upload():
-	if request.method == 'POST':
-
-		try:
-
-			# open image
-			file = Image.open(request.files['file'].stream)
-
-			# remove alpha channel
-			rgb_im = file.convert('RGB')
-			rgb_im.save('file.jpg')
-		
-		# failure
-		except:
-
-			return render_template("failure.html")
-
-	elif request.method == 'GET':
-
-		# get url
-		url = request.args.get("url")
-
-		# save
-		try:
-			# save image as jpg
-			# urllib.request.urlretrieve(url, 'file.jpg')
-			rgb_im = load_image_url(url)
-			rgb_im = rgb_im.convert('RGB')
-			rgb_im.save('file.jpg')
-
-		# failure
-		except:
-			return render_template("failure.html")
-
-	return send_file(rgb_im, mimetype='image/jpeg')
-
-```
+<script src="https://gist.github.com/spiyer99/ca7ef12a11406fa4b8d70a4ddbd9cade.js"></script>
 
 This piece of code allows us to upload an image into the backend (POST request). Or we can supply the backend with a url and it will download the image automatically (GET request). The code also converts the image to a `jpg`. I couldn't do inference on a `png` image using detectron2. So we'll have to convert to a `jpg`.
 
