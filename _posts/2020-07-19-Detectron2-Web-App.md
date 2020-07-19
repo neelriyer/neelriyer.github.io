@@ -103,7 +103,27 @@ If the code can't download the image for whatever reason - It will return the `f
 Also, I've specified a different `@app.route` (/detect). This will need to refelcted in the `index.html` file. 
 
 
+```
 
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+
+<h1 style="text-align:center;">Detectron2 Web App</h1>
+<br>
+<h2>Detectron2 Instance Segmentation</h2>
+
+<form action = "/detect" method = "POST" enctype = "multipart/form-data">
+	<input type = "file" name = "file" />
+	<input name = "submit" type = "submit"/>
+</form>
+<form action = "/detect" method = "GET" enctype = "multipart/form-data">
+	<input type="text" name="url">
+	<input type = "submit"/>
+</form>
+
+```
 
 
 # The Model
