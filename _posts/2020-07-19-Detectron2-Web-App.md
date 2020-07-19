@@ -14,7 +14,7 @@ Model training is is fairly straightforward. There are many [tutorials](https://
 
 # Backend
 
-First, we'll create the machine learning backend. This will use basic [flask](https://flask.palletsprojects.com/en/1.1.x/). We'll start from some fairly standard [boilerplate code](https://github.com/realpython/flask-boilerplate/blob/master/app.py).
+First, we'll create the machine learning backend. This will use basic [flask](https://flask.palletsprojects.com/en/1.1.x/). We'll start from some fairly standard [boilerplate code](https://github.com/realpython/flask-boilerplate/blob/master/app.py)
 
 ```python
 import io
@@ -256,7 +256,6 @@ def load_image_url(url):
 	img = Image.open(io.BytesIO(response.content))
 	return img
 
-
 # run inference using detectron2
 def run_inference(img_path = 'file.jpg'):
 
@@ -350,7 +349,7 @@ The final step is creating a docker container for our code. Then we'll deploy th
 
 Thankfully, detectron2 has already created a [dockerfile](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile) for us. So we can work from that code. 
 
-```docker
+```
 # adapted from: https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile
 
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
@@ -414,7 +413,6 @@ CMD ["python3", "app.py"]
 I've bascially used the dockerfile supplied in detectron2's [github repo](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile). But I made a few changes. 
 
 I've added a `requirements.txt` [file](https://github.com/spiyer99/detectron2_web_app/blob/master/requirements.txt). I do a `pip install` from that requirements file. That installs a few libaries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
-
 
 Now we can start the docker container. We can do this using the following:
 
