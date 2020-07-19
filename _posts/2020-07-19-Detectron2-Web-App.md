@@ -9,7 +9,7 @@ Building a Web App for Instance Segmentation using in Docker, Flask and Detectro
 
 Detectron2 offers state of the art instance segmentation models. It's very [quick to train](https://detectron2.readthedocs.io/notes/benchmarks.html) and offers very good results. 
 
-Model training is is fairly straightforward. There are many [tutorials](https://github.com/facebookresearch/detectron2/blob/master/GETTING_STARTED.md) to help you there. Deploying the model to a web app is a different story. In this post we'll create a web app for detectron2's instance segmentation. 
+Model training is fairly straightforward. There are many [tutorials](https://github.com/facebookresearch/detectron2/blob/master/GETTING_STARTED.md) to help you there. Deploying the model to a web app is a different story. In this post we'll create a web app for detectron2's instance segmentation. 
 
 # Backend
 
@@ -154,8 +154,7 @@ This part is slightly more involved. We'll create a new class called `Detector`.
 
 I'll be using the mask rcnn pretrained model trained on the [Imagenet](http://www.image-net.org/) dataset. It will use a [ResNet](https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035)+[FPN](https://towardsdatascience.com/review-fpn-feature-pyramid-network-object-detection-262fc7482610) backbone. This model is said to obtain the [best speed/accuracy tradeoff](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md#common-settings-for-coco-models). 
 
-This model is trained on a 3x schedule, ~37 COCO epochs.
-You'll have to [download the model](https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl)
+
 
 ```python
 import cv2 as cv
