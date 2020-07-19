@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Instance Segmentation Web App: Part 2
+title:  Instance Segmentation Web App- Part 2
 ---
 
 Reducing the Memory required for inference
@@ -11,7 +11,17 @@ When deploying to google cloud I kept running into this issue. [Out of memory er
 
 The immediate solution that comes to mind is increasing the memory of the VM instance. But I'd rather not spend more money that I have to. This is a side project, after all. 
 
-So I came up with a solution. It's actually inspired by [deoldify](https://github.com/jantic/DeOldify/tree/master/deoldify) by Jason Antic. Jason uses a render factor to downscale the image and convert it to a square before running his machine learning model. I thought that applying the same idea here could reduce the memory requirements. 
+So I came up with a work around. It's actually inspired by [deoldify](https://github.com/jantic/DeOldify/tree/master/deoldify) by Jason Antic. Jason uses a render factor to downscale the image and convert it to a square before running his machine learning model. 
+
+I thought that applying the same idea here could reduce the memory requirements. 
+
+# The Hack
+
+
+
+
+
+
 
 
 
