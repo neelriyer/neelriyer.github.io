@@ -30,22 +30,22 @@ This piece of code allows us to upload an image into the backend (POST request).
 
 If the code can't download the image for whatever reason - It will return the `failure.html` template. This will basically just be a simple `html` page saying there was an error in retrieving the image. 
 
-Also, I've specified a different `@app.route` (/detect). This will need to refelcted in the `index.html` file. 
+Also, I've specified a different `@app.route`. This will need to reflected in the `index.html` file. 
 
 
 # Frontend
 
-Now I'll create the frontend `html` code. Through this inferface the user can upload an image, and also specify a url to the image. 
+Now I'll create the frontend `html` code. This inferface alows the user to upload an image or specify a url to an image. 
 
 <script src="https://gist.github.com/spiyer99/ba33eb7e2770473d74b358066cb0058e.js"></script>
 
-There's not much to it. We create a simple form and tell it to link to the app.route('/detect') flask code. We also need to specify the method. If the user is uploading an image, it's POST. If the user is giving us the url to an image, it's GET. 
+There's not much to it. We create a simple form and tell it to link to the @app.route('/detect') flask code. We also need to specify the method. If the user is uploading an image, it's POST. If the user is giving us the url to an image, it's GET. 
 
 The `failure.html` template is even simpler. 
 
 <script src="https://gist.github.com/spiyer99/c7e43b50659916b48be0c4e33e7af62f.js"></script>
 
-Now we can move on the actual deep learning part. 
+Now we can move on to the actual deep learning part. 
 
 
 # The Model
@@ -78,13 +78,13 @@ The `run_inference` function will return an image once instance segmentation is 
 
 The final step is creating a docker container for our code. Then we'll deploy the docker container locally. 
 
-Thankfully, detectron2 has already created a [dockerfile](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile) for us. So we can work from that code. 
+Thankfully, detectron2 has already created a [dockerfile](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile) for us. 
 
 <script src="https://gist.github.com/spiyer99/4c014a23a903d9a57ec2baace40659b6.js"></script>
 
 I've bascially used the dockerfile supplied in detectron2's [github repo](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile). But I made a few changes. 
 
-I've added a [`requirements.txt`](https://github.com/spiyer99/detectron2_web_app/blob/master/requirements.txt) file. I do a `pip install` from that requirements file. That installs a few libaries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
+I've added a [`requirements.txt`](https://github.com/spiyer99/detectron2_web_app/blob/master/requirements.txt) file. I do a `pip install` from that requirements file. That installs a few libraries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
 
 Now we can start the docker container. We can do this using the following:
 
@@ -115,7 +115,7 @@ Run this script from terminal. It will build and run the detectron2 web app. The
 ![alt text](/images/detectron2_web_app/detectron2_web_app.png)
 ![alt text](/images/detectron2_web_app/detect.jpeg)
 
-It works great!
+It works!
 
 The code for this can be found on [github](https://github.com/spiyer99/detectron2_web_app). 
 

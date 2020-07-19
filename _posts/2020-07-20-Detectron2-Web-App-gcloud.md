@@ -7,17 +7,19 @@ Hacks to deploy an instance segmentation web app to google cloud
 
 ![alt text](/images/detectron2_web_app/basketball.jpeg)
 
-Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. I kept seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
+Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. 
+
+I keep seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
 
 The immediate solution that comes to mind is increasing the memory of the VM instance. But I'd rather not spend more money that I have to. This is a side project, after all. 
 
 So I came up with a work around. It's actually inspired by [deoldify](https://github.com/jantic/DeOldify/tree/master/deoldify) by Jason Antic. Jason uses a render factor to downscale the image and convert it to a square before running his machine learning model. 
 
-I thought that applying the same idea here could reduce the memory requirements. 
+I thought that applying the same idea here could reduce memory requirements. 
 
 # The Hack
 
-In short here is the solution. It's larged taken from [here](https://github.com/jantic/DeOldify/blob/master/deoldify/filters.py).
+In short here is the solution. It's largely taken from [here](https://github.com/jantic/DeOldify/blob/master/deoldify/filters.py).
 
 <script src="https://gist.github.com/spiyer99/fe661783ff3c8c222bd085ef03a2bb5e.js"></script>
 
@@ -40,11 +42,10 @@ We'll need to modify the `app.py` script to implement the `run_inference_transfo
 
 # Deploying on Google Cloud
 
-There are [many ways](https://medium.com/@jaychapel/4-ways-to-get-google-cloud-credits-c4b7256ff862) to get promotional credits for Google Cloud. So I'm going to be using their services for this project. The plan is that everything that I will do on google cloud will be covered by those free credits :). 
+There are [many ways](https://medium.com/@jaychapel/4-ways-to-get-google-cloud-credits-c4b7256ff862) to get promotional credits for Google Cloud. So I'm going to be using their services for this project. The plan is that everything that I will do will be covered by those free credits :). 
 
-The details of how to do this are included in google cloud's [documentation](https://cloud.google.com/run/docs/quickstarts/build-and-deploy). I'll be mainly following their docs. 
 
-I created a [project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) on google cloud and finally got the deployment to work. The google cloud docs are pretty well written - but I still ran into errors. I found [this repo](https://github.com/npatta01/web-deep-learning-classifier/) to be very helpful.
+I created a [project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) on google cloud and finally got the deployment to work. The google cloud [docs](https://cloud.google.com/run/docs/quickstarts/build-and-deploy) are pretty well written - but I still ran into errors. I found [this repo](https://github.com/npatta01/web-deep-learning-classifier/) to be very helpful.
 
 As usual I created a shell script to implement exactly what we need to do in terminal. 
 
