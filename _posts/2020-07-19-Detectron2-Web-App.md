@@ -7,6 +7,13 @@ Building a Web App for Instance Segmentation using in Docker, Flask and Detectro
 
 {% include youtubePlayer.html id="VVLkB-vYmCc" %}
 
+<iframe id="ytplayer" type="text/html" width="640" height="360"
+  src="https://www.youtube.com/embed/VVLkB-vYmCc?autoplay=1"
+  frameborder="0"
+  width="1120" 
+  height="630"></iframe>
+
+
 Detectron2 offers state of the art instance segmentation models. It's very [quick to train](https://detectron2.readthedocs.io/notes/benchmarks.html) and offers very good results. 
 
 Model training is fairly straightforward. There are many [tutorials](https://github.com/facebookresearch/detectron2/blob/master/GETTING_STARTED.md) to help you there. Deploying the model to a web app is a different story. When I was trying to do this I didn't find a lot of help on the internet. 
