@@ -61,7 +61,3 @@ You can access the final instance segmentation web app here:
 
 
 
-
-
-
-
