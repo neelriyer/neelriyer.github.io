@@ -1,7 +1,9 @@
 ---
 layout: post
-title:  Instance Segmentation Web App - Reducing the Memory required for inference
+title:  Instance Segmentation Web App: Part 2
 ---
+
+Reducing the Memory required for inference
 
 Machine Learning Models are memory intensive. Even for running inference my [current web app](https://spiyer99.github.io/Detectron2-Web-App/) at least 1 GB of memory. That makes it difficult to deploy to the cloud. 
 
