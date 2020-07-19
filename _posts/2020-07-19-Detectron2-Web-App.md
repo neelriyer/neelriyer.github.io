@@ -106,6 +106,7 @@ Also, I've specified a different `@app.route` (/detect). This will need to refel
 
 Now I'll create the frontend `html` code. Through this inferface the user can upload an image, and also specify a url to the image. 
 
+```
 <!DOCTYPE html>
 <html lang="en">
 
@@ -123,13 +124,13 @@ Now I'll create the frontend `html` code. Through this inferface the user can up
 	<input type="text" name="url">
 	<input type = "submit"/>
 </form>
-
+```
 
 There's not much to it. We create a simple form and tell it to link to the `app.route('/detect')` flask code. We also need to specify the method. If the user is uploading an image, it's POST. If the user is giving us the url to an image, it's GET. 
 
 The `failure.html` template is even simpler. 
 
-
+```
 {% block content %}
 <body>
 
@@ -137,7 +138,7 @@ The `failure.html` template is even simpler.
 
 </body>
 {% endblock %}
-
+```
 
 Now we can move on the actual deep learning part. 
 
