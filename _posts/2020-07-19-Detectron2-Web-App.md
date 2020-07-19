@@ -107,43 +107,13 @@ Also, I've specified a different `@app.route` (/detect). This will need to refel
 
 Now I'll create the frontend `html` code. Through this inferface the user can upload an image, and also specify a url to the image. 
 
-```HTML
-
-<!DOCTYPE html>
-<html lang="en">
-
-<body>
-
-<h1 style="text-align:center;">Detectron2 Web App</h1>
-<br>
-<h2>Detectron2 Instance Segmentation</h2>
-
-<form action = "/detect" method = "POST" enctype = "multipart/form-data">
-	<input type = "file" name = "file" />
-	<input name = "submit" type = "submit"/>
-</form>
-<form action = "/detect" method = "GET" enctype = "multipart/form-data">
-	<input type="text" name="url">
-	<input type = "submit"/>
-</form>
-
-```
+<script src="https://gist.github.com/spiyer99/ba33eb7e2770473d74b358066cb0058e.js"></script>
 
 There's not much to it. We create a simple form and tell it to link to the app.route('/detect') flask code. We also need to specify the method. If the user is uploading an image, it's POST. If the user is giving us the url to an image, it's GET. 
 
 The `failure.html` template is even simpler. 
 
-```HTML
-
-{% block content %}
-<body>
-
-    <p> Error in retrieving image </p>
-
-</body>
-{% endblock %}
-
-```
+<script src="https://gist.github.com/spiyer99/c7e43b50659916b48be0c4e33e7af62f.js"></script>
 
 Now we can move on the actual deep learning part. 
 
@@ -356,7 +326,7 @@ The final step is creating a docker container for our code. Then we'll deploy th
 
 Thankfully, detectron2 has already created a [dockerfile](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile) for us. So we can work from that code. 
 
-```
+```Dockerfile
 # adapted from: https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile
 
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
@@ -423,7 +393,7 @@ I've added a `requirements.txt` [file](https://github.com/spiyer99/detectron2_we
 
 Now we can start the docker container. We can do this using the following:
 
-```
+```shell
 docker build . -f Dockerfile -t detectron2 &&\
 docker run -d -p 8080:8080 detectron2
 ```
