@@ -328,11 +328,11 @@ The final step is creating a docker container for our code. Then we'll deploy th
 
 Thankfully, detectron2 has already created a [dockerfile](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile) for us. So we can work from that code. 
 
-
+<script src="https://gist.github.com/spiyer99/4c014a23a903d9a57ec2baace40659b6.js"></script>
 
 I've bascially used the dockerfile supplied in detectron2's [github repo](https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile). But I made a few changes. 
 
-I've added a `requirements.txt` [file](https://github.com/spiyer99/detectron2_web_app/blob/master/requirements.txt). I do a `pip install` from that requirements file. That installs a few libaries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
+I've added a [`requirements.txt`](https://github.com/spiyer99/detectron2_web_app/blob/master/requirements.txt) file. I do a `pip install` from that requirements file. That installs a few libaries that we need for this to work. I've also changed the command to start the `app.py` script we created earlier. That will start the flask application and render the `index.html` template. 
 
 Now we can start the docker container. We can do this using the following:
 
