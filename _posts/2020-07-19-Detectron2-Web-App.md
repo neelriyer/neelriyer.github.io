@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  Detectron2 Web App in Docker and Flask 
+title:  Instance Segmentation Web App
 ---
 
-__Building a Web App in Docker and Flask for Detectron2__
+Building a Web App for Instance Segmentation using in Docker, Flask and Detectron2
 
 (show video here)
 
