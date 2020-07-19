@@ -2,8 +2,8 @@
 layout: post
 title:  Low Memory Instance Segmentation
 ---
-
-Various hacks that helped me deploy an instance segmentation web app to google cloud
+ 
+Hacks to deploy an instance segmentation web app to google cloud
 
 
 Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. I kept seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
