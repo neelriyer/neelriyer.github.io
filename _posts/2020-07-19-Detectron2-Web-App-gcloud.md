@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Instance Segmentation Web App- Part 2
+title:  Instance Segmentation Web App on Google Cloud
 ---
 
 Reducing the Memory required for inference
@@ -17,11 +17,77 @@ I thought that applying the same idea here could reduce the memory requirements.
 
 # The Hack
 
+In short here is the solution. It's larged taken from [here](https://github.com/jantic/DeOldify/blob/master/deoldify/filters.py).
+
+```python
+import PIL
+from PIL import Image
+
+# taken from: https://github.com/jantic/DeOldify/blob/master/deoldify/filters.py
+
+def _scale_to_square(orig, targ):
+  targ_sz = (targ, targ)
+  return orig.resize(targ_sz, resample=PIL.Image.BILINEAR)
 
 
+def _unsquare(image, orig):
+  targ_sz = orig.size
+  image = image.resize(targ_sz, resample=PIL.Image.BILINEAR)
+  return image
+
+```
+
+We scale to square of size `targ`. `targ` is essentially the render factor that Jason mentions in deoldify. 
+
+If the render factor is too high it can [lead to OOM errors](https://github.com/jantic/DeOldify/blob/edac73edf1d3557f95a71f860cffd6c4c91f66f0/deoldify/filters.py#L58). Too low and the result will have a poor resolution. 
+
+What this looks like in practice is pretty simple actually. First we scale the image to a sqaure of size `targ`. Then we run inference on that scaled image. The result from inference is passed through the `_unsquare` function. This converts our square size image to its former size. 
+
+```python
+from ObjectDetector import Detector
+import io
+from flask import Flask, render_template, request, send_from_directory, send_file
+from PIL import Image
+import requests
+import os
+import img_transforms
+
+app = Flask(__name__)
+detector = Detector()
+
+RENDER_FACTOR = 35
+
+# run inference using image transform to reduce memory
+def run_inference_transform(img_path = 'file.jpg', transformed_path = 'file_transformed.jpg'):
+
+	# get height, width of image
+	original_img = Image.open(img_path)
+
+	# transform to square, using render factor
+	transformed_img = img_transforms._scale_to_square(original_img, targ=RENDER_FACTOR*16)
+	transformed_img.save(transformed_path)
+
+	# run inference using detectron2
+	detector.inference(transformed_path)
+	untransformed_result = Image.open('/home/appuser/detectron2_repo/img.jpg')
+
+	# unsquare
+	result_img = img_transforms._unsquare(untransformed_result, original_img)
+
+	# clean up
+	try:
+		os.remove(img_path)
+		os.remove(transformed_path)
+	except:
+		pass
+
+	return result_img
+```
+
+After this we can finally deploy to google cloud without any OOM issues. 
 
 
-
+# Deploying to Google Cloud (bug free)
 
 
 

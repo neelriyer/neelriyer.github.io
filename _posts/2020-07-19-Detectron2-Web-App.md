@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Instance Segmentation Web App- Part 1
+title:  Instance Segmentation Web App
 ---
 
 Building a Web App for Instance Segmentation using in Docker, Flask and Detectron2
