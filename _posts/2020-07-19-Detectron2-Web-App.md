@@ -103,7 +103,11 @@ If the code can't download the image for whatever reason - It will return the `f
 Also, I've specified a different `@app.route` (/detect). This will need to refelcted in the `index.html` file. 
 
 
-```
+# Frontend
+
+Now I'll create the frontend `html` code. Through this inferface the user can upload an image, and also specify a url to the image. 
+
+```HTML
 
 <!DOCTYPE html>
 <html lang="en">
@@ -124,6 +128,24 @@ Also, I've specified a different `@app.route` (/detect). This will need to refel
 </form>
 
 ```
+
+There's not much to it. We create a simple form and tell it to link to the app.route('/detect') flask code. We also need to specify the method. If the user is uploading an image, it's POST. If the user is giving us the url to an image, it's GET. 
+
+The `failure.html` template is even simpler. 
+
+```HTML
+
+{% block content %}
+<body>
+
+    <p> Error in retrieving image </p>
+
+</body>
+{% endblock %}
+
+```
+
+Now we can move on the actual deep learning part. 
 
 
 # The Model
