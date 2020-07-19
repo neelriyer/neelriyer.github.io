@@ -1,13 +1,12 @@
 ---
 layout: post
-title:  Instance Segmentation Web App on Google Cloud
+title:  Instance Segmentation on Google Cloud
 ---
 
-Reducing the Memory required for inference
+Various hacks that helped me deploy an instance segmentation web app to google cloud inexpensively
 
-Machine Learning Models are memory intensive. Even for running inference my [current web app](https://spiyer99.github.io/Detectron2-Web-App/) at least 1 GB of memory. That makes it difficult to deploy to the cloud. 
 
-When deploying to google cloud I kept running into this issue. [Out of memory error]. 
+Machine Learning Models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory at least. That makes it difficult to deploy to the cloud. I kept seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory), when deploying to the cloud.
 
 The immediate solution that comes to mind is increasing the memory of the VM instance. But I'd rather not spend more money that I have to. This is a side project, after all. 
 
@@ -44,7 +43,7 @@ If the render factor is too high it can [lead to OOM errors](https://github.com/
 What this looks like in practice is pretty simple actually. First we scale the image to a sqaure of size `targ`. Then we run inference on that scaled image. The result from inference is passed through the `_unsquare` function. This converts our square size image to its former size. 
 
 ```python
-from ObjectDetector import Detector
+from Detector import Detector
 import io
 from flask import Flask, render_template, request, send_from_directory, send_file
 from PIL import Image
@@ -55,7 +54,7 @@ import img_transforms
 app = Flask(__name__)
 detector = Detector()
 
-RENDER_FACTOR = 35
+RENDER_FACTOR = 25
 
 # run inference using image transform to reduce memory
 def run_inference_transform(img_path = 'file.jpg', transformed_path = 'file_transformed.jpg'):
@@ -84,23 +83,16 @@ def run_inference_transform(img_path = 'file.jpg', transformed_path = 'file_tran
 	return result_img
 ```
 
-After this we can finally deploy to google cloud without any OOM issues. 
+After this we can finally deploy on most cloud platforms without any OOM issues. 
 
 
-# Deploying to Google Cloud (bug free)
-
-
-
-It turns out detectron2 just takes up too much room for heroku. That leaves us with AWS and google cloud. Cause I'm pretty poor - I'm going to be using the option that is free or very close to free. 
+# Deployment on Google Cloud
 
 There are [various hacks](https://medium.com/@jaychapel/4-ways-to-get-google-cloud-credits-c4b7256ff862) to get promotional credits for Google Cloud. So I'm going to be using their services for this tutorial. The plan is that everything that I will do on google cloud will be covered by those free credits :). 
 
 The details of how to do this are included in google cloud's [documentation](https://cloud.google.com/run/docs/quickstarts/build-and-deploy). I'll be mainly following their docs. 
 
-
-# Deployment
-
-I created a [project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) on google cloud and finally got the deployment to work. The google cloud docs are pretty well written - but I still ran into errors. I found [this repo](https://github.com/npatta01/web-deep-learning-classifier/) to be very helpful. It basically implements exactly what we need to do on google cloud.
+I created a [project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) on google cloud and finally got the deployment to work. The google cloud docs are pretty well written - but I still ran into errors. I found [this repo](https://github.com/npatta01/web-deep-learning-classifier/) to be very helpful.
 
 As usual I created a shell script to implement exactly what we need to do in terminal. 
 
