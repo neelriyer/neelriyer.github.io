@@ -3,7 +3,7 @@ layout: post
 title:  Instance Segmentation Web App
 ---
 
-Building a Web App for Instance Segmentation using in Docker, Flask and Detectron2
+Building a Web App for Instance Segmentation using Docker, Flask and Detectron2
 
 {% include youtubePlayer.html id="VVLkB-vYmCc?autoplay=1&mute=1&loop=1&playlist=VVLkB-vYmCc" %}
 

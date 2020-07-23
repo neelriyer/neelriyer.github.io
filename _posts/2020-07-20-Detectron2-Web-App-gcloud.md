@@ -55,8 +55,8 @@ Once we deploy this on google cloud the detectron2 model finally works. The outp
 
 After building with `docker stats` I can confirm that this method uses far less memory. On my local computer it uses 1.16 GB of memory at its peak. Whereas the previous method used over 2GB (approx. 2.23 GB) at its peak. 
 
-You can access the final instance segmentation web app here: 
-https://neelsmlapp-lfoa57ljxa-uc.a.run.app/ 
+You can access the [google cloud instance segmentation web app here](https://neelsmlapp-lfoa57ljxa-uc.a.run.app/).  
+
 
 
 
