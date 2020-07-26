@@ -7,9 +7,7 @@ Hacks to deploy an instance segmentation web app to google cloud
 
 ![alt text](/images/detectron2_web_app/basketball.jpeg)
 
-Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. 
-
-I keep seeing the dreaded [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
+Machine Learning models are memory intensive. My [current web app](https://spiyer99.github.io/Detectron2-Web-App/) consumes at least 1GB of memory. That makes it difficult to deploy to the cloud. I keep seeing an [out of memory error](https://en.wikipedia.org/wiki/Out_of_memory).
 
 The immediate solution that comes to mind is increasing the memory of the VM instance. But I'd rather not spend more money that I have to. This is a side project, after all. 
 
@@ -56,10 +54,6 @@ Once we deploy this on google cloud the detectron2 model finally works. The outp
 After building with `docker stats` I can confirm that this method uses far less memory. On my local computer it uses 1.16 GB of memory at its peak. Whereas the previous method used over 2GB (approx. 2.23 GB) at its peak. 
 
 You can access the [google cloud instance segmentation web app here](https://neelsmlapp-lfoa57ljxa-uc.a.run.app/).  
-
-
-
-
 
 
 
