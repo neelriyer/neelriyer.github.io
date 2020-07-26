@@ -17,7 +17,7 @@ So I came up with a work around. It's actually inspired by [deoldify](https://gi
 
 I thought that applying the same idea here could reduce memory requirements. 
 
-# The Hack
+# The Solution
 
 In short here is the solution. It's largely taken from [here](https://github.com/jantic/DeOldify/blob/master/deoldify/filters.py).
 
