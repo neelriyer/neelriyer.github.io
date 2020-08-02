@@ -3,15 +3,17 @@ layout: post
 title:  Neural Transfer of Audio in Pytorch
 ---
 
-Neural Style transfer is really interesting. They've been some really interesting applications of style transfer. It basically aims to take the 'style' from one image and change the 'content' image to meet that style. Here's an example. This image has been converted to look like it was painted by Van gough.
-
 ![photo](https://camo.githubusercontent.com/974884c2fb949b365c3f415b3712d2cac04a35f7/68747470733a2f2f692e696d6775722e636f6d2f575771364931552e6a7067)
+
+Neural Style transfer is really interesting. They've been some really interesting applications of style transfer. It basically aims to take the 'style' from one image and change the 'content' image to meet that style. The image above shows an example. This image has been converted to look like it was painted by Van gough.
 
 But so far it hasn't really been applied to audio. So this week I explored the idea of applying neural style transfer to audio. To be frank, the results were less than stellar but I'm hoping to keep working on this in the future. 
 
 # Build Dataset
 
 For this exercise, I'm going to be using clips from the joe rogan podcast. I'm trying to make [joe rogan](https://en.wikipedia.org/wiki/Joe_Rogan), from the [joe rogan podcast](http://podcasts.joerogan.net/), sound like [joey diaz](https://en.wikipedia.org/wiki/Joey_Diaz), from the [Church of Whats Happening Now](https://www.youtube.com/channel/UCv695o3i-JmkUB7tPbtwXDA). Joe Rogan already does a pretty good [impression of joey diaz](https://www.youtube.com/watch?v=SLolljsbbFs). But I'd like to improve his impression using deep learning.
+
+![photo](https://talentrecap.com/wp-content/uploads/2020/06/Joe-Rogan-and-Joey-Diaz-2020-2.png)
 
 First I'm going to download the youtube videos. There's a neat trick mentioned on github that allows you to download small segments of youtube videos. That's handy cause I don't want to download the entire video.
 
@@ -391,6 +393,8 @@ librosa.output.write_wav(OUTPUT_FILENAME, x, style_sr)
 Audio(OUTPUT_FILENAME)
 
 ```
+
+The notebook for this can be found on [Github]()
 
 
 
