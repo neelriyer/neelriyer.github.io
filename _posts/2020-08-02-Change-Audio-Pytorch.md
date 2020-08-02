@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Neural Transfer of Audio in Pytorch
+title:  Neural Style Transfer for Audio in Pytorch
 ---
 
 ![photo](https://camo.githubusercontent.com/974884c2fb949b365c3f415b3712d2cac04a35f7/68747470733a2f2f692e696d6775722e636f6d2f575771364931552e6a7067)
@@ -15,7 +15,7 @@ For this exercise, I'm going to be using clips from the joe rogan podcast. I'm t
 
 ![photo](https://talentrecap.com/wp-content/uploads/2020/06/Joe-Rogan-and-Joey-Diaz-2020-2.png)
 
-First I'm going to download the youtube videos. There's a neat trick mentioned on github that allows you to download small segments of youtube videos. That's handy cause I don't want to download the entire video. You'll need [youtube-dl](https://github.com/ytdl-org/youtube-dl) and [ffmpeg](https://ffmpeg.org/) for this step.
+First I'm going to download the youtube videos. There's a neat trick mentioned on [github](https://github.com/ytdl-org/youtube-dl/issues/622#issuecomment-162337869) that allows you to download small segments of youtube videos. That's handy cause I don't want to download the entire video. You'll need [youtube-dl](https://github.com/ytdl-org/youtube-dl) and [ffmpeg](https://ffmpeg.org/) for this step.
 
 ```python
 import os
@@ -55,7 +55,7 @@ Ideally we want both content and style loss to be minimised.
 
 ## Content loss
 
-The content loss function takes in an input matrix and a content matrix. The content matrix corresponds to joe rogan's audio. Then it returns the weighted content distance: ``$w_{CL}.D_C^L(X,C)$`` between the input matrix `$X$` and the content matrix `$C$`. This is [implemented](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html#content-loss) as using a torch module. It can be calculated using ``nn.MSELoss``.
+The content loss function takes in an input matrix and a content matrix. The content matrix corresponds to joe rogan's audio. Then it returns the weighted content distance: $w_{CL}.D_C^L(X,C)$ between the input matrix $X$ and the content matrix $C$. This is [implemented](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html#content-loss) as using a torch module. It can be calculated using ``nn.MSELoss``.
 
 This implementation of content loss was largely borrowed from [here](https://ghamrouni.github.io/stn-tuto/advanced/neural_style_tutorial.html). 
 
@@ -270,9 +270,7 @@ def get_style_model_and_losses(cnn, style_float,\
 
 ```
 
-I personally found that my loss values - particularly for style loss - were very low. So low they were almost `0`. 
-
-The learning rates are pretty small and the gradients are pretty small. So multiplying everything results in a very small number. I recitifed this by multiplying by a `style_weight` and a `content_weight`. This seems like a crude solution. But according to [fastai](https://youtu.be/xXXiC4YRGrQ?t=5798) you care about the direction of the loss and its relative size. So I think it's alright for now.
+I personally found that my loss values - particularly for style loss - were very low. So low they were almost `0`. I recitifed this by multiplying by a `style_weight` and a `content_weight`. This seems like a crude solution. But according to [fastai](https://youtu.be/xXXiC4YRGrQ?t=5798) you care about the direction of the loss and its relative size. So I think it's alright for now.
 
 # Run style transfer
 

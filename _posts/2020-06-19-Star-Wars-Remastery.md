@@ -3,7 +3,7 @@ layout: post
 title: Remastering Star Wars using Deep Learning
 ---
 
-![photo](https://images.unsplash.com/photo-1547700055-b61cacebece9)
+{% include youtubePlayer.html id="2WS6s5bGdoA?autoplay=1&mute=1&loop=1&playlist=2WS6s5bGdoA" %}
 
 A New Hope for the Deleted Scenes.
 
