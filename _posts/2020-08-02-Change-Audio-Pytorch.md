@@ -7,15 +7,15 @@ title:  Neural Transfer of Audio in Pytorch
 
 Neural Style transfer is really interesting. They've been some really interesting applications of style transfer. It basically aims to take the 'style' from one image and change the 'content' image to meet that style. The image above shows an example. This image has been converted to look like it was painted by Van gough.
 
-But so far it hasn't really been applied to audio. So this week I explored the idea of applying neural style transfer to audio. To be frank, the results were less than stellar but I'm hoping to keep working on this in the future. 
+But so far it hasn't really been applied to audio. So this week I explored the idea of applying neural style transfer to audio. To be frank, the results were less than stellar but I'm going to keep working on this in the future. 
 
 # Build Dataset
 
-For this exercise, I'm going to be using clips from the joe rogan podcast. I'm trying to make [joe rogan](https://en.wikipedia.org/wiki/Joe_Rogan), from the [joe rogan podcast](http://podcasts.joerogan.net/), sound like [joey diaz](https://en.wikipedia.org/wiki/Joey_Diaz), from the [Church of Whats Happening Now](https://www.youtube.com/channel/UCv695o3i-JmkUB7tPbtwXDA). Joe Rogan already does a pretty good [impression of joey diaz](https://www.youtube.com/watch?v=SLolljsbbFs). But I'd like to improve his impression using deep learning.
+For this exercise, I'm going to be using clips from the joe rogan podcast. I'm trying to make [Joe Rogan](https://en.wikipedia.org/wiki/Joe_Rogan), from the [Joe Rogan Experience](http://podcasts.joerogan.net/), sound like [Joey Diaz](https://en.wikipedia.org/wiki/Joey_Diaz), from the [Church of Whats Happening Now](https://www.youtube.com/channel/UCv695o3i-JmkUB7tPbtwXDA). Joe Rogan already does a pretty good [impression of joey diaz](https://www.youtube.com/watch?v=SLolljsbbFs). But I'd like to improve his impression using deep learning.
 
 ![photo](https://talentrecap.com/wp-content/uploads/2020/06/Joe-Rogan-and-Joey-Diaz-2020-2.png)
 
-First I'm going to download the youtube videos. There's a neat trick mentioned on github that allows you to download small segments of youtube videos. That's handy cause I don't want to download the entire video.
+First I'm going to download the youtube videos. There's a neat trick mentioned on github that allows you to download small segments of youtube videos. That's handy cause I don't want to download the entire video. You'll need [youtube-dl](https://github.com/ytdl-org/youtube-dl) and [ffmpeg](https://ffmpeg.org/) for this step.
 
 ```python
 import os

@@ -3,13 +3,11 @@ layout: post
 title: Forecasting Food Demand
 ---
 
-Applying Neural Networks to the Meal kit Market.
-
 ![alt text](/images/mealkit/meal_kit_intro.png)
 
-So this is going to overfit.
+Applying Neural Networks to the Meal kit Market.
 
-Time series problems usually struggle with overfitting. This entire exercise became more of a challenge to see how I could prevent overfitting in time series forecasting. 
+So this is going to overfit. Time series problems usually struggle with overfitting. This entire exercise became more of a challenge to see how I could prevent overfitting in time series forecasting. 
 
 I added [weight decay](https://www.fast.ai/2018/07/02/adam-weight-decay/) and [dropout](https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf). This should work to prevent overfitting. The network has embedding layers for categorical variables (which I vary in size) followed by dropout and [batch normalisation](https://arxiv.org/abs/1502.03167) (for continuous variables).
 

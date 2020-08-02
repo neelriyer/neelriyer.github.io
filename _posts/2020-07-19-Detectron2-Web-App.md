@@ -3,9 +3,9 @@ layout: post
 title:  Instance Segmentation Web App
 ---
 
-Building a Web App for Instance Segmentation using Docker, Flask and Detectron2
-
 {% include youtubePlayer.html id="VVLkB-vYmCc?autoplay=1&mute=1&loop=1&playlist=VVLkB-vYmCc" %}
+
+Building a Web App for Instance Segmentation using Docker, Flask and Detectron2
 
 Detectron2 offers state of the art instance segmentation models. It's very [quick to train](https://detectron2.readthedocs.io/notes/benchmarks.html) and offers very good results. 
 
