@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Neural Style Transfer for Audio in Pytorch
+title: Neural Style Transfer for Audio in Pytorch
 ---
 
 ![photo](https://camo.githubusercontent.com/974884c2fb949b365c3f415b3712d2cac04a35f7/68747470733a2f2f692e696d6775722e636f6d2f575771364931552e6a7067)
@@ -392,7 +392,7 @@ Audio(OUTPUT_FILENAME)
 
 ```
 
-The notebook for this can be found on [Github]()
+The notebook for this can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/Neural%20Transfer%20of%20Audio%20in%20Pytorch.ipynb)
 
 
 
