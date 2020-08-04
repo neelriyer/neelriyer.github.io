@@ -2,6 +2,7 @@
 layout: post
 title: Neural Style Transfer for Audio in Pytorch
 ---
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 ![photo](https://camo.githubusercontent.com/974884c2fb949b365c3f415b3712d2cac04a35f7/68747470733a2f2f692e696d6775722e636f6d2f575771364931552e6a7067)
 
@@ -29,7 +30,7 @@ def download_from_url_ffmpeg(url, output, minute_mark = 1):
 	except:
 		pass
 
-	# cmd = 'ffmpeg -loglevel warning -ss 0 -i $(youtube-dl -f 22 --get-url https://www.youtube.com/watch?v=mMZriSvaVP8) -t 11200 -c:v copy -c:a copy react-spot.mp4'
+
 	cmd = 'ffmpeg -loglevel warning -ss 0 -i $(youtube-dl -f bestaudio --get-url '+str(url)+') -t '+str(minute_mark*60)+' '+str(output)
 	os.system(cmd)
 
@@ -55,7 +56,7 @@ Ideally we want both content and style loss to be minimised.
 
 ## Content loss
 
-The content loss function takes in an input matrix and a content matrix. The content matrix corresponds to joe rogan's audio. Then it returns the weighted content distance: $w_{CL}.D_C^L(X,C)$ between the input matrix $X$ and the content matrix $C$. This is [implemented](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html#content-loss) as using a torch module. It can be calculated using ``nn.MSELoss``.
+The content loss function takes in an input matrix and a content matrix. The content matrix corresponds to joe rogan's audio. Then it returns the weighted content distance: $$w_{CL}.D_C^L(X,C)$$ between the input matrix $$X$$ and the content matrix $$C$$. This is [implemented](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html#content-loss) using a torch module. It can be calculated using ``nn.MSELoss``.
 
 This implementation of content loss was largely borrowed from [here](https://ghamrouni.github.io/stn-tuto/advanced/neural_style_tutorial.html). 
 
