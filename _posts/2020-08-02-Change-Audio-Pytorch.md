@@ -2,11 +2,10 @@
 layout: post
 title: Neural Style Transfer for Audio in Pytorch
 ---
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 ![photo](https://camo.githubusercontent.com/974884c2fb949b365c3f415b3712d2cac04a35f7/68747470733a2f2f692e696d6775722e636f6d2f575771364931552e6a7067)
 
-Neural Style transfer is really interesting. They've been some really interesting applications of style transfer. It basically aims to take the 'style' from one image and change the 'content' image to meet that style. The image above shows an example. This image has been converted to look like it was painted by Van gough.
+Neural Style transfer is really interesting. They've been some really [interesting applications](https://www.tensorflow.org/tutorials/generative/style_transfer) of style transfer. It basically aims to take the 'style' from one image and change the 'content' image to meet that style. The image above shows an example. This image has been converted to look like it was painted by Van gough.
 
 But so far it hasn't really been applied to audio. So this week I explored the idea of applying neural style transfer to audio. To be frank, the results were less than stellar but I'm going to keep working on this in the future. 
 
@@ -55,6 +54,7 @@ There are two types of loss for this:
 Ideally we want both content and style loss to be minimised.
 
 ## Content loss
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 The content loss function takes in an input matrix and a content matrix. The content matrix corresponds to joe rogan's audio. Then it returns the weighted content distance: $$w_{CL}.D_C^L(X,C)$$ between the input matrix $$X$$ and the content matrix $$C$$. This is [implemented](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html#content-loss) using a torch module. It can be calculated using ``nn.MSELoss``.
 
