@@ -24,16 +24,16 @@ import os
 # adapted from: https://github.com/ytdl-org/youtube-dl/issues/622#issuecomment-162337869
 def download_from_url_ffmpeg(url, output, minute_mark = 1):
 
-  try:
-    os.remove(output)
-  except:
-    pass
+	try:
+		os.remove(output)
+	except:
+		pass
 
-  # cmd = 'ffmpeg -loglevel warning -ss 0 -i $(youtube-dl -f 22 --get-url https://www.youtube.com/watch?v=mMZriSvaVP8) -t 11200 -c:v copy -c:a copy react-spot.mp4'
-  cmd = 'ffmpeg -loglevel warning -ss 0 -i $(youtube-dl -f bestaudio --get-url '+str(url)+') -t '+str(minute_mark*60)+' '+str(output)
-  os.system(cmd)
+	# cmd = 'ffmpeg -loglevel warning -ss 0 -i $(youtube-dl -f 22 --get-url https://www.youtube.com/watch?v=mMZriSvaVP8) -t 11200 -c:v copy -c:a copy react-spot.mp4'
+	cmd = 'ffmpeg -loglevel warning -ss 0 -i $(youtube-dl -f bestaudio --get-url '+str(url)+') -t '+str(minute_mark*60)+' '+str(output)
+	os.system(cmd)
 
-  return os.getcwd()+'/'+output
+	return os.getcwd()+'/'+output
 
 
 url = 'https://www.youtube.com/watch?v=-xY_D8SMNtE'
@@ -158,27 +158,27 @@ import torch
 
 N_FFT=2048
 def read_audio_spectum(filename):
-  x, fs = librosa.load(filename)
-  S = librosa.stft(x, N_FFT)
-  p = np.angle(S)
-  S = np.log1p(np.abs(S))  
-  return S, fs
+	x, fs = librosa.load(filename)
+	S = librosa.stft(x, N_FFT)
+	p = np.angle(S)
+	S = np.log1p(np.abs(S))  
+	return S, fs
 
 style_audio, style_sr = read_audio_spectum(style_audio_name)
 content_audio, content_sr = read_audio_spectum(content_audio_name)
 
 if(content_sr != style_sr):
-  raise 'Sampling rates are not same'
-  
+	raise 'Sampling rates are not same'
+	
 style_audio = style_audio.reshape([1,1025,style_audio.shape[1]])
 content_audio = content_audio.reshape([1,1025,style_audio.shape[1]])
 
 if torch.cuda.is_available():
-  style_float = Variable((torch.from_numpy(style_audio)).cuda())
-  content_float = Variable((torch.from_numpy(content_audio)).cuda())	
+	style_float = Variable((torch.from_numpy(style_audio)).cuda())
+	content_float = Variable((torch.from_numpy(content_audio)).cuda())	
 else:
-  style_float = Variable(torch.from_numpy(style_audio))
-  content_float = Variable(torch.from_numpy(content_audio))
+	style_float = Variable(torch.from_numpy(style_audio))
+	content_float = Variable(torch.from_numpy(content_audio))
 
 ```
 
@@ -217,7 +217,7 @@ class CNNModel(nn.Module):
 
 cnn = CNNModel()
 if torch.cuda.is_available():
-  cnn = cnn.cuda()
+	cnn = cnn.cuda()
 
 
 style_weight=1000
@@ -225,48 +225,48 @@ content_weight = 2
 
 
 def get_style_model_and_losses(cnn, style_float,\
-                               content_float=content_float,\
-                               style_weight=style_weight):
-  
-  cnn = copy.deepcopy(cnn)
+															 content_float=content_float,\
+															 style_weight=style_weight):
+	
+	cnn = copy.deepcopy(cnn)
 
-  style_losses = []
-  content_losses = []
+	style_losses = []
+	content_losses = []
 
-  # create model
-  model = nn.Sequential()
+	# create model
+	model = nn.Sequential()
 
-  # we need a gram module in order to compute style targets
-  gram = GramMatrix()
+	# we need a gram module in order to compute style targets
+	gram = GramMatrix()
 
-  # load onto gpu  
-  if torch.cuda.is_available():
-    model = model.cuda()
-    gram = gram.cuda()
+	# load onto gpu  
+	if torch.cuda.is_available():
+		model = model.cuda()
+		gram = gram.cuda()
 
-  # add conv1
-  model.add_module('conv_1', cnn.cnn1)
+	# add conv1
+	model.add_module('conv_1', cnn.cnn1)
 
-  # add relu
-  model.add_module('relu1', cnn.relu)
+	# add relu
+	model.add_module('relu1', cnn.relu)
 
-  # add conv2
-  model.add_module('conv_2', cnn.cnn2)
+	# add conv2
+	model.add_module('conv_2', cnn.cnn2)
 
-  # add style loss
-  target_feature = model(style_float).clone()
-  target_feature_gram = gram(target_feature)
-  style_loss = StyleLoss(target_feature_gram, style_weight)
-  model.add_module("style_loss_1", style_loss)
-  style_losses.append(style_loss)
+	# add style loss
+	target_feature = model(style_float).clone()
+	target_feature_gram = gram(target_feature)
+	style_loss = StyleLoss(target_feature_gram, style_weight)
+	model.add_module("style_loss_1", style_loss)
+	style_losses.append(style_loss)
 
-  # add content loss
-  target = model(content_float).detach()
-  content_loss = ContentLoss(target, content_weight)
-  model.add_module("content_loss_1", content_loss)
-  content_losses.append(content_loss)
+	# add content loss
+	target = model(content_float).detach()
+	content_loss = ContentLoss(target, content_weight)
+	model.add_module("content_loss_1", content_loss)
+	content_losses.append(content_loss)
 
-  return model, style_losses, content_losses
+	return model, style_losses, content_losses
 
 ```
 
@@ -294,66 +294,66 @@ input_float = content_float.clone()
 learning_rate_initial = 1e-4
 
 def get_input_param_optimizer(input_float):
-  input_param = nn.Parameter(input_float.data)
-  # optimizer = optim.Adagrad([input_param], lr=learning_rate_initial, lr_decay=0.0001,weight_decay=0)
-  optimizer = optim.Adam([input_param], lr=learning_rate_initial)
-  # optimizer = optim.SGD([input_param], lr=learning_rate_initial)
-  # optimizer = optim.RMSprop([input_param], lr=learning_rate_initial)
-  return input_param, optimizer
+	input_param = nn.Parameter(input_float.data)
+	# optimizer = optim.Adagrad([input_param], lr=learning_rate_initial, lr_decay=0.0001,weight_decay=0)
+	optimizer = optim.Adam([input_param], lr=learning_rate_initial)
+	# optimizer = optim.SGD([input_param], lr=learning_rate_initial)
+	# optimizer = optim.RMSprop([input_param], lr=learning_rate_initial)
+	return input_param, optimizer
 
 num_steps= 10000
 
 
 # from https://pytorch.org/tutorials/advanced/neural_style_tutorial.html
 def run_style_transfer(cnn, style_float=style_float,\
-                       content_float=content_float,\
-                       input_float=input_float,\
-                       num_steps=num_steps, style_weight=style_weight): 
-  print('Building the style transfer model..')
-  # model, style_losses = get_style_model_and_losses(cnn, style_float)
-  model, style_losses, content_losses = get_style_model_and_losses(cnn, style_float, content_float)
-  input_param, optimizer = get_input_param_optimizer(input_float)
-  print('Optimizing..')
-  run = [0]
+											 content_float=content_float,\
+											 input_float=input_float,\
+											 num_steps=num_steps, style_weight=style_weight): 
+	print('Building the style transfer model..')
+	# model, style_losses = get_style_model_and_losses(cnn, style_float)
+	model, style_losses, content_losses = get_style_model_and_losses(cnn, style_float, content_float)
+	input_param, optimizer = get_input_param_optimizer(input_float)
+	print('Optimizing..')
+	run = [0]
 
-  while run[0] <= num_steps:
-    def closure():
-            # correct the values of updated input image
-      input_param.data.clamp_(0, 1)
+	while run[0] <= num_steps:
+		def closure():
+						# correct the values of updated input image
+			input_param.data.clamp_(0, 1)
 
-      optimizer.zero_grad()
-      model(input_param)
-      style_score = 0
-      content_score = 0
+			optimizer.zero_grad()
+			model(input_param)
+			style_score = 0
+			content_score = 0
 
-      for sl in style_losses:
-        #print('sl is ',sl,' style loss is ',style_score)
-        style_score += sl.loss
+			for sl in style_losses:
+				#print('sl is ',sl,' style loss is ',style_score)
+				style_score += sl.loss
 
-      for cl in content_losses:
-        content_score += cl.loss
+			for cl in content_losses:
+				content_score += cl.loss
 
-      style_score *= style_weight
-      content_score *= content_weight
+			style_score *= style_weight
+			content_score *= content_weight
 
-      loss = style_score + content_score
-      loss.backward()
+			loss = style_score + content_score
+			loss.backward()
 
-      run[0] += 1
-      if run[0] % 100 == 0:
-        print("run {}:".format(run))
-        print('Style Loss : {:4f} Content Loss: {:4f}'.format(
-                    style_score.item(), content_score.item()))
-        print()
+			run[0] += 1
+			if run[0] % 100 == 0:
+				print("run {}:".format(run))
+				print('Style Loss : {:4f} Content Loss: {:4f}'.format(
+										style_score.item(), content_score.item()))
+				print()
 
-      return style_score + content_score
+			return style_score + content_score
 
-    optimizer.step(closure)
+		optimizer.step(closure)
 
-  # ensure values are between 0 and 1
-  input_param.data.clamp_(0, 1)
+	# ensure values are between 0 and 1
+	input_param.data.clamp_(0, 1)
 
-  return input_param.data
+	return input_param.data
 
 
 output = run_style_transfer(cnn, style_float=style_float, content_float=content_float, input_float=input_float)
@@ -370,7 +370,7 @@ Then we write to an audio file and use the jupyter notebook extension to play th
 # taken from: https://github.com/alishdipani/Neural-Style-Transfer-Audio/blob/master/NeuralStyleTransfer.py
 
 if torch.cuda.is_available():
-  output = output.cpu()
+	output = output.cpu()
 
 output = output.squeeze(0)
 output = output.numpy()
@@ -382,9 +382,9 @@ a = np.exp(output) - 1
 # This code is supposed to do phase reconstruction
 p = 2 * np.pi * np.random.random_sample(a.shape) - np.pi
 for i in range(500):
-  S = a * np.exp(1j*p)
-  x = librosa.istft(S)
-  p = np.angle(librosa.stft(x, N_FFT))
+	S = a * np.exp(1j*p)
+	x = librosa.istft(S)
+	p = np.angle(librosa.stft(x, N_FFT))
 
 OUTPUT_FILENAME = 'output.wav'
 librosa.output.write_wav(OUTPUT_FILENAME, x, style_sr)
