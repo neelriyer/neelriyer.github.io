@@ -35,8 +35,9 @@ After this we can finally deploy on most cloud platforms without any OOM issues.
 
 I'll be using the web app described [here](https://spiyer99.github.io/Detectron2-Web-App/) as a starting point.
 
-We'll need to modify the `app.py` script to implement the `run_inference_transform` function described above. The modified version is on [Github](https://github.com/spiyer99/detectron2_web_app/blob/master/app.py).
+We'll need to modify the `app.py` script to implement the `run_inference_transform` function described above. Here's the modified version: 
 
+<script src="https://gist.github.com/spiyer99/82182ce92b4cc9acda56460e7b5ce275.js"></script>
 
 # Deploying on Google Cloud
 
