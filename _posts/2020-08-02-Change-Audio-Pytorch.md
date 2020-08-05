@@ -54,6 +54,7 @@ There are two types of loss for this:
 Ideally we want both content and style loss to be minimised.
 
 ## Content loss
+
 <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 The content loss function takes in an input matrix and a content matrix. The content matrix corresponds to joe rogan's audio. Then it returns the weighted content distance: $$w_{CL}.D_C^L(X,C)$$ between the input matrix $$X$$ and the content matrix $$C$$. This is [implemented](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html#content-loss) using a torch module. It can be calculated using ``nn.MSELoss``.
