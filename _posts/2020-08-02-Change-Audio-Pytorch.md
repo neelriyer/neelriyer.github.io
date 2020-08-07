@@ -148,7 +148,8 @@ class StyleLoss(nn.Module):
 
 # Converting Wav to Matrix
 
-To convert the waveform audio to a matrix that we can pass to pytorch I'll use `librosa`. Most of this code was borrowed from Dmitry Ulyanov's [github repo](https://github.com/DmitryUlyanov/neural-style-audio-tf/blob/master/neural-style-audio-tf.ipynb) and Alish Dipani's [github repo](https://github.com/alishdipani/Neural-Style-Transfer-Audio). 
+
+I'll use `librosa`, to convert the waveform audio to a matrix that we can pass to Pytorch. This code was mostly borrowed from Dmitry Ulyanov's [github repo](https://github.com/DmitryUlyanov/neural-style-audio-tf/blob/master/neural-style-audio-tf.ipynb) and Alish Dipani's [github repo](https://github.com/alishdipani/Neural-Style-Transfer-Audio). 
 
 We get the Short-time Fourier transform from the audio using the `librosa` library. The window size for this is `2048`, which is also the default setting. There is scope here for replacing the code with code from torchaudio. But this works for now.
 

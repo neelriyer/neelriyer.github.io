@@ -57,4 +57,3 @@ After building with `docker stats` I can confirm that this method uses far less 
 You can access the [google cloud instance segmentation web app here](https://neelsmlapp-lfoa57ljxa-uc.a.run.app/).  
 
 
-
