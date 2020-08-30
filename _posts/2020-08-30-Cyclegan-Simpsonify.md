@@ -527,7 +527,7 @@ test_model(10, 'AtoB')
 
 The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks that require geomtric changes haven't been very successful so far. I've just confirmed this.
 
-The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. Cyclegan seems to work well with things like texture changes, color changes and photo to painting translations. 
+Cyclegan seems to work well with things like texture changes, color changes and photo to painting translations. The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. 
 
 But this was definitely fun to create!
 
