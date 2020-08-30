@@ -7,7 +7,6 @@ title: Simpsonize Yourself using CycleGAN
 ![alt text](/images/cyclegan_simpsonify/real_face_8244_real.png)
 
 
-
 ![alt text](/images/cyclegan_simpsonify/real_face_9038_fake.png)
 ![alt text](/images/cyclegan_simpsonify/real_face_9038_real.png)
 
@@ -51,7 +50,7 @@ Initially my thinking was to scrape images from google images. Unfortunately to 
 
 So instead I scraped images from [Bing](https://github.com/gurugaurav/bing_image_downloader). 
 
-This worked to an extent. But it took so *long* to download all the images. And after I looked at the images I noticed that some of them didn't include any faces at all.
+This worked to an extent. But it took *so long* to download all the images. And after I looked at the images I noticed that some of them didn't include any faces at all.
 
 Thankfully, I stumbled across a [faceset](https://www.kaggle.com/kostastokis/simpsons-faces) on kaggle that had everything I needed. It contains Simpsons faces extracted from a few seasons. Each image is 200x200 pixels and contains one face. 
 
@@ -88,7 +87,7 @@ To create the faceset of real faces I got a little bit experimental.
 
 [Will Kwan](https://www.youtube.com/watch?v=pctzpu_wJyE) recently using [stylegan2](https://github.com/NVlabs/stylegan2) to generate a dataset in one of his recent videos. It seemed to work fairly well for him. So I thought I could do the same thing.
 
-Here's some example faces taken from Nvidi's stylegan2 github repository. As you can see the output from this GAN is fairly photorealistic. 
+Here's some example faces taken from Nvidia's stylegan2 github repository. As you can see the output from this GAN is fairly photorealistic. 
 
 <div>
 <img src="https://miro.medium.com/max/2636/1*WR5OApYceVhZTNhO33csZw.png" width="500" height = "500"/>
@@ -301,67 +300,16 @@ import os
 from pathlib import Path
 from tqdm.notebook import tqdm
 
+options_list = ['--name', NAME,\
+				'--dataroot', TRAIN_A.parent,\
+				'--batch_size', BATCH_SIZE,\
+				'--checkpoints_dir', './checkpoints',\
+				'--lr', 2e-4,\
+				'--n_epochs', EPOCHS,\
+				'--n_epochs_decay', EPOCHS//2,\
+				'--name', NAME]
 
-opt = TrainOptions()  # TODO: TrainOptions().parse(**args) not working. Look into this.
-opt.name = NAME
-opt.dataroot = TRAIN_A.parent
-opt.batch_size=BATCH_SIZE
-opt.beta1=0.5
-opt.checkpoints_dir='./checkpoints'
-opt.continue_train=False
-opt.crop_size=256
-opt.dataset_mode='unaligned'
-opt.direction='BtoA'
-opt.display_env='main'
-opt.display_freq=400
-opt.display_id=1
-opt.display_ncols=4
-opt.display_port=8097
-opt.display_server='http://localhost'
-opt.display_winsize=256
-opt.epoch='latest'
-opt.epoch_count=1
-opt.gan_mode='lsgan'
-opt.gpu_ids=[0]
-opt.init_gain=0.02
-opt.init_type='normal'
-opt.input_nc=3
-opt.isTrain=True
-opt.lambda_A=10.0
-opt.lambda_B=10.0
-opt.lambda_identity=0.5
-opt.load_iter=0
-opt.load_size=286
-opt.lr=2e-4
-opt.lr_decay_iters=50
-opt.lr_policy='linear'
-opt.max_dataset_size=float("inf")
-opt.n_epochs=EPOCHS
-opt.model = 'cycle_gan'
-opt.n_epochs_decay=EPOCHS//2
-opt.n_layers_D=3
-opt.name=NAME
-opt.ndf=64
-opt.netD='basic'
-opt.netG='resnet_9blocks'
-opt.ngf=64
-opt.no_dropout=True
-opt.no_flip=False
-opt.no_html=False
-opt.norm='instance' 
-opt.num_threads=4
-opt.output_nc=3
-opt.phase='train'
-opt.pool_size=50
-opt.preprocess='resize_and_crop' 
-opt.print_freq=100
-opt.save_by_iter=False 
-opt.save_epoch_freq=1
-opt.save_latest_freq=5000
-opt.serial_batches=False 
-opt.suffix=''
-opt.update_html_freq=1000
-opt.verbose=False
+opt = TrainOptions().parse(options_list)
 
 ```
 
