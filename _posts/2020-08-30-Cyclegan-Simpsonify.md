@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Simpsonize Yourself
+title: Simpsonize Yourself using CycleGAN
 ---
 
 <table><tr><td><img src='https://drive.google.com/uc?id=1jmpktn6Jj9ia_bKpkNzU3A-vtEjRrcpc'></td><td><img src='https://drive.google.com/uc?id=1_t_Gdq8FxdhkF7QVhP_RxCDvO9a-CLjB'></td></tr></table>
