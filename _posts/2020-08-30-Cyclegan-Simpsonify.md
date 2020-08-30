@@ -1,4 +1,7 @@
-# Can you turn yourself into a Simpsons Character?
+---
+layout: post
+title: 'Simpsonize' Yourself
+---
 
 <table><tr><td><img src='https://drive.google.com/uc?id=1pTuzTcVpPWZnvEtmd4FOg6vdtQ0zIWQh'></td><td><img src='https://drive.google.com/uc?id=1SV5vLt-KrXRmAesBagivP6OlzsFhbsyO'></td></tr></table>
 
