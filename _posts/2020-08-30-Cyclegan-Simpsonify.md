@@ -528,6 +528,7 @@ The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks 
 The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. Cyclegan seems to work well with things like texture changes, color changes and photo to painting translations. 
 
 
+The full jupyter notebook can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/cyclegan_simpsonify.ipynb)
 
 
 
