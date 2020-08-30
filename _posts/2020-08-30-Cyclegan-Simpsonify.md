@@ -527,9 +527,7 @@ test_model(10, 'AtoB')
 
 The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks that require geomtric changes haven't been very successful so far. I've just confirmed this.
 
-Cyclegan seems to work well with things like texture changes, color changes and photo to painting translations. The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. 
-
-But this was definitely fun to create!
+The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. One of the toughest part with GANs is figuring out when to stop training. Visual inspection [seems](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/issues/166) to be the answer for Cyclegan. It might be worthwhile to train for another few days and see what happens. 
 
 
 The full jupyter notebook can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/cyclegan_simpsonify.ipynb)
