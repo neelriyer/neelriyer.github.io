@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Simpsonize Yourself using CycleGAN
+title: Simpsonize Yourself using CycleGAN (v1)
 ---
 
 ![alt text](/images/cyclegan_simpsonify/real_face_8244_fake.png)
@@ -286,7 +286,7 @@ def test_model (number_results = 5, direction = 'BtoA', src = None, dst = None):
 
 ```
 
-Let's create the options for training. This part is fairly long.
+Let's create the options for training.
 
 
 ```python
@@ -370,7 +370,7 @@ The discriminator uses `LeakyReLU`, `Conv2d` and `InstanceNorm2d`.
 
 `LeakyReLU` is interesting. `ReLU` is an activation that adds non-linearity to the network. But what is  `LeakyReLU`? 
 
-`ReLU` converts all negative values to `0`. Since, the gradient of `0` is `0` neurons that reach large negative effectively neuron cancel out to `0`. They effectively 'die'. This means that your network eventually stops learning. 
+`ReLU` converts all negative values to `0`. Since, the gradient of `0` is `0` neurons that reach large negative values effectively neuron cancel out to `0`. They effectively 'die'. This means that your network eventually stops learning. 
 
 This effect is known as the [dying `ReLU` problem](https://datascience.stackexchange.com/questions/5706/what-is-the-dying-relu-problem-in-neural-networks). 
 
