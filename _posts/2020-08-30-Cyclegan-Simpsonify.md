@@ -376,8 +376,10 @@ This effect is known as the [dying `ReLU` problem](https://datascience.stackexch
 
 `LeakyReLU` aims to fix this problem. The function is as follows:
 
-`LeakyRELU(x)={ x, if x≥0
- negative_slope×x, otherwise }`
+
+
+![alt text](/images/cyclegan_simpsonify/leaky_relu.png)
+
 ​	
 This means if a value is negative mulitply it by `negative_slope` otherwise do nothing. `negative_slope` is usually `0.01`, but you can vary it. 
 
