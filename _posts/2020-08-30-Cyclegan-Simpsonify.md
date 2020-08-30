@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Simpsonize' Yourself
+title: Simpsonize Yourself
 ---
 
 <table><tr><td><img src='https://drive.google.com/uc?id=1pTuzTcVpPWZnvEtmd4FOg6vdtQ0zIWQh'></td><td><img src='https://drive.google.com/uc?id=1SV5vLt-KrXRmAesBagivP6OlzsFhbsyO'></td></tr></table>
@@ -575,9 +575,6 @@ test_model(10, 'AtoB')
 The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks that require geomtric changes haven't been very successful so far. This notebook confirms this.
 
 The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. I doubt it though. Cyclegan seems to work well with things like texture changes, color changes and photo to painting translations. 
-
-
-
 
 
 
