@@ -381,9 +381,9 @@ This effect is known as the [dying `ReLU` problem](https://datascience.stackexch
 ![alt text](/images/cyclegan_simpsonify/leaky_relu.png)
 
 ​	
-This means if a value is negative mulitply it by `negative_slope` otherwise do nothing. `negative_slope` is usually `0.01`, but you can vary it. 
+This function essentially translates to: if a value is negative mulitply it by `negative_slope` otherwise do nothing. `negative_slope` is usually `0.01`, but you can vary it. 
 
-So `LeakyReLU` signficantly reduces the magnitude of negative values. But the jury is [still out](https://www.quora.com/What-are-the-advantages-of-using-Leaky-Rectified-Linear-Units-Leaky-ReLU-over-normal-ReLU-in-deep-learning/answer/Nouroz-Rahman) on whether this really works well.
+So `LeakyReLU` signficantly reduces the magnitude of negative values rather than sending them to `0`. But the jury is [still out](https://www.quora.com/What-are-the-advantages-of-using-Leaky-Rectified-Linear-Units-Leaky-ReLU-over-normal-ReLU-in-deep-learning/answer/Nouroz-Rahman) on whether this really works well.
 
 
 # Training
