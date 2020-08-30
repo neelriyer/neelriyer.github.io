@@ -207,9 +207,3 @@ It's also actually slightly better than the model that fastai created in their [
 3. Collaborative filtering is largely undermined by the [cold-start problem](https://www.kdnuggets.com/2019/01/data-scientist-dilemma-cold-start-machine-learning.html). To overcome this we could potentially look at the users metadata. For example we could look at things like: gender, age, city, time they accessed the site, etc. Just all the things they entered on the sign up form. Building a model on that data could be tricky, but if it works well it could be useful.
 
 
-
-
-
-
-
-
