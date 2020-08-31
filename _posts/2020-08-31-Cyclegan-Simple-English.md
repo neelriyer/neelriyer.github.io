@@ -1,4 +1,7 @@
-# Cyclegan in Simple Terms.
+---
+layout: post
+title: Cyclegan in Simple Terms
+---
 
 
 {% include youtubePlayer.html id="9reHvktowLY?autoplay=1&mute=1&loop=1&playlist=9reHvktowLY" %}
