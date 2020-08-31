@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Cyclegan in Simple Terms
+usemathjax: true
 ---
 
 
