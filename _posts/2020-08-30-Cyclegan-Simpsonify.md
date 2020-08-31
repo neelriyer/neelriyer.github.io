@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Simpsonize Yourself using CycleGAN
+title: 'Simpsonize' Yourself using CycleGAN
 ---
 
 ![alt text](/images/cyclegan_simpsonify/real_face_3922_fake.png)
@@ -17,13 +17,11 @@ title: Simpsonize Yourself using CycleGAN
 <table><tr><td><img src='https://drive.google.com/uc?id=1pTuzTcVpPWZnvEtmd4FOg6vdtQ0zIWQh'></td><td><img src='https://drive.google.com/uc?id=1SV5vLt-KrXRmAesBagivP6OlzsFhbsyO'></td></tr></table> -->
 
 
-[Cyclegan](https://arxiv.org/abs/1703.10593) is a framework that is capable of unpaired image to image translation. It's been applied in some really interesting cases. Such as converting [horses to zebras](https://camo.githubusercontent.com/69cbc0371777fba5d251a564e2f8a8f38d1bf43f/68747470733a2f2f6a756e79616e7a2e6769746875622e696f2f4379636c6547414e2f696d616765732f7465617365725f686967685f7265732e6a7067) (and back again) and photos of the winter to photos of the summer. 
+[Cyclegan](https://arxiv.org/abs/1703.10593) is a framework that is capable of unpaired image to image translation. It's been applied in some really interesting cases. Such as converting [horses to zebras](https://camo.githubusercontent.com/69cbc0371777fba5d251a564e2f8a8f38d1bf43f/68747470733a2f2f6a756e79616e7a2e6769746875622e696f2f4379636c6547414e2f696d616765732f7465617365725f686967685f7265732e6a7067) (and back again) and converting photos of the winter to photos of the summer. 
 
-I thought this could be potentially applied to The Simpsons. I was inspired by sites like [turnedyellow](https://turnedyellow.com/) and [makemeyellow](https://makemeyellow.photos/). 
+I thought this could be applied to The Simpsons. I was inspired by sites like [turnedyellow](https://turnedyellow.com/) and [makemeyellow](https://makemeyellow.photos/). The idea is that you upload a photo of your face and Cyclegan would translate that into a Simpsons Character. 
 
-The idea is that you upload a photo of your face and Cyclegan would translate that into a Simpsons Character. 
-
-In this article I describe the workflow required to  'Simpsonise' yourself using Cyclegan. It's worth noting that the [paper](https://arxiv.org/pdf/1703.10593.pdf) explicitly mentions that large geometric changes are usually unsuccessful. So this isn't likely to turn out well.
+It's worth noting that the [paper](https://arxiv.org/pdf/1703.10593.pdf) explicitly mentions that large geometric changes are usually unsuccessful. So this isn't likely to turn out well.
 
 But I'm going to attempt this anyway.
 
@@ -85,15 +83,15 @@ create_training_dataset_simpson_faces(TRAIN_A)
 
 To create the dataset of real faces I got a little bit experimental.
 
-[Will Kwan](https://www.youtube.com/watch?v=pctzpu_wJyE) recently using [stylegan2](https://github.com/NVlabs/stylegan2) to generate a dataset in one of his recent videos. It seemed to work fairly well for him. So I thought I could do the same thing.
+[Will Kwan](https://www.youtube.com/watch?v=pctzpu_wJyE) used [stylegan2](https://github.com/NVlabs/stylegan2) to generate a dataset of human faces in one of his recent videos. It seemed to work fairly well for him and I thought I could do a similar thing.
 
-Here's some example faces taken from Nvidia's stylegan2 github repository. As you can see the output from this GAN is fairly photorealistic. 
+Here's some example faces taken from Nvidia's stylegan2 [github repository](https://github.com/NVlabs/stylegan2). As you can see the output from this GAN is fairly photorealistic. 
 
 <div>
 <img src="https://miro.medium.com/max/2636/1*WR5OApYceVhZTNhO33csZw.png" width="500" height = "500"/>
 </div>
 
-This could turn out far better than scraping the internet for faces. I could create as many faces as I needed for my model. Plus I wouldn't have to download some cumbersome `zip` file.  
+This could turn out far better than scraping the internet for faces. I could create as many faces as I needed for my model. Plus I wouldn't have to download cumbersome large files.  
 
 This dataset will be stored in the `trainB` folder
 
@@ -104,6 +102,8 @@ This dataset will be stored in the `trainB` folder
 ```python
 import matplotlib.pyplot as plt
 from tqdm.notebook import tqdm
+
+# see Github for full code: https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/cyclegan_simpsonify.ipynb
 
 def create_training_dataset_real_faces_stylegan(download_dir):
 
@@ -130,7 +130,7 @@ create_training_dataset_real_faces_stylegan(TRAIN_B)
 
 ### Train Test Split
 
-Next we'll need to split the data into training and testing. `testB` will contain real faces that we want to covnert into Simpsons characters. `testA` will contain simpsons characters that we want to convert into real people.
+Next we'll need to split the data into training and testing. `testB` will contain real faces that we want to convert into Simpsons characters. `testA` will contain simpsons characters that we want to convert into real people.
 
 
 
@@ -348,7 +348,7 @@ model.netG_A
 ```
 ![alt text](/images/cyclegan_simpsonify/generator_A.png)
 
-We can see here that the model uses [Resnets](https://arxiv.org/pdf/1512.03385v1.pdf). It has several Resnet blocks. 
+We can see here that the model uses [Resnets](https://arxiv.org/pdf/1512.03385v1.pdf).
 
 We have `Conv2d`, `Batchnorm`, `ReLU`, `InstanceNorm2d` and `ReflectionPad2d`. `InstanceNorm2d` and `ReflectionPad2d` are new to me.
 
@@ -381,24 +381,16 @@ This effect is known as the [dying `ReLU` problem](https://datascience.stackexch
 ![alt text](/images/cyclegan_simpsonify/leaky_relu.png)
 
 ​	
-This function essentially translates to: if a value is negative mulitply it by `negative_slope` otherwise do nothing. `negative_slope` is usually `0.01`, but you can vary it. 
+This function essentially translates to: if a value is negative multiply it by `negative_slope` otherwise do nothing. `negative_slope` is usually `0.01`, but you can vary it. 
 
-So `LeakyReLU` signficantly reduces the magnitude of negative values rather than sending them to `0`. But the jury is [still out](https://www.quora.com/What-are-the-advantages-of-using-Leaky-Rectified-Linear-Units-Leaky-ReLU-over-normal-ReLU-in-deep-learning/answer/Nouroz-Rahman) on whether this really works well.
+So `LeakyReLU` significantly reduces the magnitude of negative values rather than sending them to `0`. But the jury is [still out](https://www.quora.com/What-are-the-advantages-of-using-Leaky-Rectified-Linear-Units-Leaky-ReLU-over-normal-ReLU-in-deep-learning/answer/Nouroz-Rahman) on whether this really works well.
 
 
 # Training
 
 Now we can train the model over a number of epochs. I've specified `10` epochs here.
 
-`model.optimize_parameters()` is where all the magic happens. It runs the loss functions, gets the gradients and updates the weights. By doing so it optimises the generators and the discriminators. 
-
-The generator takes a horse and tries to generate a zebra. Then it runs the discriminator on the generated zebra and passes this generated zebra to the GAN loss function. It does the same thing for zebras. 
-
-Then we compute the cycle consistency loss. So we take our fake zebra and try to turn it back into a horse. Then we compare this new horse to our original horse. We do the same for zebras. 
-
-We analyse the combined loss which is comprised of the cycle consistency loss and the GAN loss.
-
-Let's train it!
+Here's the code for training:
 
 
 ```python
@@ -457,11 +449,15 @@ for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):    #
 
 ```
 
+`model.optimize_parameters()` is where all the magic happens. It runs the loss functions, gets the gradients and updates the weights. By doing so it optimises the generators and the discriminators. 
+
+Let's train it!
+
 # Testing
 
 I let the model train overnight on [google colab](https://colab.research.google.com/) and copied the `.pth` model to my google drive. 
 
-We'll copy back the weights from google drive to my local computer.
+Let's see the output.
 
 ```python
 test_model(10, 'BtoA')
@@ -489,11 +485,8 @@ test_model(10, 'BtoA')
 ![alt text](/images/cyclegan_simpsonify/real_face_8244_real.png)
 
 
-
 ![alt text](/images/cyclegan_simpsonify/real_face_9038_fake.png)
 ![alt text](/images/cyclegan_simpsonify/real_face_9038_real.png)
-
-
 
 
 It's a good start. I particularly like this image:
@@ -503,7 +496,7 @@ It's a good start. I particularly like this image:
 ![alt text](/images/cyclegan_simpsonify/real_face_3922_real.png)
 
 
-But it could use some improvement, to be honest. 
+It could use some improvement, to be honest.
 
 Let's try running the `BtoA` cycle. So we'll convert simpsons characters into human faces.
 
@@ -529,9 +522,9 @@ test_model(10, 'AtoB')
 
 # Improvements
 
-The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks requiring large geomtric changes aren't likely to be successful. I've just confirmed this.
+The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks requiring large geometric changes aren't likely to be successful. I've just confirmed this.
 
-The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. The tricky thing with GANs is figuring out when to stop training. Visual inspection [seems](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/issues/166) to be the answer for Cyclegan. It might be worthwhile to train for another few days and see what happens. 
+The network seems to struggle with the large geometric shifts required to convert a simpsons character to a real person (and vice-versa). I'm unsure if more training would rectify this issue. The tricky thing with GANs is figuring out when to stop training. Visual inspection [seems](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/issues/166) to be the answer for Cyclegan. It might be worthwhile to train for another few days and see what happens. 
 
 
 The full jupyter notebook can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/cyclegan_simpsonify.ipynb)

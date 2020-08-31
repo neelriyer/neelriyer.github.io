@@ -52,8 +52,7 @@ We have a discriminator that is really good at recognising zebras. We call that 
 <img src="https://drive.google.com/uc?id=1qaYsaQrVchH5NjkGKOQ7A6a31nG75Syx" align="center" width="400" />
 </center>
 
-
-Here's what this loss function is doing: We taken an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
+This is a pretty interesting loss function. At a high level here's what happening: We taken an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
 
 We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
 
@@ -64,7 +63,7 @@ We compare this newly created horse to our existing horse. This is what $\hat{x}
 Now we do almost exactly the same thing again. Except this time we taken an image of a zebra and try to convert it to a horse. 
 
 
-## Loss functions
+## Loss Functions in Mathematical Terms
 
 For our loss functions we have adversial loss and cycle consistency loss.
 
