@@ -3,11 +3,9 @@ layout: post
 title: Cyclegan in Simple Terms
 ---
 
+{% include youtubePlayer.html id="9reHvktowLY?autoplay=1&mute=1&loop=1&playlist=9reHvktowLY" %}
+
 {% include mathjax.html %}
-
-{% include youtubePlayer.html id="9reHvktowLY?autoplay=1&mute=1&loop=1&playlist=9reHvktowLY" %}
-
-{% include youtubePlayer.html id="9reHvktowLY?autoplay=1&mute=1&loop=1&playlist=9reHvktowLY" %}
 
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
