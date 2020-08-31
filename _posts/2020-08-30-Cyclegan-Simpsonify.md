@@ -3,12 +3,12 @@ layout: post
 title: Simpsonize Yourself using CycleGAN
 ---
 
-![alt text](/images/cyclegan_simpsonify/real_face_8244_fake.png)
-![alt text](/images/cyclegan_simpsonify/real_face_8244_real.png)
+![alt text](/images/cyclegan_simpsonify/real_face_3922_fake.png)
+![alt text](/images/cyclegan_simpsonify/real_face_3922_real.png)
 
 
-![alt text](/images/cyclegan_simpsonify/real_face_9038_fake.png)
-![alt text](/images/cyclegan_simpsonify/real_face_9038_real.png)
+![alt text](/images/cyclegan_simpsonify/real_face_2224_fake.png)
+![alt text](/images/cyclegan_simpsonify/real_face_2224_real.png)
 
 
 <!-- <table><tr><td><img src='https://drive.google.com/uc?id=1jmpktn6Jj9ia_bKpkNzU3A-vtEjRrcpc'></td><td><img src='https://drive.google.com/uc?id=1_t_Gdq8FxdhkF7QVhP_RxCDvO9a-CLjB'></td></tr></table>
@@ -17,13 +17,13 @@ title: Simpsonize Yourself using CycleGAN
 <table><tr><td><img src='https://drive.google.com/uc?id=1pTuzTcVpPWZnvEtmd4FOg6vdtQ0zIWQh'></td><td><img src='https://drive.google.com/uc?id=1SV5vLt-KrXRmAesBagivP6OlzsFhbsyO'></td></tr></table> -->
 
 
-[Cyclegan](https://arxiv.org/abs/1703.10593) is a framework that is capable of image to image translatation. It's been applied in some really interesting cases. Such as converting [horses to zebras](https://camo.githubusercontent.com/69cbc0371777fba5d251a564e2f8a8f38d1bf43f/68747470733a2f2f6a756e79616e7a2e6769746875622e696f2f4379636c6547414e2f696d616765732f7465617365725f686967685f7265732e6a7067) (and back again) and photos of the winter to photos of the summer. 
+[Cyclegan](https://arxiv.org/abs/1703.10593) is a framework that is capable of unpaired image to image translation. It's been applied in some really interesting cases. Such as converting [horses to zebras](https://camo.githubusercontent.com/69cbc0371777fba5d251a564e2f8a8f38d1bf43f/68747470733a2f2f6a756e79616e7a2e6769746875622e696f2f4379636c6547414e2f696d616765732f7465617365725f686967685f7265732e6a7067) (and back again) and photos of the winter to photos of the summer. 
 
 I thought this could be potentially applied to The Simpsons. I was inspired by sites like [turnedyellow](https://turnedyellow.com/) and [makemeyellow](https://makemeyellow.photos/). 
 
 The idea is that you upload a photo of your face and Cyclegan would translate that into a Simpsons Character. 
 
-In this article I describe the workflow required to  'Simpsonise' yourself using Cyclegan. It's worth noting that the [paper](https://arxiv.org/pdf/1703.10593.pdf) explicitly mentions that large geometric changes are usually unsuccessful. 
+In this article I describe the workflow required to  'Simpsonise' yourself using Cyclegan. It's worth noting that the [paper](https://arxiv.org/pdf/1703.10593.pdf) explicitly mentions that large geometric changes are usually unsuccessful. So this isn't likely to turn out well.
 
 But I'm going to attempt this anyway.
 
@@ -476,6 +476,11 @@ test_model(10, 'BtoA')
 
 
 
+![alt text](/images/cyclegan_simpsonify/real_face_3922_fake.png)
+![alt text](/images/cyclegan_simpsonify/real_face_3922_real.png)
+
+
+
 ![alt text](/images/cyclegan_simpsonify/real_face_7874_fake.png)
 ![alt text](/images/cyclegan_simpsonify/real_face_7874_real.png)
 
@@ -487,6 +492,7 @@ test_model(10, 'BtoA')
 
 ![alt text](/images/cyclegan_simpsonify/real_face_9038_fake.png)
 ![alt text](/images/cyclegan_simpsonify/real_face_9038_real.png)
+
 
 
 
