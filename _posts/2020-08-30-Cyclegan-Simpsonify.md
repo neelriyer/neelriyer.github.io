@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Simpsonize Yourself using CycleGAN (v1)
+title: Simpsonize Yourself using CycleGAN
 ---
 
 ![alt text](/images/cyclegan_simpsonify/real_face_8244_fake.png)
@@ -44,7 +44,7 @@ Creating the dataset is harder than you would initially think.
 
 To create this dataset I needed to find close up shots of Simpsons characters and close up shots of regular people.
 
-### Download Simpsons Faceset
+### Download Simpsons Dataset
 
 Initially my thinking was to scrape images from google images. Unfortunately to do that it looks like you need a [developer key](https://pypi.org/project/Google-Images-Search/) from google console.
 
@@ -52,9 +52,9 @@ So instead I scraped images from [Bing](https://github.com/gurugaurav/bing_image
 
 This worked to an extent. But it took *so long* to download all the images. And after I looked at the images I noticed that some of them didn't include any faces at all.
 
-Thankfully, I stumbled across a [faceset](https://www.kaggle.com/kostastokis/simpsons-faces) on kaggle that had everything I needed. It contains Simpsons faces extracted from a few seasons. Each image is 200x200 pixels and contains one face. 
+Thankfully, I stumbled across a [dataset](https://www.kaggle.com/kostastokis/simpsons-faces) on kaggle that had everything I needed. It contains Simpsons faces extracted from a few seasons. Each image is 200x200 pixels and contains one face. 
 
-This faceset will be stored in the `trainA` folder.
+This dataset will be stored in the `trainA` folder.
 
 
 ```python
@@ -80,10 +80,10 @@ create_training_dataset_simpson_faces(TRAIN_A)
 ```
 
 
-### Download Real Faceset
+### Download Dataset of Real Faces
 
 
-To create the faceset of real faces I got a little bit experimental.
+To create the dataset of real faces I got a little bit experimental.
 
 [Will Kwan](https://www.youtube.com/watch?v=pctzpu_wJyE) recently using [stylegan2](https://github.com/NVlabs/stylegan2) to generate a dataset in one of his recent videos. It seemed to work fairly well for him. So I thought I could do the same thing.
 
@@ -93,12 +93,12 @@ Here's some example faces taken from Nvidia's stylegan2 github repository. As yo
 <img src="https://miro.medium.com/max/2636/1*WR5OApYceVhZTNhO33csZw.png" width="500" height = "500"/>
 </div>
 
-This could turn out far better than scraping the internet for faces. I could create as many faces as I needed for my model. I wouldn't have to download some cumbersome `zip` file.  
+This could turn out far better than scraping the internet for faces. I could create as many faces as I needed for my model. Plus I wouldn't have to download some cumbersome `zip` file.  
 
-This faceset will be stored in the `trainB` folder
+This dataset will be stored in the `trainB` folder
 
 
-#### Stylegan Create Faceset
+#### Stylegan Create Dataset
 
 
 ```python
@@ -390,15 +390,13 @@ So `LeakyReLU` signficantly reduces the magnitude of negative values rather than
 
 Now we can train the model over a number of epochs. I've specified `10` epochs here.
 
-`model.optimize_parameters()` is where all the magic happens. It optimises the generators. Then it optimises the discriminators. 
+`model.optimize_parameters()` is where all the magic happens. It runs the loss functions, gets the gradients and updates the weights. By doing so it optimises the generators and the discriminators. 
 
 The generator takes a horse and tries to generate a zebra. Then it runs the discriminator on the generated zebra and passes this generated zebra to the GAN loss function. It does the same thing for zebras. 
 
 Then we compute the cycle consistency loss. So we take our fake zebra and try to turn it back into a horse. Then we compare this new horse to our original horse. We do the same for zebras. 
 
 We analyse the combined loss which is comprised of the cycle consistency loss and the GAN loss.
-
-After calculating this loss function the model calculates the gradients and updates the weights.
 
 Let's train it!
 
@@ -467,7 +465,6 @@ We'll copy back the weights from google drive to my local computer.
 
 ```python
 test_model(10, 'BtoA')
-
 ```
 
 ![alt text](/images/cyclegan_simpsonify/real_face_818_fake.png)
@@ -525,7 +522,7 @@ test_model(10, 'AtoB')
 
 # Improvements
 
-The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks that require geomtric changes haven't been very successful so far. I've just confirmed this.
+The authors of Cyclegan [noted](https://junyanz.github.io/CycleGAN/) that tasks requiring large geomtric changes aren't likely to be successful. I've just confirmed this.
 
 The network seems to struggle with the large geometric shifts required to convert a simpsons chartacter to a real person (and vice-versa). I'm unsure if more training would rectify this issue. The tricky thing with GANs is figuring out when to stop training. Visual inspection [seems](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/issues/166) to be the answer for Cyclegan. It might be worthwhile to train for another few days and see what happens. 
 
