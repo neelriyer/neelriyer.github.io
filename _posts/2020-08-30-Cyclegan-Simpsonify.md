@@ -499,7 +499,8 @@ test_model(10, 'BtoA')
 It's a good start. I particularly like this image:
 
 
-<table><tr><td><img src='https://drive.google.com/uc?id=1pTuzTcVpPWZnvEtmd4FOg6vdtQ0zIWQh'></td><td><img src='https://drive.google.com/uc?id=1SV5vLt-KrXRmAesBagivP6OlzsFhbsyO'></td></tr></table>
+![alt text](/images/cyclegan_simpsonify/real_face_3922_fake.png)
+![alt text](/images/cyclegan_simpsonify/real_face_3922_real.png)
 
 
 But it could use some improvement, to be honest. 
