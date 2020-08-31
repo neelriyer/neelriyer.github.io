@@ -8,7 +8,7 @@ title: Cyclegan in Simple Terms
 
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
-Cyclegan is the method that is responsible for the creations seen above. It's a method of unpaired image to image translation. In this article I'll describe how Cyclegan works in Simplish terms.
+Cyclegan is the method that is responsible for the creations shown above. It's a method of unpaired image to image translation. In this article I'll describe how Cyclegan works in simple(ish) terms.
 
 
 # Unpaired vs Paired
