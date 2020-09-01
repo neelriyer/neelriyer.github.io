@@ -6,7 +6,6 @@ title: 'Simpsonize' Yourself using CycleGAN
 ![alt text](/images/cyclegan_simpsonify/real_face_3922_fake.png)
 ![alt text](/images/cyclegan_simpsonify/real_face_3922_real.png)
 
-
 ![alt text](/images/cyclegan_simpsonify/real_face_2224_fake.png)
 ![alt text](/images/cyclegan_simpsonify/real_face_2224_real.png)
 
