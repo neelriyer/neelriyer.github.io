@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Simpsonize' Yourself using CycleGAN
+title: Simpsonize Yourself using CycleGAN
 ---
 
 ![alt text](/images/cyclegan_simpsonify/real_face_3922_fake.png)
