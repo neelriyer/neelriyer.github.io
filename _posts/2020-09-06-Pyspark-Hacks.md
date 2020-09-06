@@ -38,7 +38,9 @@ Basically we want to go from this:
  -->
 To this:
 
-![img](/images/pyspark_hacks/pyspark_conditional_if_after.png)
+<img src="/images/pyspark_hacks/pyspark_conditional_if_after.png" alt="img" width="200"/>
+
+<!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_after.png) -->
 
 In the `local site name` contains the word `police` then we set the `is_police` column to `1`. Otherwise we set it to `0`.
 
@@ -53,7 +55,10 @@ df = df.withColumn('is_police', F.when(F.lower(F.col('local_site_name')).contain
                                 otherwise(F.lit(0)))
 df.select('is_police', 'local_site_name').show()
 ```
-![img](/images/pyspark_hacks/pyspark_conditional_if_after.png)
+
+<img src="/images/pyspark_hacks/pyspark_conditional_if_after.png" alt="img" width="200"/>
+<!-- 
+![img](/images/pyspark_hacks/pyspark_conditional_if_after.png) -->
 
 
 
@@ -70,7 +75,11 @@ parameter_list = ['Police', 'Fort' , 'Lab']
 df = df.withColumn('rating', F.when(F.col('local_site_name').rlike('|'.join(parameter_list)), F.lit('High Rating')).otherwise(F.lit('Low Rating')))
 df.select('rating', 'local_site_name').show()
 ```
-![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png)
+
+
+<img src="/images/pyspark_hacks/pyspark_conditional_if_rlike.png" alt="img" width="200"/>
+
+<!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png) -->
 
 
 `F.when` is actually useful for a lot of different things. In fact you can even do a chained `F.when`:
@@ -86,7 +95,9 @@ df = df.withColumn('rating', F.when(F.lower(F.col('local_site_name')).contains('
 df.select('rating', 'local_site_name').show()
 ```
 
-![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png)
+<img src="/images/pyspark_hacks/pyspark_conditional_if_rlike.png" alt="img" width="200"/>
+
+<!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png) -->
 
 
 This achieves exactly the same thing we saw in the previous example. However, it's more code to write. It's more code to maintain. 
