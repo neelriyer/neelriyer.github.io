@@ -3,8 +3,7 @@ layout: post
 title: Data Transformation in Pyspark
 ---
 
-![img](/images/pyspark_hacks/dennis-kummer-52gEprMkp7M-unsplash.png)
-
+![img](/images/pyspark_hacks/background.png)
 
 Pyspark requires you to think about data differently. 
 
