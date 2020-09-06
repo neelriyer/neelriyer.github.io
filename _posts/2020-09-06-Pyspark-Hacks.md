@@ -32,13 +32,13 @@ The first transformation we'll do is a conditional if statement transformation. 
 
 Basically we want to go from this:
 
-<img src="/images/pyspark_hacks/pyspark_conditional_if_before.png" alt="img" width="200"/>
+<img src="/images/pyspark_hacks/pyspark_conditional_if_before.png" alt="img" width="300"/>
 
 <!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_before.png)
  -->
 To this:
 
-<img src="/images/pyspark_hacks/pyspark_conditional_if_after.png" alt="img" width="200"/>
+<img src="/images/pyspark_hacks/pyspark_conditional_if_after.png" alt="img" width="300"/>
 
 <!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_after.png) -->
 
@@ -56,7 +56,7 @@ df = df.withColumn('is_police', F.when(F.lower(F.col('local_site_name')).contain
 df.select('is_police', 'local_site_name').show()
 ```
 
-<img src="/images/pyspark_hacks/pyspark_conditional_if_after.png" alt="img" width="200"/>
+<img src="/images/pyspark_hacks/pyspark_conditional_if_after.png" alt="img" width="300"/>
 <!-- 
 ![img](/images/pyspark_hacks/pyspark_conditional_if_after.png) -->
 
@@ -77,7 +77,7 @@ df.select('rating', 'local_site_name').show()
 ```
 
 
-<img src="/images/pyspark_hacks/pyspark_conditional_if_rlike.png" alt="img" width="200"/>
+<img src="/images/pyspark_hacks/pyspark_conditional_if_rlike.png" alt="img" width="300"/>
 
 <!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png) -->
 
@@ -95,7 +95,7 @@ df = df.withColumn('rating', F.when(F.lower(F.col('local_site_name')).contains('
 df.select('rating', 'local_site_name').show()
 ```
 
-<img src="/images/pyspark_hacks/pyspark_conditional_if_rlike.png" alt="img" width="200"/>
+<img src="/images/pyspark_hacks/pyspark_conditional_if_rlike.png" alt="img" width="300"/>
 
 <!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png) -->
 
