@@ -32,10 +32,10 @@ The first transformation we'll do is a conditional if statement transformation. 
 
 Basically we want to go from this:
 
+<img src="/images/pyspark_hacks/pyspark_conditional_if_before.png" alt="img" width="200"/>
 
-
-![img](/images/pyspark_hacks/pyspark_conditional_if_before.png =250x)
-
+<!-- ![img](/images/pyspark_hacks/pyspark_conditional_if_before.png)
+ -->
 To this:
 
 ![img](/images/pyspark_hacks/pyspark_conditional_if_after.png)
