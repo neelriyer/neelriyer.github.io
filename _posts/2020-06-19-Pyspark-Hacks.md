@@ -3,6 +3,9 @@ layout: post
 title: Data Transformation in Pyspark
 ---
 
+![img](images/pyspark_hacks/dennis-kummer-52gEprMkp7M-unsplash.png)
+
+
 Pyspark requires you to think about data differently. 
 
 Instead of looking at a dataset row-wise. Pyspark encourages you to look at it column-wise. This was a difficult transition for me at first. It took me a long time to really understand certain Data Transformations in Pyspark. 
