@@ -299,8 +299,7 @@ import os
 from pathlib import Path
 from tqdm.notebook import tqdm
 
-options_list = ['--name', NAME,\
-				'--dataroot', TRAIN_A.parent,\
+options_list = ['--dataroot', TRAIN_A.parent,\
 				'--batch_size', BATCH_SIZE,\
 				'--checkpoints_dir', './checkpoints',\
 				'--lr', 2e-4,\
