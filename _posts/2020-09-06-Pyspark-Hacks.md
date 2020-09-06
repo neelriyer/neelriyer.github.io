@@ -3,7 +3,7 @@ layout: post
 title: Data Transformation in Pyspark
 ---
 
-![img](images/pyspark_hacks/dennis-kummer-52gEprMkp7M-unsplash.png)
+![img](/images/pyspark_hacks/dennis-kummer-52gEprMkp7M-unsplash.png)
 
 
 Pyspark requires you to think about data differently. 
@@ -23,7 +23,7 @@ This Dataset is `8,097,069` rows. It's *enourmous*.
 df = spark.read.csv('epa_hap_daily_summary.csv',inferSchema=True, header =True)
 df.show()
 ```
-![img](images/pyspark_hacks/spark_show.png)
+![img](/images/pyspark_hacks/spark_show.png)
 
 
 
@@ -33,11 +33,11 @@ The first transformation we'll do is a conditional if statement transformation. 
 
 Basically we want to go from this:
 
-![img](images/pyspark_hacks/pyspark_conditional_if_before.png)
+![img](/images/pyspark_hacks/pyspark_conditional_if_before.png)
 
 To this:
 
-![img](images/pyspark_hacks/pyspark_conditional_if_after.png)
+![img](/images/pyspark_hacks/pyspark_conditional_if_after.png)
 
 In the `local site name` contains the word `police` then we set the `is_police` column to `1`. Otherwise we set it to `0`.
 
@@ -52,7 +52,7 @@ df = df.withColumn('is_police', F.when(F.lower(F.col('local_site_name')).contain
                                 otherwise(F.lit(0)))
 df.select('is_police', 'local_site_name').show()
 ```
-![img](images/pyspark_hacks/pyspark_conditional_if_after.png)
+![img](/images/pyspark_hacks/pyspark_conditional_if_after.png)
 
 
 
@@ -69,7 +69,7 @@ parameter_list = ['Police', 'Fort' , 'Lab']
 df = df.withColumn('rating', F.when(F.col('local_site_name').rlike('|'.join(parameter_list)), F.lit('High Rating')).otherwise(F.lit('Low Rating')))
 df.select('rating', 'local_site_name').show()
 ```
-![img](images/pyspark_hacks/pyspark_conditional_if_rlike.png)
+![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png)
 
 
 `F.when` is actually useful for a lot of different things. In fact you can even do a chained `F.when`:
@@ -85,7 +85,7 @@ df = df.withColumn('rating', F.when(F.lower(F.col('local_site_name')).contains('
 df.select('rating', 'local_site_name').show()
 ```
 
-![img](images/pyspark_hacks/pyspark_conditional_if_rlike.png)
+![img](/images/pyspark_hacks/pyspark_conditional_if_rlike.png)
 
 
 This achieves exactly the same thing we saw in the previous example. However, it's more code to write. It's more code to maintain. 
@@ -106,7 +106,7 @@ df = df.withColumn('address', F.trim(F.col('address')))
 df.show()
 ```
 
-![img](images/pyspark_hacks/whitespace_after.png)
+![img](/images/pyspark_hacks/whitespace_after.png)
 
 # Remove Null Rows for a Particular Column
 
