@@ -72,7 +72,7 @@ Now suppose we want to extend what we've done above. This time if a cell contain
 
 If any one of strings: `'Police', 'Fort' , 'Lab'` are in the `local_site_name` column then we'll mark the corresponding cell as `High Rating`.
 
-The [`rlike`](https://spark.apache.org/docs/2.2.0/api/python/pyspark.sql.html#pyspark.sql.Column.like) function combined with the `F.when` function we saw earlier allow to us to do just that.
+The [`rlike`](https://spark.apache.org/docs/2.2.0/api/python/pyspark.sql.html#pyspark.sql.Column.like) function combined with the `F.when` function we saw earlier allows to us to do just that.
 
 
 ```
