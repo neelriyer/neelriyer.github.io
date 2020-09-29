@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Cyclegan in Simple Terms
+title: The Maths behind Cyclegan
 ---
 
 {% include youtubePlayer.html id="9reHvktowLY?autoplay=1&mute=1&loop=1&playlist=9reHvktowLY" %}
@@ -16,7 +16,10 @@ TeX: { equationNumbers: { autoNumber: "AMS" } }
 
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
-Cyclegan is the method that is responsible for the creations shown above. It's a method of unpaired image to image translation. In this article I'll describe how Cyclegan works in simple(ish) terms.
+
+Cyclegan is a method of unpaired image to image translation. The loss functions that allow this to occur are super intere
+
+In this article I'll describe the mathematics behind Cyclegan in simple(ish) terms.
 
 
 # Unpaired vs Paired
@@ -52,7 +55,7 @@ We have a discriminator that is really good at recognising zebras. We call that 
 <img src="https://drive.google.com/uc?id=1qaYsaQrVchH5NjkGKOQ7A6a31nG75Syx" align="center" width="400" />
 </center>
 
-This is a pretty interesting loss function. At a high level here's what happening: We taken an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
+This is a pretty interesting loss function. At a high level here's what's happening: We taken an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
 
 We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
 
