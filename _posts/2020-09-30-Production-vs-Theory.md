@@ -3,7 +3,7 @@ layout: post
 title: Putting ML models into Production (unfinished)
 ---
 
-_Converting a Decision Function into Probabilities in Sci-kit Learn_
+_Converting a Decision Function into Probabilities in Scikit Learn_
 
 In production the stakes are high. People are going to be reading the outputs from the model. And the outputs better make sense. 
 
@@ -32,7 +32,7 @@ Or more plainly: Given the output of our classifier, what is the probability tha
 
 <!-- `predict_proba` is the function that we'll need here. While the function itself seems like an unfinished sentence, it is incredibly useful.  -->
 
-The code for this is really simple. Part of the reason is that the beautiful people at sci-kit learn have hidden all the complex maths behind layers of abstraction. 
+The code for this is really simple. Part of the reason is that the beautiful people at scikit learn have hidden all the complex maths behind layers of abstraction. 
 
 All you need to do is this:
 
