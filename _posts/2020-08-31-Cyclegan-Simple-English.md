@@ -17,21 +17,27 @@ TeX: { equationNumbers: { autoNumber: "AMS" } }
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
 
-Cyclegan is a method of unpaired image to image translation. The loss functions that allow this to occur are super intere
+Cyclegan is a method of unpaired image to image translation. It's responsible for the methods shown above and it's really cool.
 
 In this article I'll describe the mathematics behind Cyclegan in simple(ish) terms.
 
 
 # Unpaired vs Paired
 
-Cyclegan aims to perform unpaired image translation. The key thing is that we don't have before and after images. 
+Cyclegan aims to perform unpaired image translation. The key thing here is that we don't have before and after images. 
 
 Let's take the example shown above of converting a zebra into a horse (and vice-versa).
 
-If we needed paired images we would have to take a photo of a horse, then paint it black and white, and take a photo of our "zebra". Both photos would need to be identical- except in one we would have a zebra and in the other we would have a horse. The background, the lighting, etc. would all need to be the same. 
+If we needed paired images we would have to take a photo of a horse, then paint it black and white, and take a photo of our "zebra". Both photos would need to be identical- except in one we would have a zebra and in the other we would have a horse. The background, the lighting, etc. would all need to be the same.
+
+Essentially a paired dataset is something like this:
+
+![examples](https://miro.medium.com/max/4604/1*5DG4hHjxAyWTfV1J3mRH_A.png)
 
 
-An unpaired dataset is much easier to create. In this dataset we just need photos of horses and photos of zebras. Our horses and zebras don't need to "match" each other.
+An unpaired dataset is much easier to create. In this dataset we just need photos of horses and photos of zebras. Our horses and zebras don't need to "match" each other. Essentially an unpaired dataset would look like this:
+
+![examples](http://www.dallasequestriancenter.com/wp-content/uploads/hvsz.jpg)
 
 
 ## Generators and Discriminators
@@ -55,9 +61,16 @@ We have a discriminator that is really good at recognising zebras. We call that 
 <img src="https://drive.google.com/uc?id=1qaYsaQrVchH5NjkGKOQ7A6a31nG75Syx" align="center" width="400" />
 </center>
 
-This is a pretty interesting loss function. At a high level here's what's happening: We taken an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
+This is a pretty interesting loss function.
+
+I've created an infographic to explain how this works.
+
+<img src="/images/cyclegan_simple/infographic.png" alt="img"/> 
+
+At a high level here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
 
 We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
+
 
 <center>
 <img src="https://drive.google.com/uc?id=18rpwM3DWBUdUv9EIKGeTvRaZw1F8Puwa" align="center" width="400" />
