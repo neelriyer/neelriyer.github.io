@@ -61,13 +61,13 @@ We have a discriminator that is really good at recognising zebras. We call that 
 <img src="https://drive.google.com/uc?id=1qaYsaQrVchH5NjkGKOQ7A6a31nG75Syx" align="center" width="400" />
 </center>
 
-This is a pretty interesting loss function.
+First we'll try to understand the loss functions at a high level before getting into the maths.
 
 I've created an infographic to explain how this works.
 
 <img src="/images/cyclegan_simple/infographic.png" alt="img"/> 
 
-At a high level here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
+Here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
 
 We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
 
