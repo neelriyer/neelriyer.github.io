@@ -16,7 +16,7 @@ TeX: { equationNumbers: { autoNumber: "AMS" } }
 
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
-CycleGAN is a method of unpaired image to image translation. Unfortunately, its possible to use CycleGAN without fully understanding or appreciating the mathematics involved. That is a real shame. 
+CycleGAN is a method of unpaired image to image translation. Unfortunately, it's possible to use CycleGAN without fully understanding or appreciating the mathematics involved. That is a real shame. 
 
 In this article I'll walkthrough the mathematics behind Cycle-Consistent Adversarial Networks. Please read the [paper](https://arxiv.org/pdf/1703.10593.pdf) for a more comprehensive explanation.
 

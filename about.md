@@ -13,4 +13,3 @@ Data Science Student at University of New South Wales, Sydney. Currently interni
 
 [neel.r.iyer[at]gmail.com](mailto:neel.r.iyer@gmail.com)
 
-[Linkedin](https://www.linkedin.com/in/neel-iyer/)
