@@ -79,7 +79,7 @@ In the [paper](https://arxiv.org/pdf/1703.10593.pdf) the diagram for Cycle Consi
 
 Here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
 
-We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
+We compare this newly created horse to our existing horse. This is what $\hat{y}$ vs $y$ essentially means. Our newly created horse should look almost identical to original horse. 
 
 I've created an infographic to explain how this works.
 
@@ -145,7 +145,7 @@ Let's look at the first term:
 
 This means:
 
-1. We take a random zebra from our zebra dataset. (x~p(x))
+1. We take a random zebra from our zebra dataset. ($x~p(x)$)
 2. We pass that zebra through the generator ($G$) to create a horse. 
 3. We pass that generated horse through another generator ($F$) to create a zebra
 4. We compare the zebra created in step 3 with the random zebra in step 1 and take the sum of the absolute value of differences. 
@@ -179,7 +179,7 @@ We try to maximise the capability of the discriminator and minimise the loss of 
 
 The mathematics behind CycleGAN can seem somewhat daunting. But I've tried to cover the broad strokes in this article. I hope this has helped someone out there. This article would've certaintly helped me when I was learning how CycleGAN worked.
 
-If I've made a mistake please feel free to reach out to me on twitter and I'll fix it as soon as I can.
+If I've made a mistake please feel free to reach out to me on [twitter](https://twitter.com/neeliyer11) and I'll fix it as soon as I can.
 
 A big thanks to the authors of CycleGAN: [Jun-Yan Zhu](https://www.cs.cmu.edu/~junyanz/), [Taesung Park](https://taesung.me/), [Phillip Isola](http://web.mit.edu/phillipi/) and [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros/). I think it's worth reading their [paper](https://arxiv.org/pdf/1703.10593.pdf) to understand this method in more detail. 
 
