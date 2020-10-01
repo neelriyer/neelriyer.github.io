@@ -73,8 +73,9 @@ Putting that all together we have something that looks like this:
 In the [paper](https://arxiv.org/pdf/1703.10593.pdf) the diagram for Cycle Consistency is as follows:
 
 <center>
-<img src="https://drive.google.com/uc?id=1qaYsaQrVchH5NjkGKOQ7A6a31nG75Syx" align="center" width="400" />
+<img src="https://drive.google.com/uc?id=18rpwM3DWBUdUv9EIKGeTvRaZw1F8Puwa" align="center" width="400" />
 </center>
+
 
 Here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
 
