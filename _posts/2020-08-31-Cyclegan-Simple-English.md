@@ -16,9 +16,9 @@ TeX: { equationNumbers: { autoNumber: "AMS" } }
 
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
-CycleGAN is a method of unpaired image to image translation. Unfortunately, its possible to use CycleGAN without fully understanding or appreciating the mathematics involved. That, in my opinion, is a real shame. 
+CycleGAN is a method of unpaired image to image translation. Unfortunately, its possible to use CycleGAN without fully understanding or appreciating the mathematics involved. That is a real shame. 
 
-In this article I'll walkthroguh the mathematics behind Cycle-Consistent Adversarial Networks. Please read the [paper](https://arxiv.org/pdf/1703.10593.pdf) for a more comprehensive explanation.
+In this article I'll walkthrough the mathematics behind Cycle-Consistent Adversarial Networks. Please read the [paper](https://arxiv.org/pdf/1703.10593.pdf) for a more comprehensive explanation.
 
 
 # Unpaired vs Paired
@@ -27,7 +27,7 @@ The key thing with CycleGAN is that we don't have before and after images.
 
 Let's take the example shown above of converting a zebra into a horse (and vice-versa).
 
-In a paired dataset the horse and zebra need to "match" each other. We're essentially taking a horse and painting it black and white. The background, lightning , etc. stays the same
+In a paired dataset the horse and zebra need to "match" each other. We're essentially taking a horse and painting it black and white. The background, lightning, etc. stays the same.
 
 A paired dataset would look something like this:
 
@@ -44,15 +44,22 @@ And an unpaired dataset would look something like this like this:
 
 As you probably expect for a GAN we have generators and discriminators. Our generator is also known as the mapping function. 
 
-Suppose a Zebra is denoted as $X$ and a Horse is denoted as $Y$.
+Let's name a few variables:
 
-We have a mapping function ($G$) which converts a Zebra to a Horse. 
+*Horses and Zebras*
 
-We have another mapping function ($F$) that converts Horse to a Zebra. 
+- $X$ refers to a Zebra
+- $Y$ refers to a Horse
 
-We have a discriminator ($D_{x}$) that is really good at recognising zebras.
+*Generators*
 
-We have another discriminator ($D_{y}$) that is really good at recognising horses.
+- $G$ refers to a mapping function that converts a Zebra into a Horse
+- $F$ refers to a mapping function that converts a Horse into a Zebra
+
+*Discriminators*
+
+- $D_{x}$ refers to a discriminator that is really good at recognising Zebras.
+- $D_{y}$ refers to a discriminator that is really good at recognising horses
 
 Putting that all together we have something that looks like this:
 
