@@ -1,17 +1,23 @@
 ---
 layout: post
-title: Putting ML models into Production (unfinished)
+title: ML models in Production (unfinished)
 ---
 
 _Converting a Decision Function into Probabilities in Scikit Learn_
 
 In production the stakes are high. People are going to be reading the outputs from the model. And the outputs better make sense. 
 
-Recently my team and I created a NLP classifier and put it into production on a large insurance dataset. It uses TfidfVectorizer and LinearSVC to classify free-text. Nothing fancy really. But I quickly realised just that putting something into production is so different to the theory. 
+Recently my team and I created a NLP classifier and put it into production on a large insurance dataset. It uses TfidfVectorizer and LinearSVC to classify free-text. Nothing fancy really. 
 
-In production, it's really important to get the probability of a model prediction. For example, if your model classifies something with a probability of 50% someone should investigate that prediction. If they find a mistake you've prevented the model from disrupting a pivotal system in the company. ML should add value to the system not detract from it.
+But I quickly realised just that putting something into production is so different to the theory. 
 
-In this article I'll walk through a way you can extract the probabilities from an ordinary decision function in scikit-learn. This was critical in putting our model into production. 
+In production, it's really important to get the probability of a model prediction. For example, if your model classifies something with a probability of 50% someone should investigate that prediction. If they find a mistake you've prevented the model from disrupting a pivotal system in the company.
+
+But obtaining the probability of a prediction is not always so straight forward.
+
+In this article I'll walk through a way you can extract the probabilities from an ordinary decision function in scikit-learn.
+
+This was critical for putting our model into production. 
 
 
 # Probability calibration

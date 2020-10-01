@@ -1,6 +1,6 @@
 ---
 layout: post
-title: The Maths behind Cyclegan
+title: CycleGAN Math in Simple English
 ---
 
 {% include youtubePlayer.html id="9reHvktowLY?autoplay=1&mute=1&loop=1&playlist=9reHvktowLY" %}
@@ -16,74 +16,75 @@ TeX: { equationNumbers: { autoNumber: "AMS" } }
 
 ![examples](https://junyanz.github.io/CycleGAN/images/objects.jpg)
 
+CycleGAN is a method of unpaired image to image translation. Unfortunately, its possible to use CycleGAN without fully understanding or appreciating the mathematics involved. That, in my opinion, is a real shame. 
 
-Cyclegan is a method of unpaired image to image translation. It's responsible for the methods shown above and it's really cool.
-
-In this article I'll describe the mathematics behind Cyclegan in simple(ish) terms.
+In this article I'll walkthroguh the mathematics behind Cycle-Consistent Adversarial Networks. Please read the [paper](https://arxiv.org/pdf/1703.10593.pdf) for a more comprehensive explanation.
 
 
 # Unpaired vs Paired
 
-Cyclegan aims to perform unpaired image translation. The key thing here is that we don't have before and after images. 
+The key thing with CycleGAN is that we don't have before and after images. 
 
 Let's take the example shown above of converting a zebra into a horse (and vice-versa).
 
-If we needed paired images we would have to take a photo of a horse, then paint it black and white, and take a photo of our "zebra". Both photos would need to be identical- except in one we would have a zebra and in the other we would have a horse. The background, the lighting, etc. would all need to be the same.
+In a paired dataset the horse and zebra need to "match" each other. We're essentially taking a horse and painting it black and white. The background, lightning , etc. stays the same
 
-Essentially a paired dataset is something like this:
+A paired dataset would look something like this:
 
 ![examples](https://miro.medium.com/max/4604/1*5DG4hHjxAyWTfV1J3mRH_A.png)
 
+In an unpaired dataset the horses and zebras don't need to "match" each other. This is dataset is far easier to create. 
 
-An unpaired dataset is much easier to create. In this dataset we just need photos of horses and photos of zebras. Our horses and zebras don't need to "match" each other. Essentially an unpaired dataset would look like this:
+And an unpaired dataset would look something like this like this:
 
 ![examples](http://www.dallasequestriancenter.com/wp-content/uploads/hvsz.jpg)
 
 
-## Generators and Discriminators
+# Generators and Discriminators
 
-As you probably expect for a GAN we have generators and discriminators. Our generator is also known as the mapping function.
+As you probably expect for a GAN we have generators and discriminators. Our generator is also known as the mapping function. 
+
+Suppose a Zebra is denoted as $X$ and a Horse is denoted as $Y$.
+
+We have a mapping function ($G$) which converts a Zebra to a Horse. 
+
+We have another mapping function ($F$) that converts Horse to a Zebra. 
+
+We have a discriminator ($D_{x}$) that is really good at recognising zebras.
+
+We have another discriminator ($D_{y}$) that is really good at recognising horses.
+
+Putting that all together we have something that looks like this:
 
 <center>
 <img src="https://drive.google.com/uc?id=1GjhJKmBdZNC6lGYkREGratSQ-36IAKwk" align="center" width="200" />
 </center>
 
-Suppose a Zebra is denoted as $X$ and a Horse is denoted as $Y$.
 
-We have a mapping function which converts a Zebra to a Horse (call that $G$). Another mapping function that converts Horse to a Zebra (call that $F$). 
+# Cycle Consistency Loss 
 
-We have a discriminator that is really good at recognising zebras. We call that $D_{x}$. We have another discriminator that is really good at recognising horses. We call that $D_{y}$.
-
-
-## Cycle Consistency Loss 
+In the [paper](https://arxiv.org/pdf/1703.10593.pdf) the diagram for Cycle Consistency is as follows:
 
 <center>
 <img src="https://drive.google.com/uc?id=1qaYsaQrVchH5NjkGKOQ7A6a31nG75Syx" align="center" width="400" />
 </center>
 
-First we'll try to understand the loss functions at a high level before getting into the maths.
+Here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
+
+We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
 
 I've created an infographic to explain how this works.
 
 <img src="/images/cyclegan_simple/infographic.png" alt="img"/> 
 
-Here's what's happening: We take an image of a horse and convert it into a zebra. Then run the discriminator on this newly created zebra. Then we take our newly created zebra and convert it into a horse. 
-
-We compare this newly created horse to our existing horse. This is what $\hat{x}$ vs $x$ essentially means. Our newly created horse should look almost identical to original horse. 
+Now we repeat this process. Except this time we taken an image of a zebra and try to convert that into a horse. 
 
 
-<center>
-<img src="https://drive.google.com/uc?id=18rpwM3DWBUdUv9EIKGeTvRaZw1F8Puwa" align="center" width="400" />
-</center>
+# Loss Functions in Mathematical Terms
 
-Now we do almost exactly the same thing again. Except this time we taken an image of a zebra and try to convert it to a horse. 
+## Adversial loss: 
 
-
-## Loss Functions in Mathematical Terms
-
-For our loss functions we have adversial loss and cycle consistency loss.
-
-### Adversial loss: 
+The loss function for adversial loss is as follows:
 
 <center>
 <img src="https://drive.google.com/uc?id=1c5dVq2K_9OFuv77oKPhcq0jtTGW2_Guu" align="center" width="400" />
@@ -100,34 +101,35 @@ The left hand side takes in:
 - $X$ (a zebra) 
 - $Y$ (a horse)
 
-The right hand side features this term:
+The RHS features this term:
 
 <center>
 <img src="https://drive.google.com/uc?id=1iRior0WTK5eOamzMIuVw-d6472bSbBAz" width="200"/>
 </center>
 
-This term measures our ability to draw one zebra out of all the zebras. This equation tries to recognise whether our created zebra is real or fake.
+This term measures our ability to recognise whether our created zebra is real or fake. We draw one zebra out of all the zebras and pass it through the discriminator.
 
-The right hand side also features this term:
+Now for the next term:
 
 <center>
 <img src="https://drive.google.com/uc?id=1WM6QtgZf6WRqFYj_lSSXXkyNRjIxO2QP" width="250"/>
 </center>
 
-This particular term measures our ability to take a horse and turn it into a zebra. This equation tries to recognise whether our created zebra is real or fake.
+This term measures our ability to take a horse and turn it into a zebra. We draw one horse out of all the generated horses and pass it through the discriminator.
 
-Now we do the first term minus the second term. Ignoring the logs this gives us the adversial loss equation we saw above.
+Now we do the first term plus the second term. This gives us the adversial loss equation we saw above.
 
 
-### Cycle Consistency Loss: 
+## Cycle Consistency Loss: 
 
+Here's the loss function for cycle consistency loss:
 
 <center>
 <img src="https://drive.google.com/uc?id=1Hr12uqBUfjwskg0TZ0LuPZELIG_X1AOo" width="400"/>
 </center>
 
 
-If we look at the first term:
+Let's look at the first term:
 
 <center>
 <img src="https://drive.google.com/uc?id=1rfj_Z_mPYc334nXqpJqJc7QIcwPO64Rb" width="250"/>
@@ -135,12 +137,13 @@ If we look at the first term:
 
 This means:
 
-1. We take a random zebra from our zebra dataset. 
+1. We take a random zebra from our zebra dataset. (x~p(x))
 2. We pass that zebra through the generator ($G$) to create a horse. 
 3. We pass that generated horse through another generator ($F$) to create a zebra
 4. We compare the zebra created in step 3 with the random zebra in step 1 and take the sum of the absolute value of differences. 
 
-The second term works in a very similar fashion. Except now we take out a random horse and pass that through the generator functions.
+
+The second term works in a very similar fashion. However, now we start with a random horse and convert that into a zebra and back into a horse again.
 
 
 ## Full objective
@@ -166,9 +169,11 @@ We try to maximise the capability of the discriminator and minimise the loss of 
 
 # End
 
-I've covered the broad strokes of how Cyclegan works. If I've made a mistake here, or if anything seems incorrect please let me know and I'll fix it as soon as I can.
+The mathematics behind CycleGAN can seem somewhat daunting. But I've tried to cover the broad strokes in this article. I hope this has helped someone out there. This article would've certaintly helped me when I was learning how CycleGAN worked.
 
-A big thanks to the creators of Cyclegan. I think it's worth reading their [paper](https://arxiv.org/pdf/1703.10593.pdf) to understand this method in more detail. 
+If I've made a mistake please feel free to reach out to me on twitter and I'll fix it as soon as I can.
+
+A big thanks to the authors of CycleGAN: [Jun-Yan Zhu](https://www.cs.cmu.edu/~junyanz/), [Taesung Park](https://taesung.me/), [Phillip Isola](http://web.mit.edu/phillipi/) and [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros/). I think it's worth reading their [paper](https://arxiv.org/pdf/1703.10593.pdf) to understand this method in more detail. 
 
 
 
