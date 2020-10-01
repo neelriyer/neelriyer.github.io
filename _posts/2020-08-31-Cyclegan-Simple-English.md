@@ -90,9 +90,9 @@ Now we repeat this process. Except this time we taken an image of a zebra and tr
 
 # Loss Functions in Mathematical Terms
 
-## Adversial loss: 
+## Adversarial loss: 
 
-The loss function for adversial loss is as follows:
+The loss function for adversarial loss is as follows:
 
 <center>
 <img src="https://drive.google.com/uc?id=1c5dVq2K_9OFuv77oKPhcq0jtTGW2_Guu" align="center" width="400" />
@@ -125,7 +125,7 @@ Now for the next term:
 
 This term measures our ability to take a horse and turn it into a zebra. We draw one horse out of all the generated horses and pass it through the discriminator.
 
-Now we do the first term plus the second term. This gives us the adversial loss equation we saw above.
+Now we do the first term plus the second term. This gives us the adversarial loss equation we saw above.
 
 
 ## Cycle Consistency Loss: 
@@ -162,7 +162,7 @@ The full loss function is as follows:
 <img src="https://drive.google.com/uc?id=10aViByAIMguwjyrWQBjZeAr16egUlVXI" align="center" width="400" />
 </center>
 
-It's just the sum of the Adversial loss functions we saw earlier and the cycle consistency loss functions. Where $λ$ controls the relative importance of each objective.
+It's just the sum of the adversarial loss functions we saw earlier and the cycle consistency loss functions. Where $λ$ controls the relative importance of each objective.
 
 Ultimately we want to achieve the following:
 
