@@ -30,7 +30,7 @@ We'll need to create a regressor (or calibrator) that maps the output of the cla
 
 Essentially the calibrator will try to predict:
 
-`p(y = 1|f)`
+![img](/images/production/posterior.png)
 
 where fi is the output of the classifier.
 
