@@ -32,7 +32,7 @@ Essentially the calibrator will try to predict:
 
 ![img](/images/production/posterior.png)
 
-where fi is the output of the classifier.
+where `f` is the output of the classifier.
 
 Or more plainly: Given the output of our classifier, what is the probability that we are 100% certain about this output?
 
@@ -50,8 +50,6 @@ To find A and B we can use Maximum Likelihood Estimation.
 
 The code for this is really simple. Scikit-learn hides most of the complexity behinds layers of abstraction. 
 
-
-<!-- `predict_proba` is the function that we'll need here. While the function itself seems like an unfinished sentence, it is incredibly useful.  -->
 
 All you need to do is this:
 
