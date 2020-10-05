@@ -3,19 +3,21 @@ layout: post
 title: ML models in Production (unfinished)
 ---
 
-_Converting a Decision Function into Probabilities in Scikit Learn_
+*Converting a Decision Function into Probabilities in Scikit Learn*
 
 In production the stakes are high. People are going to be reading the outputs from the model. And the outputs better make sense. 
 
-Recently my team and I created a NLP classifier and put it into production on a large insurance dataset. It uses TfidfVectorizer and LinearSVC to classify free-text. Nothing fancy really. 
+Recently my team and I created a NLP classifier and put it into production on a large insurance dataset. It uses TfidfVectorizer and LinearSVC to classify free-text.
 
-But I quickly realised just that putting something into production is so different to the theory. 
+But I quickly realised just that putting something into production is so different to the theory.
+
+![examples](https://i.redd.it/5zz3wrn5ypm41.jpg )
 
 In production, it's really important to get the probability of a model prediction. For example, if your model classifies something with a probability of 50% someone should investigate that prediction. If they find a mistake you've prevented the model from disrupting a pivotal system in the company.
 
 But obtaining the probability of a prediction is not always so straight forward.
 
-In this article I'll walk through a way you can extract the probabilities from an ordinary decision function in scikit-learn.
+In this article I'll walk through a way you can extract the probabilities from a SVM classifier in scikit-learn.
 
 This was critical for putting our model into production. 
 
@@ -28,19 +30,69 @@ We'll need to create a regressor (or calibrator) that maps the output of the cla
 
 Essentially the calibrator will try to predict:
 
-p(yi = 1|fi), where fi is the output of the classifier.
+`p(y = 1|f)`
+
+where fi is the output of the classifier.
 
 Or more plainly: Given the output of our classifier, what is the probability that we are 100% certain about this output?
 
 
+This [paper](https://www.researchgate.net/publication/2594015_Probabilistic_Outputs_for_Support_Vector_Machines_and_Comparisons_to_Regularized_Likelihood_Methods) by [John Platt](https://en.wikipedia.org/wiki/John_Platt_(computer_scientist)) notes that a sigmoid function could be used as a regressor. We obtain the following:
+
+
+![img](/images/production/sigmoid.png)
+
+
+To find A and B we can use Maximum Likelihood Estimation.
+
 
 # Code
 
+The code for this is really simple. Scikit-learn hides most of the complexity behinds layers of abstraction. 
+
+
 <!-- `predict_proba` is the function that we'll need here. While the function itself seems like an unfinished sentence, it is incredibly useful.  -->
 
-The code for this is really simple. Part of the reason is that the beautiful people at scikit learn have hidden all the complex maths behind layers of abstraction. 
-
 All you need to do is this:
+
+
+```python
+# from: https://stackoverflow.com/questions/26478000/converting-linearsvcs-decision-function-to-probabilities-scikit-learn-python
+svm = LinearSVC()
+clf = CalibratedClassifierCV(svm) 
+clf.fit(X_train, y_train)
+```
+
+CalibratedClassifierCV will fit the training data using a k-fold cross validation approach. The default is 5-fold. See more information [here](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV). 
+
+Then we'll extract the average probability of the predicted class across all the k-folds. `predict_proba` is the function we'll need here. While the function itself seems like an unfinished sentence, it is incredibly useful.
+
+```python
+y_proba = clf.predict_proba(X_test)
+```
+
+The get the predicted class we can simply use the predict function.
+
+```python
+clf.predict(X_test)
+``` 
+
+# Evaluating the calibrator
+
+How well does the calibrator fit the data? How can we tell?
+
+To do that we can use the `sklearn.metrics.brier_score_loss`. More information can be found [here](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.brier_score_loss.html#sklearn.metrics.brier_score_loss). 
+
+If this score is very high then we cannot look at the probability outputs from the calibrator - they are useless. Instead we'll need to look into better methods of fitting the calibrator. This [article](https://machinelearningmastery.com/calibrated-classification-model-in-scikit-learn/) has some good approaches to fitting the calibrator. 
+
+# End
+
+That's it really! 
+
+This little trick has helped us put our model into production effectively. I wanted to share it with the community in case it helps someone else. 
+
+
+
 
 
 
