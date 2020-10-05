@@ -1,9 +1,9 @@
 ---
 layout: post
-title: ML models in Production (unfinished)
+title: Machine Learning in Production
 ---
 
-*Converting a Decision Function into Probabilities in Scikit Learn*
+*Lessons Learned from Productionizing a ML Pipeline*
 
 In production the stakes are high. People are going to be reading the outputs from the model. And the outputs better make sense. 
 
