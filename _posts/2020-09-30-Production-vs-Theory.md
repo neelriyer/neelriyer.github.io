@@ -3,7 +3,7 @@ layout: post
 title: Machine Learning in Production
 ---
 
-*Lessons Learned from Productionizing a ML Pipeline*
+*Lessons Learned from Productionizing a ML Model*
 
 In production the stakes are high. People are going to be reading the outputs from the model. And the outputs better make sense. 
 
@@ -106,12 +106,6 @@ That's it really!
 I'm sure I'll have more to add as we continue to maintain this model. I wanted to share this little trick that helped us put our model into production effectively. Hopefully someone out there finds it useful.
 
 If I've made a mistake or you're interested in reaching out please feel free to reach to me on [twitter](https://twitter.com/neeliyer11).
-
-
-
-
-
-
 
 
 
