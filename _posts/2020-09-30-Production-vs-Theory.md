@@ -40,7 +40,7 @@ Or more plainly: Given the output of our classifier, what is the probability tha
 This [paper](https://www.researchgate.net/publication/2594015_Probabilistic_Outputs_for_Support_Vector_Machines_and_Comparisons_to_Regularized_Likelihood_Methods) by [John Platt](https://en.wikipedia.org/wiki/John_Platt_(computer_scientist)) notes that a sigmoid function could be used as a regressor. We obtain the following:
 
 
-<div style="text-align: center"><img src="/images/production/sigmoid.png" width="300" /></div>
+<div style="text-align: center"><img src="/images/production/sigmoid.png" width="500" /></div>
 
 ![img](/images/production/sigmoid.png)
 
