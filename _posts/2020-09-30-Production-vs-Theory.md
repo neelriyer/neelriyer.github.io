@@ -31,7 +31,7 @@ We'll need to create a regressor (or calibrator) that maps the output of the cla
 Essentially the calibrator will try to predict:
 
 
-<div style="text-align: center"><img src="/images/production/posterior.png" width="250" /></div>
+<div style="text-align: center"><img src="/images/production/posterior.png" width="200" /></div>
 
 <!-- ![img](/images/production/posterior.png) -->
 
