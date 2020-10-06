@@ -31,9 +31,9 @@ We'll need to create a regressor (or calibrator) that maps the output of the cla
 Essentially the calibrator will try to predict:
 
 
-<div style="text-align: center"><img src="/images/production/posterior.png" width="500" /></div>
+<div style="text-align: center"><img src="/images/production/posterior.png" width="250" /></div>
 
-![img](/images/production/posterior.png)
+<!-- ![img](/images/production/posterior.png) -->
 
 where `f` is the output of the classifier.
 
@@ -45,7 +45,7 @@ This [paper](https://www.researchgate.net/publication/2594015_Probabilistic_Outp
 
 <div style="text-align: center"><img src="/images/production/sigmoid.png" width="500" /></div>
 
-![img](/images/production/sigmoid.png)
+<!-- ![img](/images/production/sigmoid.png) -->
 
 
 To find A and B we can use Maximum Likelihood Estimation.
