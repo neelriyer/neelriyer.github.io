@@ -48,7 +48,11 @@ This [paper](https://www.researchgate.net/publication/2594015_Probabilistic_Outp
 <!-- ![img](/images/production/sigmoid.png) -->
 
 
-To find A and B we can use Maximum Likelihood Estimation.
+To find A and B we can use [Maximum Likelihood Estimation](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation). This would involve minimising the negative log likelihood:
+
+<div style="text-align: center"><img src="/images/production/neg_log_likelihood.png" width="500" /></div>
+
+where `ti` is the target probability. 
 
 
 # Show me the Code
@@ -79,6 +83,13 @@ The get the predicted class we can simply use the predict function.
 ```python
 clf.predict(X_test)
 ``` 
+
+<!-- # Potential Issues
+
+[Platt](https://en.wikipedia.org/wiki/John_Platt_(computer_scientist) [notes](https://www.researchgate.net/publication/2594015_Probabilistic_Outputs_for_Support_Vector_Machines_and_Comparisons_to_Regularized_Likelihood_Methods) that the main issues are:
+
+1. The choice of sigmoid
+2. Overfitting -->
 
 # Evaluating the calibrator
 
