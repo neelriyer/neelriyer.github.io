@@ -10,7 +10,6 @@ Can you automatically bleep someone on TV when they swear?
 Lately I've been watching a lot of comedy clips on youtube. They're usually uncensored- unless it's on [comedy central](https://www.reddit.com/r/IASIP/comments/18s4kn/why_the_hell_does_comedy_central_have_to_censor/). 
 
 
-
 The clips on comedy central got me thinking. Presumably somone has to [manually](https://www.youtube.com/watch?v=PEU9DXkiZzY) go through the video and bleep out the swear words. Why couldn't we do this using deep learning?
 
 It's an interesting idea. And I stupidly thought it would be easy. It did not turn out to be easy at all.
