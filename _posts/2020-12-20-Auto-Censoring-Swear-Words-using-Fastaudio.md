@@ -33,8 +33,6 @@ First we'll need to install a few things
 
 I really like `ipython-autotime`. It automatically lets me know how long cells take to run. So there's no need to run a `%%time` in each cell. 
 
-I'll be using this library in this notebook.
-
 ```
 # install ipython automtime.
 !pip install ipython-autotime
@@ -42,7 +40,6 @@ I'll be using this library in this notebook.
 ```
 
 ```python
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -57,11 +54,11 @@ print(device)
 
 ```
 
-# Create Datasets
+# Creating the Dataset
 
 First we'll need to create a dataset.
 
-After a lot of searching I managed to find a swear word dataset that was somewhat suitable for my purposes. I'll be using a dataset from [`the abuse project`](https://github.com/theabuseproject/tapad) which is available on github.
+After a lot of searching I managed to find a swear word dataset that was somewhat suitable for my purposes. I'll be using a dataset from the abuse project which is available on [github](https://github.com/theabuseproject/tapad).
 
 
 ```
@@ -70,7 +67,6 @@ After a lot of searching I managed to find a swear word dataset that was somewha
 
 
 ```python
-# %%time
 import glob
 from pydub import AudioSegment
 from pathlib import Path
@@ -186,7 +182,9 @@ train_df, test_df = create_train_test(0.8)
 train_df.head()
 
 ```
-![alt text](/images/auto_censoring/train_df_head.png)
+
+<img src="/images/auto_censoring/train_df_head.png" alt="img" width="200"/>
+
 
 I've used multiprocessing here to really speed things up. The `parallel` function from [`fastcore`](https://fastcore.fast.ai/parallel.html#parallel) is incredibly useful and saves me a lot of time.
 
@@ -306,7 +304,7 @@ dbunch.show_batch(figsize=(10, 5))
 ![alt text](/images/auto_censoring/dbunch_show_batch.png)
 
 
-We'll be using transfer learning from a `resnet18` model. Transfer learning has proved very [useful](https://builtin.com/data-science/transfer-learning#:~:text=Transfer%20learning%20has%20several%20benefits,needing%20a%20lot%20of%20data.)
+We'll be using transfer learning from a `resnet18` model. Transfer learning has proved to be very [useful](https://builtin.com/data-science/transfer-learning#:~:text=Transfer%20learning%20has%20several%20benefits,needing%20a%20lot%20of%20data.).
 
 ```python
 learn = cnn_learner(dbunch, 
@@ -317,135 +315,7 @@ learn = cnn_learner(dbunch,
             metrics=[F1Score()])
 ```
 
-Here's a summary of the model we'll be using
-
-```
-Sequential (Input shape: ['64 x 1 x 32 x 16'])
-================================================================
-Layer (type)         Output Shape         Param #    Trainable 
-================================================================
-Conv2d               64 x 64 x 16 x 8     3,136      False     
-________________________________________________________________
-BatchNorm2d          64 x 64 x 16 x 8     128        True      
-________________________________________________________________
-ReLU                 64 x 64 x 16 x 8     0          False     
-________________________________________________________________
-MaxPool2d            64 x 64 x 8 x 4      0          False     
-________________________________________________________________
-Conv2d               64 x 64 x 8 x 4      36,864     False     
-________________________________________________________________
-BatchNorm2d          64 x 64 x 8 x 4      128        True      
-________________________________________________________________
-ReLU                 64 x 64 x 8 x 4      0          False     
-________________________________________________________________
-Conv2d               64 x 64 x 8 x 4      36,864     False     
-________________________________________________________________
-BatchNorm2d          64 x 64 x 8 x 4      128        True      
-________________________________________________________________
-Conv2d               64 x 64 x 8 x 4      36,864     False     
-________________________________________________________________
-BatchNorm2d          64 x 64 x 8 x 4      128        True      
-________________________________________________________________
-ReLU                 64 x 64 x 8 x 4      0          False     
-________________________________________________________________
-Conv2d               64 x 64 x 8 x 4      36,864     False     
-________________________________________________________________
-BatchNorm2d          64 x 64 x 8 x 4      128        True      
-________________________________________________________________
-Conv2d               64 x 128 x 4 x 2     73,728     False     
-________________________________________________________________
-BatchNorm2d          64 x 128 x 4 x 2     256        True      
-________________________________________________________________
-ReLU                 64 x 128 x 4 x 2     0          False     
-________________________________________________________________
-Conv2d               64 x 128 x 4 x 2     147,456    False     
-________________________________________________________________
-BatchNorm2d          64 x 128 x 4 x 2     256        True      
-________________________________________________________________
-Conv2d               64 x 128 x 4 x 2     8,192      False     
-________________________________________________________________
-BatchNorm2d          64 x 128 x 4 x 2     256        True      
-________________________________________________________________
-Conv2d               64 x 128 x 4 x 2     147,456    False     
-________________________________________________________________
-BatchNorm2d          64 x 128 x 4 x 2     256        True      
-________________________________________________________________
-ReLU                 64 x 128 x 4 x 2     0          False     
-________________________________________________________________
-Conv2d               64 x 128 x 4 x 2     147,456    False     
-________________________________________________________________
-BatchNorm2d          64 x 128 x 4 x 2     256        True      
-________________________________________________________________
-Conv2d               64 x 256 x 2 x 1     294,912    False     
-________________________________________________________________
-BatchNorm2d          64 x 256 x 2 x 1     512        True      
-________________________________________________________________
-ReLU                 64 x 256 x 2 x 1     0          False     
-________________________________________________________________
-Conv2d               64 x 256 x 2 x 1     589,824    False     
-________________________________________________________________
-BatchNorm2d          64 x 256 x 2 x 1     512        True      
-________________________________________________________________
-Conv2d               64 x 256 x 2 x 1     32,768     False     
-________________________________________________________________
-BatchNorm2d          64 x 256 x 2 x 1     512        True      
-________________________________________________________________
-Conv2d               64 x 256 x 2 x 1     589,824    False     
-________________________________________________________________
-BatchNorm2d          64 x 256 x 2 x 1     512        True      
-________________________________________________________________
-ReLU                 64 x 256 x 2 x 1     0          False     
-________________________________________________________________
-Conv2d               64 x 256 x 2 x 1     589,824    False     
-________________________________________________________________
-BatchNorm2d          64 x 256 x 2 x 1     512        True      
-________________________________________________________________
-Conv2d               64 x 512 x 1 x 1     1,179,648  False     
-________________________________________________________________
-BatchNorm2d          64 x 512 x 1 x 1     1,024      True      
-________________________________________________________________
-ReLU                 64 x 512 x 1 x 1     0          False     
-________________________________________________________________
-Conv2d               64 x 512 x 1 x 1     2,359,296  False     
-________________________________________________________________
-BatchNorm2d          64 x 512 x 1 x 1     1,024      True      
-________________________________________________________________
-Conv2d               64 x 512 x 1 x 1     131,072    False     
-________________________________________________________________
-BatchNorm2d          64 x 512 x 1 x 1     1,024      True      
-________________________________________________________________
-Conv2d               64 x 512 x 1 x 1     2,359,296  False     
-________________________________________________________________
-BatchNorm2d          64 x 512 x 1 x 1     1,024      True      
-________________________________________________________________
-ReLU                 64 x 512 x 1 x 1     0          False     
-________________________________________________________________
-Conv2d               64 x 512 x 1 x 1     2,359,296  False     
-________________________________________________________________
-BatchNorm2d          64 x 512 x 1 x 1     1,024      True      
-________________________________________________________________
-AdaptiveAvgPool2d    64 x 512 x 1 x 1     0          False     
-________________________________________________________________
-AdaptiveMaxPool2d    64 x 512 x 1 x 1     0          False     
-________________________________________________________________
-Flatten              64 x 1024            0          False     
-________________________________________________________________
-BatchNorm1d          64 x 1024            2,048      True      
-________________________________________________________________
-Dropout              64 x 1024            0          False     
-________________________________________________________________
-Linear               64 x 512             524,288    True      
-________________________________________________________________
-ReLU                 64 x 512             0          False     
-________________________________________________________________
-BatchNorm1d          64 x 512             1,024      True      
-________________________________________________________________
-Dropout              64 x 512             0          False     
-________________________________________________________________
-Linear               64 x 2               1,024      True      
-________________________________________________________________
-
-```
+<!-- Here's a summary of the model we'll be using -->
 
 Next we'll run the training loop with a `SaveModelCallback`. This will allow us to save the best model automatically. We'll be tracking f1 score since our classes are imbalanced.
 
@@ -490,7 +360,6 @@ First we'll split the audio files into smaller segments. I've split things here 
 
 
 ```python
-
 import shutil
 from pydub import AudioSegment
 import os
@@ -552,7 +421,6 @@ Next we'll download a censor audio sound. I'm using [this one](https://www.youtu
 
 ```
 !youtube-dl --extract-audio --audio-format wav https://www.youtube.com/watch?v=RPfCZhvj1Ng
-
 ```
 
 
@@ -610,8 +478,6 @@ def predict_long_form(file, seconds = 0.2, folder = 'output'):
   return output_name
 
 output = predict_long_form(PREDICTION_FILE, seconds = 0.2)
-
-
 ```
 
 
