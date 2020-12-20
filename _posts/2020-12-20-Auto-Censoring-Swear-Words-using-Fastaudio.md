@@ -9,7 +9,7 @@ Can you automatically bleep someone on TV when they swear?
 
 Lately I've been watching a lot of comedy clips on youtube. And unless it's on [comedy central](https://www.reddit.com/r/IASIP/comments/18s4kn/why_the_hell_does_comedy_central_have_to_censor/) they are usually uncensored. 
 
-
+![Alt Text](https://i.ytimg.com/vi/ahT2DV-WURo/maxresdefault.jpg)
 
 But the clips on comedy central got me thinking. Could we train a deep learning model to:
 1. Recognise when someone swears
@@ -17,19 +17,12 @@ But the clips on comedy central got me thinking. Could we train a deep learning 
 
 It's an interesting idea. And I stupidly thought it would be easy. It did not turn out to be easy at all.
 
+Audio classification has been getting a lot of [attention](https://www.kaggle.com/c/birdsong-recognition/overview) on kaggle. But so far it's been focused on short audio samples (less than a few seconds). I couldn't find a lot of information out there on longer audio samples. 
+
+So in this article I'll describe my initial attempt at this idea. I'll be borrowing ideas and code from a [pytorch tutorial](https://pytorch.org/tutorials/intermediate/speech_command_recognition_with_torchaudio.html) and the [fastaudio](https://github.com/fastaudio/fastaudio) repository. 
 
 
-Audio classification has been getting a lot of [attention](https://www.kaggle.com/c/birdsong-recognition/overview) on kaggle. But so far it's been focused on short audio samples (less than a few seconds).
-
-I couldn't find a lot of information out there on longer audio samples. 
-
-So in this article I'll describe my initial attempt at this idea. 
-
-I'll be borrowing ideas and code from a [pytorch tutorial](https://pytorch.org/tutorials/intermediate/speech_command_recognition_with_torchaudio.html) and the [fastaudio](https://github.com/fastaudio/fastaudio) repository. 
-
-
-
-
+# Install
 
 First we'll need to install a few things
 
