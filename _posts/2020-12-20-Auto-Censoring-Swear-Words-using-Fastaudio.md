@@ -56,9 +56,9 @@ print(device)
 
 # Creating the Dataset
 
-First we'll need to create a dataset.
+Now we can create the dataset.
 
-After a lot of searching I managed to find a swear word dataset that was somewhat suitable for my purposes. I'll be using a dataset from the abuse project which is available on [github](https://github.com/theabuseproject/tapad).
+After a lot of searching I managed to find a swear word dataset that was somewhat suitable for my purposes. I'll be using a dataset from 'the abuse project' which is available on [github](https://github.com/theabuseproject/tapad).
 
 
 ```
@@ -114,7 +114,6 @@ import multiprocessing as mp # https://cslocumwx.github.io/blog/2015/02/23/pytho
 
 clean_words = glob.glob('SpeechCommands/speech_commands_v0.02/*/*.wav')
 
-dir = 'swear_words/audio/en*/*.mp3' # only english swear words
 swear_words = glob.glob(dir.replace('mp3', 'wav')); len(swear_words)
 
 def get_label(filepath):
@@ -183,7 +182,7 @@ train_df.head()
 
 ```
 
-<img src="/images/auto_censoring/train_df_head.png" alt="img" width="200"/>
+<img src="/images/auto_censoring/train_df_head.png" alt="img" width="400"/>
 
 
 I've used multiprocessing here to really speed things up. The `parallel` function from [`fastcore`](https://fastcore.fast.ai/parallel.html#parallel) is incredibly useful and saves me a lot of time.
@@ -494,8 +493,8 @@ def play_sample_audio(file, duration_min = 0, duration_second = 20):
 play_sample_audio('output.wav', duration_second = 30)
 ```
 
-{% include embed-audio.html src="/assets/audio/output_sample.wav" %}
+<!-- {% include embed-audio.html src="/assets/audio/output_sample.wav" %} -->
 
 
-The full jupyter notebook can be found on [Github]()
+The full jupyter notebook can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/swear_word_detection.ipynb)
 
