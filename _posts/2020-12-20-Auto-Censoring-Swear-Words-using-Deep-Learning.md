@@ -3,9 +3,13 @@ layout: post
 title: Auto Censoring Swear Words using Deep Learning
 ---
 
+![Alt Text](https://media0.giphy.com/media/gXiyq2FNRFnPy/source.gif)
+
 Can you automatically bleep someone on TV when they swear?
 
 Lately I've been watching a lot of comedy clips on youtube. And unless it's on [comedy central](https://www.reddit.com/r/IASIP/comments/18s4kn/why_the_hell_does_comedy_central_have_to_censor/) they are usually uncensored. 
+
+
 
 But the clips on comedy central got me thinking. Could we train a deep learning model to:
 1. Recognise when someone swears
