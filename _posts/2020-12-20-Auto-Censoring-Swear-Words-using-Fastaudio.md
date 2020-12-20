@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Auto Censoring Swear Words using Deep Learning
+title: Auto Censoring Swear Words in Fastaudio
 ---
 
 ![Alt Text](https://media0.giphy.com/media/gXiyq2FNRFnPy/source.gif)
