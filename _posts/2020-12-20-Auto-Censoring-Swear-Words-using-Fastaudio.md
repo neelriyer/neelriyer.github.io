@@ -447,7 +447,13 @@ play_sample_audio('output.wav', duration_second = 30)
 
 <!-- {% include embed-audio.html src="/assets/audio/output_sample.wav" %} -->
 
+# Conclusion
 
+This is really a first step. It's not the finished product. 
+
+Deep Learning for audio is a fairly new field. And as a result I couldn't really find a lot of help out there on the internet. I hope this article proves useful to someone out there looking to build something in the field. 
+
+If I've made a mistake or you'd like to reach out to me please contact me on [twitter](https://twitter.com/neeliyer11).
 
 The full jupyter notebook can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/swear_word_detection.ipynb)
 
