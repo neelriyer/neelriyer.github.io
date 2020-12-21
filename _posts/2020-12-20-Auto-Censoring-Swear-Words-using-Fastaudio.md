@@ -449,7 +449,7 @@ play_sample_audio('output.wav', duration_second = 30)
 
 # Conclusion
 
-This is really a first step. It's not the finished product. 
+This is really a just first step. It's not the finished product. 
 
 Deep Learning for audio is a fairly new field. And as a result I couldn't really find a lot of help out there on the internet. I hope this article proves useful to someone out there looking to build something in the field. 
 
