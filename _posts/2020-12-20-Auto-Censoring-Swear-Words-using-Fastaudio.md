@@ -12,7 +12,7 @@ Lately I've been watching a lot of comedy clips on youtube. They're usually unce
 
 ![Alt Text](https://i.ytimg.com/vi/edwvY6xBo4Y/maxresdefault.jpg)
 
-The clips on comedy central got me thinking. Presumably somone has to [manually](https://www.youtube.com/watch?v=PEU9DXkiZzY) go through the video and bleep out the swear words. Why couldn't we do this using deep learning?
+The clips on comedy central got me thinking. Presumably somone has to [manually](https://www.youtube.com/watch?v=fYqzD88x734&ab_channel=LearnHowToEditStuff) go through the video and bleep out the swear words. Why couldn't we do this using deep learning?
 
 It's an interesting idea. And I stupidly thought it would be easy. It did not turn out to be easy at all.
 
