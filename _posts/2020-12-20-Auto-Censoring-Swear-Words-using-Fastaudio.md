@@ -28,31 +28,14 @@ First we'll need to install a few things
 
 ```
 !pip install -q torch==1.7.0+cu101 torchvision==0.8.1+cu101 torchaudio==0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
-
 !pip install -q -U fastai fastcore pydub ffmpy
 ```
 
 I really like `ipython-autotime`. It automatically lets me know how long cells take to run. So there's no need to run a `%%time` in each cell. 
 
 ```
-# install ipython automtime.
 !pip install ipython-autotime
 %load_ext autotime
-```
-
-```python
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import torchaudio
-import matplotlib.pyplot as plt
-import IPython.display as ipd
-from tqdm.notebook import tqdm
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(device)
-
 ```
 
 # Creating the Dataset
@@ -61,35 +44,8 @@ Now we can create the dataset.
 
 After a lot of searching I managed to find a swear word dataset that was somewhat suitable for my purposes. I'll be using a dataset from 'the abuse project' which is available on [github](https://github.com/theabuseproject/tapad).
 
-
 ```
 !git clone https://github.com/theabuseproject/tapad swear_words
-```
-
-
-```python
-import glob
-from pydub import AudioSegment
-from pathlib import Path
-import os
-from fastcore.parallel import parallel
-import mulitprocessing as mp
-
-# use parallel processing in fastai to speed things up
-
-def convert_mp3_to_wav(file):
-  parent = Path(file).parent.name
-  file_name = Path(file).stem + '.wav'
-  mp3 = AudioSegment.from_mp3(file)
-  output = Path(dir).parents[1]/parent/file_name
-  # print(output)
-  os.remove(file)
-  if Path(output).exists(): os.remove(output)
-  mp3.export(output, format="wav")
-
-dir = 'swear_words/audio/en*/*.mp3' # only english swear words
-files = glob.glob(dir)
-parallel(convert_mp3_to_wav, files, n_workers = mp.cpu_count())
 ```
 
 Next I found a dataset that had "clean" audio. By clean I mean audio without swear words in it. I'll be using the [speech commands dataset](https://www.tensorflow.org/datasets/catalog/speech_commands) from google.
@@ -211,7 +167,9 @@ listen_random_audio(train_df)
 
 # Fastaudio
 
-Fastaudio is a cool library for fastai. We'll try using fastaudio to build our swear word classifier. 
+Fastaudio is a cool library for fastai. Since I don't have a lot of domain knowledge in the field of audio I'll be using this library. 
+
+Let's try using fastaudio to build our swear word classifier. 
 
 ```
 # fastai audio
@@ -261,11 +219,7 @@ a2s = AudioToSpec.from_cfg(cfg)
 
 
 
-We'll resample all our files so that they are all 8kHZ. This should be good for [voice audio](https://forums.fast.ai/t/fastai-v2-audio/53535/99).
-
-We'll also resize the signal so that all our audio tensors are the same size.
-
-In addition, I think that converting sound from stereo to mono may be a [good idea](https://pytorch.org/tutorials/intermediate/speech_command_recognition_with_torchaudio.html#formatting-the-data). 
+We'll resample all our files so that they are all 8kHZ. This should be good for [voice audio](https://forums.fast.ai/t/fastai-v2-audio/53535/99).We'll also resize the signal so that all our audio tensors are the same size. In addition, I think that converting sound from stereo to mono may be a [good idea](https://pytorch.org/tutorials/intermediate/speech_command_recognition_with_torchaudio.html#formatting-the-data). 
 
 
 ```python
@@ -285,7 +239,6 @@ But `ResizeSignal`, `Resample` and `DownmixMono` are part of the item transforms
 # Note: important to distinguish between item tfms and batch tfms
 # I made the mistake of confusing the two and got stuck on debugging for a few hours lol
 
-# Note: doesn't work on GPU as yet
 auds = DataBlock(blocks = (AudioBlock, CategoryBlock),  
                  get_x = ColReader("file_name"), 
                  batch_tfms = batch_tfms,
@@ -311,7 +264,7 @@ learn = cnn_learner(dbunch,
             models.resnet18,
             config=cnn_config(n_in=1), #<- Only audio specific modification here
             # config={"n_in":1},
-            # loss_func=CrossEntropyLossFlat(),
+            loss_func=CrossEntropyLossFlat(),
             metrics=[F1Score()])
 ```
 
@@ -325,7 +278,7 @@ from fastai.callback.tracker import SaveModelCallback
 @skip_if_ci
 def run_learner():
     # epochs are a bit longer due to the chosen melspectrogram settings
-    learn.fine_tune(epochs = 0, cbs = [SaveModelCallback(monitor='f1_score', fname='stage-1')])
+    learn.fine_tune(epochs = 10, cbs = [SaveModelCallback(monitor='f1_score', fname='stage-1')])
 
 # We only validate the model when running in CI
 run_learner()
