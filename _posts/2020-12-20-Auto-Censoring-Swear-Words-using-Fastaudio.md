@@ -299,7 +299,7 @@ learn.unfreeze()
 
 Finally we'll run our model on a longer form audio sample.
 
-I'll be using a [clip]('https://www.youtube.com/watch?v=OJINY9Tz2qA&ab_channel=TeamCoco') from Minnie Driver's appearance on Conan. This contains a few swear words that weren't bleeped out. Again I'll be using parallel processing again here to really speed things up. 
+I'll be using a [clip]('https://www.youtube.com/watch?v=OJINY9Tz2qA') from Minnie Driver's appearance on Conan. This contains a few swear words that weren't bleeped out. Again I'll be using parallel processing again here to really speed things up. 
 
 
 ```
