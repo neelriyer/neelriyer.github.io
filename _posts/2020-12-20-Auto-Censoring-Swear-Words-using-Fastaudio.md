@@ -170,8 +170,6 @@ listen_random_audio(train_df)
 
 Fastaudio is a cool library for fastai. Since I don't have a lot of domain knowledge in the field of audio I'll be using this library. 
 
-Let's try using fastaudio to build our swear word classifier. 
-
 ```
 # fastai audio
 !pip install -q git+https://github.com/fastaudio/fastaudio.git --upgrade
@@ -196,6 +194,7 @@ def CrossValidationSplitter(col='fold', fold=1):
     return _inner
 
 # Create folds column
+n_folds = 5
 def create_folds(iter, df):
   jump = df.shape[0]//n_folds
   if (iter == 0): return [1]
@@ -205,7 +204,6 @@ def create_folds(iter, df):
 Now we can create the cross validation folds. We'll be using 5 folds. 
 
 ```python
-n_folds = 5
 train_df['fold'] = create_folds(n_folds, train_df)
 train_df.head()
 ```
@@ -298,9 +296,11 @@ learn.unfreeze()
 
 
 # Prediction on long-form audio sample
+
 Finally we'll run our model on a longer form audio sample.
 
-I'll be using a [clip](https://www.youtube.com/watch?v=I21ANMLvntQ&ab_channel=NetflixIsAJoke) from Tom Segura's comedy special. This contains a lot of swear words. Again I'll be using parallel processing again here to really speed things up. 
+I'll be using a [clip]('https://www.youtube.com/watch?v=OJINY9Tz2qA&ab_channel=TeamCoco') from Minnie Driver's appearance on Conan. This contains a few swear words that weren't bleeped out. Again I'll be using parallel processing again here to really speed things up. 
+
 
 ```
 !pip install youtube-dl
@@ -383,12 +383,12 @@ Now we'll get the model to run a prediction on each audio file. If the model bel
 
 
 ```python
-
 import ffmpy
 from tqdm.notebook import trange
 
 CENSOR_FILE = 'Censor Beep Sound Effect-RPfCZhvj1Ng.wav'
-PREDICTION_FILE = 'Best Of - Tom Segura _ Netflix Is A Joke-I21ANMLvntQ.wav'
+# PREDICTION_FILE = 'Best Of - Tom Segura _ Netflix Is A Joke-I21ANMLvntQ.wav'
+PREDICTION_FILE = 'Minnie Driver’s Favorite British Swears  - CONAN on TBS-OJINY9Tz2qA.wav'
 
 def bleep_out_swear_word(file):
   # return censored file which is the same length as original file
@@ -413,7 +413,6 @@ def _stitch_files_together(files, output_name = 'output.wav'):
   ffmpy.FFmpeg(inputs={str(files[n-1]): "-y "+ " ".join(['-i ' + str(i) for i in files[:n-1]])},\
                outputs={str('output.wav'): "-filter_complex '"+str(t)+"concat=n="+str(n)+\
                ":v=0:a=1[out]' -map '[out]'"}).run()
-    
   return output_name
 
 def predict_long_form(file, seconds = 0.2, folder = 'output'):
@@ -423,8 +422,10 @@ def predict_long_form(file, seconds = 0.2, folder = 'output'):
   
   for i in trange(len(files)):
     pred = learn.predict(files[i])[0]
-    print(f'swear word identified')
-    if (pred == 1): files[i] = bleep_out_swear_word(files[i])
+    
+    if (int(pred) == 1): 
+      # print(f'swear word identified at {files[i]}')
+      files[i] = bleep_out_swear_word(files[i])
 
   output_name = _stitch_files_together(files)
   return output_name
@@ -433,7 +434,7 @@ output = predict_long_form(PREDICTION_FILE, seconds = 0.2)
 ```
 
 
-Cool let's listen and hear how it went. I ran into OOM issues when trying to play the entire file on jupyter notebook so I'll just embed a sample here. I'll put the full file on github. 
+Cool let's listen and hear how it went. I ran into OOM issues when trying to play the entire file on jupyter notebook so I'll just embed a sample here.
 
 
 ```python
