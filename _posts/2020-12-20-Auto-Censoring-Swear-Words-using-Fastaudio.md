@@ -152,7 +152,8 @@ Now we'll listen the a random sample of audio. Just to check we're on track.
 
 
 ```python
-def listen_random_audio(df):
+def listen_random_audio(df, target = 0):
+  df = df[df['target']==target]
   i = random.randrange(0, df.shape[0])
   file = df.iloc[i]['file_name']
   print(df.iloc[i]['target'])
@@ -445,7 +446,7 @@ def play_sample_audio(file, duration_min = 0, duration_second = 20):
 play_sample_audio('output.wav', duration_second = 30)
 ```
 
-<!-- {% include embed-audio.html src="/assets/audio/output_sample.wav" %} -->
+{% include embed-audio.html src="/assets/audio/output_sample.wav" %}
 
 # Conclusion
 
