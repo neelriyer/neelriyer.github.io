@@ -285,7 +285,7 @@ run_learner()
 
 ![alt text](/images/auto_censoring/placeholder_training_shot.png)
 
-The f1 score looks pretty good!
+The f1 score looks weirdly good!
 
 ```python
 learn.load("stage-1")
@@ -299,12 +299,14 @@ learn.unfreeze()
 
 Finally we'll run our model on a longer form audio sample.
 
-I'll be using a [clip]('https://www.youtube.com/watch?v=OJINY9Tz2qA') from Minnie Driver's appearance on Conan. This contains a few swear words that weren't bleeped out. Again I'll be using parallel processing again here to really speed things up. 
+I'll be using a [clip](https://www.youtube.com/watch?v=OJINY9Tz2qA) from Minnie Driver's appearance on Conan. This contains a few swear words that weren't bleeped out. Again I'll be using parallel processing again here to really speed things up. 
 
 
 ```
-!pip install youtube-dl
-!youtube-dl --extract-audio --audio-format wav https://www.youtube.com/watch?v=I21ANMLvntQ&ab_channel=NetflixIsAJoke
+# URL = 'https://www.youtube.com/watch?v=I21ANMLvntQ&ab_channel=NetflixIsAJoke'
+URL = 'https://www.youtube.com/watch?v=OJINY9Tz2qA&ab_channel=TeamCoco'
+
+!youtube-dl --extract-audio --audio-format wav $URL
 ```
 
 
@@ -350,7 +352,7 @@ def split_audio_file(file, folder = 'output', increment = 1000):
 ```python
 seconds = 0.2
 miliseconds = int(seconds * 1000)
-files = split_audio_file('/content/Best Of - Tom Segura _ Netflix Is A Joke-I21ANMLvntQ.wav', 'output', miliseconds)
+files = split_audio_file('/content/Minnie Driver’s Favorite British Swears  - CONAN on TBS-OJINY9Tz2qA.wav', 'output', miliseconds)
 
 ```
 We can listen to the audio samples to check we're on track.
@@ -451,7 +453,7 @@ play_sample_audio('output.wav', duration_second = 30)
 
 # Conclusion
 
-This is really a just first step. It's not the finished product. 
+This is really a just first step. It's not the finished product.
 
 Deep Learning for audio is a fairly new field. And probably as a result I couldn't really find a lot of help out there on the internet. I hope this article proves useful to someone out there. It certainly would've helped me when I initially started this project.
 
