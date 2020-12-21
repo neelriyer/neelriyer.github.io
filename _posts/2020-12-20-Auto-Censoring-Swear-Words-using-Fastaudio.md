@@ -299,9 +299,7 @@ learn.unfreeze()
 # Prediction on long-form audio sample
 Finally we'll run our model on a longer form audio sample.
 
-I'll be using a [clip](https://www.youtube.com/watch?v=I21ANMLvntQ&ab_channel=NetflixIsAJoke) from Tom Segura's comedy special. This contains a lot of swear words.
-
-I'll be using parallel processing again here to really speed things up. 
+I'll be using a [clip](https://www.youtube.com/watch?v=I21ANMLvntQ&ab_channel=NetflixIsAJoke) from Tom Segura's comedy special. This contains a lot of swear words. Again I'll be using parallel processing again here to really speed things up. 
 
 ```
 !pip install youtube-dl
@@ -309,7 +307,7 @@ I'll be using parallel processing again here to really speed things up.
 ```
 
 
-First we'll split the audio files into smaller segments. I've split things here into segments of about 0.2 seconds. That should be long enough to catch a swear word but short enough to not overwhelm the classifier. 
+First we'll split the audio files into smaller segments. I've split things here into segments of about 0.2 seconds. That should be long enough to catch a swear word but short enough to be suitable for the classifier. 
 
 
 ```python
@@ -448,6 +446,7 @@ play_sample_audio('output.wav', duration_second = 30)
 ```
 
 <!-- {% include embed-audio.html src="/assets/audio/output_sample.wav" %} -->
+
 
 
 The full jupyter notebook can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/swear_word_detection.ipynb)
