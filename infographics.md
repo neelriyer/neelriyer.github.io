@@ -4,7 +4,7 @@ title: Infographics
 permalink: /infographics/
 ---
 
-A collection of the infographics I've made. High resolution pdfs are availiable in the links below. 
+A collection of the infographics I've made.
 
 ### K-means Clustering
 
