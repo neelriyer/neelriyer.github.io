@@ -77,7 +77,7 @@ gems:
   - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
   - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
   # - jekyll-theme-clean-blog
-  - 'jekyll-twitter-plugin' # custom
+  - jekyll-twitter-plugin # custom
 
 # Exclude these files from your production _site
 exclude:

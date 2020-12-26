@@ -35,5 +35,5 @@ A collection of the infographics I've made.
 ## Scott Adams: Math of Life
 
 
-
+{% twitter https://twitter.com/colorizedwisdom/status/1266136070074163202 maxwidth=500 limit=5 %}
 
