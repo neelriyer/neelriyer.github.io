@@ -25,9 +25,8 @@ A collection of the infographics I've made in high resolution.
 
 ### TF-IDF
 
-<center>
-<img src="https://drive.google.com/uc?id=1jD4mLglppzfyWh00DzGeJTm-6_Xn0QgP" align="center" width="200" />
-</center>
+<div style="text-align: center"><img src="/images/infographics/tf_idf.png" width="500" /></div>
+
 
 [reddit](https://www.reddit.com/r/learnmachinelearning/comments/gway54/i_made_an_infographic_to_help_me_remember_how/)
 
