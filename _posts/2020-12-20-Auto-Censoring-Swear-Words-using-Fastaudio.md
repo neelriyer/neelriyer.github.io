@@ -16,7 +16,7 @@ The clips on comedy central got me thinking. Presumably somone has to [manually]
 
 It's an interesting idea. And I stupidly thought it would be easy. It did not turn out to be easy at all.
 
-Audio classification has been getting a lot of [attention](https://www.kaggle.com/c/birdsong-recognition/overview) on kaggle. But so far it's been focused on short audio samples (less than a few seconds). I couldn't find a lot of information out there on longer audio samples. 
+Audio classification has been getting a lot of [attention](https://www.kaggle.com/c/birdsong-recognition/overview) on kaggle. But so far it's been focused on short audio samples (less than 30 seconds). I couldn't find a lot of information out there on longer audio samples. 
 
 So in this article I'll describe my initial attempt at this idea. I'll be borrowing ideas and code from a [pytorch tutorial](https://pytorch.org/tutorials/intermediate/speech_command_recognition_with_torchaudio.html) and the [fastaudio](https://github.com/fastaudio/fastaudio) repository. 
 
