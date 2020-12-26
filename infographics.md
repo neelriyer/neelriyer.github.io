@@ -8,9 +8,8 @@ A collection of the infographics I've made in high resolution.
 
 ### K-means Clustering
 
-<center>
-<img src="https://drive.google.com/uc?id=1tphu2c6bg590Izs7vy_YH_9WuPs30cIl" align="center" width="200" />
-</center>
+
+<div style="text-align: center"><img src="/images/infographics/kmeans_infographic.png" width="500" /></div>
 
 [reddit](https://www.reddit.com/r/learnmachinelearning/comments/kipra3/i_made_an_infographic_to_summarise_kmeans/)
 
@@ -18,9 +17,7 @@ A collection of the infographics I've made in high resolution.
 
 ### CycleGAN
 
-<center>
-<img src="https://drive.google.com/uc?id=1JcCmFo8wpt-i7JUv_Mcp30ZAv5KOZj48" align="center" width="200" />
-</center>
+<div style="text-align: center"><img src="/images/infographics/cyclegan_infographic.png" width="500" /></div>
 
 [reddit](https://www.reddit.com/r/learnmachinelearning/comments/jblogq/i_made_an_infographic_to_help_me_remember_the/)
 
