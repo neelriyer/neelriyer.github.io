@@ -85,6 +85,8 @@ python wallpaper.py 2560 1600 -d '/artwork' -s 320
 
 It looks good! Now I just need to get this script to automatically update. But that's for another weekend. 
 
+The full code for this can be found on [Github](https://github.com/spiyer99/album_artwork)
+
 
 
 
