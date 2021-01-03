@@ -5,11 +5,11 @@ title: Album Art Collage Wallpaper
 
 <div style="text-align: center"><img src="/images/album_art/original_wallpaper.jpg" width="500" /></div>
 
-I'm often asked: "What music do you listen to?". And I'd like to say something cool like 'The clash' or 'Black Sabbath'. But in reality I listen to a lot of uncool bands (Tears for fears for example).
+I'm often asked: "What music do you listen to?". And I'd like to say something cool like 'The Clash' or 'Black Sabbath'. But in reality I listen to a lot of uncool bands (Tears for fears for example).
 
-I'll have to look at my most played songs to answer that question honestly. 
+To answer that question honestly, I'll need to look at my most played songs on iTunes. 
 
-That got me thinking. Is there a way to create a wallpaper collage that consists of the top 30 or bands you actually listen to?
+That got me thinking. Is there a way to create a wallpaper collage that consists of the top 30 or bands you actually listen to? Not the stuff you say you listen to. But the stuff you actually listen to. 
 
 Well I went ahead and created it. Here's what I did. 
 
