@@ -77,11 +77,12 @@ This part was a bit daunting for me at first. Then I found a script on github th
 
 I've completed forgotten the github repo that I copied the script from and I can't find it on github anymore. I've uploaded the script to my own github [repo](https://github.com/spiyer99/album_artwork/blob/master/wallpaper.py). Please note I didn't make this script. 
 
-Let's run this script
+We can the script pretty easily.
 
 ```
 python wallpaper.py 2560 1600 -d '/artwork' -s 320
 ```
+The output is saved as `wallpaper.jpg` in the same folder as the script.
 
 ![img](/images/album_art/created_wallpaper.jpg)
 
