@@ -11,7 +11,9 @@ I'm often asked: "What music do you listen to?". And I'd like to say something c
 
 To answer that question honestly, I'll need to look at my most played songs on iTunes. 
 
-That got me thinking. Is there a way to create a wallpaper collage that consists of the top 30 or bands you actually listen to? Not the stuff you say you listen to. But the stuff you actually listen to. 
+That got me thinking. Is there a way to create a wallpaper collage that consists of the top 30 or bands you actually listen to? 
+
+Not the stuff you say you listen to. But the stuff you actually listen to. 
 
 Well I went ahead and created it. Here's what I did. 
 
@@ -19,7 +21,7 @@ Well I went ahead and created it. Here's what I did.
 
 The first step is reading the iTunes Metadata. This turns out to be suprisingly simple. 
 
-The following code reads the iTunes Data and stores it in a pandas dataframe. This data includes
+The following code reads the iTunes Data and stores it in a pandas dataframe.
 
 ```python
 
@@ -28,7 +30,6 @@ LIBRARY_FILE = os.path.join(ITUNES_DIR, 'Library.xml')
 MUSIC_PATH = os.path.join(ITUNES_DIR, 'iTunes Media/Music/')
 
 try:
-	from Foundation import (NSDictionary)
 	d = NSDictionary.dictionaryWithContentsOfFile_(LIBRARY_FILE)
 except:
 	with open(LIBRARY_FILE, 'rb') as f:
