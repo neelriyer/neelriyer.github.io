@@ -186,7 +186,3 @@ A big thanks to the authors of CycleGAN: [Jun-Yan Zhu](https://www.cs.cmu.edu/~j
 
 
 
-
-
-
-

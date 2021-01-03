@@ -6,6 +6,14 @@ permalink: /infographics/
 
 A collection of the infographics I've made.
 
+### SVM
+
+<div style="text-align: center"><img src="/images/infographics/SVM_updated.png" width="500" /></div>
+
+[reddit](https://www.reddit.com/r/learnmachinelearning/comments/knmf0h/infographic_to_remember_how_svms_work_let_me_know/)
+
+[high res pdf](https://drive.google.com/file/d/1RW2RGQfPFUmZqzNG8jOGvrbfUEail8fA/view?usp=sharing)
+
 ### K-means Clustering
 
 
@@ -32,8 +40,4 @@ A collection of the infographics I've made.
 
 [high res pdf](https://drive.google.com/file/d/1jD4mLglppzfyWh00DzGeJTm-6_Xn0QgP/view?usp=sharing)
 
-## Scott Adams: Math of Life
-
-
-{% twitter https://twitter.com/colorizedwisdom/status/1266136070074163202 maxwidth=500 limit=5 %}
 

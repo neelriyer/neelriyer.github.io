@@ -494,7 +494,7 @@ It's a good start. I particularly like this image:
 ![alt text](/images/cyclegan_simpsonify/real_face_3922_real.png)
 
 
-It could use some improvement, to be honest.
+But it could use some improvement, to be honest.
 
 Let's try running the `BtoA` cycle. So we'll convert simpsons characters into human faces.
 
