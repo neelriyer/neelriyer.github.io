@@ -3,7 +3,7 @@ layout: post
 title: Album Art Collage Wallpaper
 ---
 
-![img](/images/album_art/original_wallpaper.jpg)
+![img](/images/album_art/created_wallpaper.jpg)
 
 <!-- <div style="text-align: center"><img src="/images/album_art/original_wallpaper.jpg" width="500" /></div> -->
 
