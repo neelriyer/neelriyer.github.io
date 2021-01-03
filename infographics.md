@@ -16,7 +16,6 @@ A collection of the infographics I've made.
 
 ### K-means Clustering
 
-
 <div style="text-align: center"><img src="/images/infographics/kmeans_infographic.png" width="500" /></div>
 
 [reddit](https://www.reddit.com/r/learnmachinelearning/comments/kipra3/i_made_an_infographic_to_summarise_kmeans/)
