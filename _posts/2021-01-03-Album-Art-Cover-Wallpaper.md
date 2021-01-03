@@ -3,9 +3,9 @@ layout: post
 title: Album Art Collage Wallpaper
 ---
 
-<div style="text-align: center"><img src="/images/album_art/original_wallpaper.png" width="500" /></div>
+<div style="text-align: center"><img src="/images/album_art/original_wallpaper.jpg" width="500" /></div>
 
-I'm often asked: "What music do you listen to?". And I'd like to say something cool like 'The clash' or 'Black Sabbath'. But in reality I listen to a lot of 'uncool' bands (Tears for fears for example).
+I'm often asked: "What music do you listen to?". And I'd like to say something cool like 'The clash' or 'Black Sabbath'. But in reality I listen to a lot of uncool bands (Tears for fears for example).
 
 I'll have to look at my most played songs to answer that question honestly. 
 
@@ -81,7 +81,7 @@ Let's run this script
 python wallpaper.py 2560 1600 -d '/artwork' -s 320
 ```
 
-<div style="text-align: center"><img src="/images/album_art/created_wallpaper.png" width="500" /></div>
+<div style="text-align: center"><img src="/images/album_art/created_wallpaper.jpg" width="500" /></div>
 
 It looks good! Now I just need to get this script to automatically update. But that's for another weekend. 
 
