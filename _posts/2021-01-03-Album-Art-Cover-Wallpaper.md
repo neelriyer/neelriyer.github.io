@@ -7,7 +7,7 @@ title: Album Art Collage Wallpaper
 
 <!-- <div style="text-align: center"><img src="/images/album_art/original_wallpaper.jpg" width="500" /></div> -->
 
-I'm often asked: "What music do you listen to?". And I'd like to say something cool like 'The Clash' or 'Black Sabbath'. But in reality I listen to a lot of uncool bands (Tears for fears for example).
+I'm often asked: *"What music do you listen to?"*. And I'd like to say something cool like 'The Clash' or 'Black Sabbath'. But in reality I listen to a lot of uncool bands (Tears for fears for example).
 
 To answer that question honestly, I'll need to look at my most played songs on iTunes. 
 
@@ -24,7 +24,6 @@ The first step is reading the iTunes Metadata. This turns out to be suprisingly 
 The following code reads the iTunes Data and stores it in a pandas dataframe.
 
 ```python
-
 ITUNES_DIR = os.path.expanduser('/Users/neeliyer/Music/iTunes/')
 LIBRARY_FILE = os.path.join(ITUNES_DIR, 'Library.xml')
 MUSIC_PATH = os.path.join(ITUNES_DIR, 'iTunes Media/Music/')
@@ -42,7 +41,7 @@ full.head()
 
 # Most Played Albums
 
-The next step is figuring out what are the most popular albums. I found the aggregate the playcount all songs in the album. Then I sorted by playcount in descending order. 
+The next step is figuring out what are the most popular albums. To do this I found the aggregate playcount for all songs in the album. Then I sorted by playcount in descending order. 
 
 ```python
 most_popular = full[['Album', 'Artist', 'Name', 'Play Count', 'Location']]
@@ -55,7 +54,7 @@ most_popular = most_popular.groupby(['Album', 'Artist'], as_index = False).agg({
 most_popular = most_popular.sort_values(by=['Play Count'], ascending=False)
 most_popular.head()
 ```
-It's important to groupby both Album and Artist. There are several Albums in my library that have the name "Greatest Hits". I want to treat these as separate albums. 
+It's important to groupby both Album and Artist. There are several Artists in my library released an album called "Greatest Hits". I want to treat these as separate albums.
 
 The downside with this method is that: What if an artist releases two albums with the same title? In that case the playcounts would be aggregated across both albums. But would Kanye really reuse an old album name? I doubt it. 
 
@@ -88,7 +87,7 @@ python wallpaper.py 2560 1600 -d '/artwork' -s 320
 
 <!-- <div style="text-align: center"><img src="/images/album_art/created_wallpaper.jpg" width="500" /></div> -->
 
-It looks good! Now I just need to get this script to automatically update. But that's for another weekend. 
+It looks good! Now I just need to get this script to automatically update. But that's for another evening. 
 
 The full code for this can be found on [Github](https://github.com/spiyer99/album_artwork)
 
