@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Data Transformation in Pyspark
+title: KMeans Clustering for Satellite Imagery
 ---
 
 # KMeans Clustering for Satellite Imagery
