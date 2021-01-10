@@ -13,12 +13,14 @@ Things to note:
 
 - Use [rasterio]() not [gdal](). Gdal [sucks](https://www.reddit.com/r/gis/comments/4tltus/a_rant_gis_software_sucks/).
 
-- I'll have 3 clusters. These will include:
+- For this example I'll be using [Terravion imagery](http://www.terravion.com/). This gives high resolution low level satellite imagery. The Terravion imagery comes in 8 different [bands](https://gsp.humboldt.edu/OLM/Courses/GSP_216_Online/lesson3-1/bands.html).
+
+-  I'll have 3 clusters. These will include:
   - Canopy cover (trees, vegetation, etc. ) 
   - Soil
   - Background 
 
-- I will be using [Terravion imagery](http://www.terravion.com/). This gives high resolution low level satellite imagery. The Terravion imagery comes in 8 different [bands](https://gsp.humboldt.edu/OLM/Courses/GSP_216_Online/lesson3-1/bands.html).
+
 
 # KMeans Explanation
 I made an infographic to explain KMeans. Check it out on [reddit](https://www.reddit.com/r/learnmachinelearning/comments/kipra3/i_made_an_infographic_to_summarise_kmeans/).
