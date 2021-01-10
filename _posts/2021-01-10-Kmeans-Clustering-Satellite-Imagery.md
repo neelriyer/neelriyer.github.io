@@ -256,11 +256,15 @@ for code in codes:
   full_list = k_means + original_imgs
   imshow_func(createImageGrid(full_list, rows = 2, scale = 0.1))
 ```
+![alt text](/images/kmeans/kmeans_trained_on_ea36717ca661ca3cca59d5ea43a81afc.png)
+
+
+The KMeans output is on the 1st row. The RBG original image is on the 2nd row. We can see that it does a decent job at separating canopy cover from soil. 
 
 
 ![alt text](/images/kmeans/kmeans_trained_on_9bbd67cfb0d660551d74decf916b2df2.png)
 
-It does a decent job at separating canopy cover from soil. More satellite imagery would be required to comprehensively assess its performance.
+More satellite imagery would be required to comprehensively assess its performance. But this is a decent start.
 
 
 # Conclusion
