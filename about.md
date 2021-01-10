@@ -6,7 +6,7 @@ permalink: /about/
 
 ### More Information
 
-Data Science Student at University of New South Wales, Sydney. Currently interning at Swiss Reinsurance as a Data Scientist. 
+Data Scientist at Swiss Reinsurance. Graduted in 2020 with a Bachelors in Data Science from UNSW. Linkedin profile is below.
 
 
 ### Contact me
