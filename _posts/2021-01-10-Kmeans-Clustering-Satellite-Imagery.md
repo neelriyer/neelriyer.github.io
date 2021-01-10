@@ -196,7 +196,7 @@ It does a decent job at separating canopy cover from soil. More satellite imager
 
 # Conclusion
 
-I did this work for a [small startup in Sydney](https://flurosat.com/). I learned so much for the experienced professionals at this startup. I couldn't have created this without their help. 
+I did this work for a [small startup in Sydney](https://flurosat.com/). I learned so much from the experienced professionals at this startup. I couldn't have created this without their help. 
 
 I hope this post helps someone out there. It certaintly would've helped me when I started. The full code can be found on Github
 
