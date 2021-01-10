@@ -9,7 +9,7 @@ Recently, I applied KMeans clustering to Satellite Imagery and was impressed by 
 
 Things to note:
 
-- Use [rasterio]() not [gdal](). Gdal [sucks](https://www.reddit.com/r/gis/comments/4tltus/a_rant_gis_software_sucks/).
+- Use [rasterio](https://rasterio.readthedocs.io/en/latest/) not [gdal](https://gdal.org/). Gdal [sucks](https://www.reddit.com/r/gis/comments/4tltus/a_rant_gis_software_sucks/).
 
 - For this example I'll be using [Terravion imagery](http://www.terravion.com/). This gives high resolution low level satellite imagery. The Terravion imagery comes in 8 different [bands](https://gsp.humboldt.edu/OLM/Courses/GSP_216_Online/lesson3-1/bands.html).
 
@@ -273,7 +273,7 @@ More satellite imagery would be required to comprehensively assess its performan
 
 I did this work for a [small startup in Sydney](https://flurosat.com/). I learned so much from the experienced professionals at this startup. I couldn't have created this without their help. 
 
-I hope this post helps someone out there. It certaintly would've helped me when I started. The full code can be found on Github
+I hope this post helps someone out there. It certaintly would've helped me when I started. The full code can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/canopy_cover_blog_post.ipynb)
 
 If I've made a mistake please reach out to me on [twitter](https://twitter.com/neeliyer11)
 
