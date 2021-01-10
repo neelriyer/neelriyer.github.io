@@ -69,15 +69,15 @@ def stack_bands(files):
 
 Now we'll need to fit the KMeans classifier to the data. What I found worked best was fitting the KMeans classifier on a few images. Ideally images with a distinct difference between canopy cover and soil.
 
-The `train` function will take in a md5 code (eg. `9bbd67cfb0d660551d74decf916b2df2`) and a date string (eg. `20190223T130237`). It will find that image on the dataset and fit the KMeans classifier on that image. 
+The `train` function will take in a md5 code (eg. `9bbd67cfb0d660551d74decf916b2df2`) and a date string (eg. `20190223T130237`). It will find the matching image in the dataset and fit the KMeans classifier on that image.
 
 A few important things:
 
 - I'm not using the `alpha` and `blue` channels. They proved to be useless. 
 
-- I'm using `red2.tif` and `green2.tif`. `red.tif` and `green.tif` didn't prove to be very useful.
+- I'm using `red2` and `green2`. `red` and `green` didn't prove to be very useful.
 
-Much of this training code was adapted from this [github repo](https://github.com/wathela/Sentinel2-clustering/blob/master/Sentinel2_Image_clustering.ipynb).
+This training code was adapted from this [github repo](https://github.com/wathela/Sentinel2-clustering/blob/master/Sentinel2_Image_clustering.ipynb).
 
 
 ```python
@@ -164,6 +164,75 @@ Now we can run predictions on our model and see how it does.
 This function will take in the stacked bands and saved model. it will then run the KMeans model on a new image. The prediction output will be saved as a jpg file.
 
 This saved jpg is for visualisation purposes only. Don't use it for further calculations. I accidentally did that and got very confused. 
+
+```python
+from tqdm.notebook import tqdm
+
+def get_date_from_orig_image(text):
+  text = os.path.basename(text).split('.')[0].split('_')[-1]
+  datetime_date = datetime.strptime(text, '%Y%m%dT%H%M%S').date()
+  return datetime_date
+
+def get_orig_img_list(code, date):
+  original_images = glob.glob('/content/drive/My Drive/flurosat/*'+code+'_'+date+'*.*g')
+  original_images = sorted(original_images, key = lambda x: get_date_from_orig_image(x))
+  return original_images[0]
+
+# predict using new k means method
+def predict(model, img_fp):
+
+  elmanagel = rasterio.open(img_fp)
+
+  # Read, enhance and show the image
+  elman_arr = elmanagel.read()
+  vmin, vmax = np.nanpercentile(elman_arr, (5,95))  # 5-95% contrast stretch
+
+  # create an empty array with same dimensions and data type 
+  elman_xyb = np.empty((elmanagel.height, elmanagel.width,elmanagel.count), elmanagel.meta['dtype'])
+
+  # loop through the raster bands and fill the empty array in x-y-bands order
+  for band in range(elman_xyb.shape[2]):
+      elman_xyb[:,:,band] = elmanagel.read(band+1)
+
+  # convert to 1d array
+  elman_1d = elman_xyb[:,:,:elman_xyb.shape[2]].reshape(elman_xyb.shape[0]*elman_xyb.shape[1], elman_xyb.shape[2])
+
+  # predict the clusters in the image 
+  pred = model.predict(elman_1d)
+
+  # reshape the 1d array predictions to x-y-bands shape order (only one band)
+  elman_cul = pred
+  elman_cul = elman_cul.reshape(elman_xyb[:,:,0].shape)
+
+  return elman_cul
+
+def predictions_driver(code, date, iterations):
+
+  files = get_files_from_code(code, date)
+  original_image = get_orig_img_list(code, date)
+
+  # # rasterio stack all bands
+  img_fp = stack_bands(files)
+
+  # predict on trained model
+  kmeans_predictions = predict(model, img_fp)
+
+  # save kmeans
+  plt.imsave('kmeans_output/'+str(code)+'_'+str(iterations)+'_k_means.jpg', kmeans_predictions, cmap=cm.YlOrRd)
+
+  # save original image
+  img = PIL.Image.open(original_image)
+  img.save('kmeans_output/'+str(code)+'_'+str(iterations)+'_original_image.jpg')
+
+  return
+
+for i,combination in enumerate(tqdm(sorted_combinations)):
+  date = combination.split('_')[-1]
+  code = combination.split('_')[0]
+  predictions_driver(code, date, i)
+
+
+```
 
 # Create Grid
 
