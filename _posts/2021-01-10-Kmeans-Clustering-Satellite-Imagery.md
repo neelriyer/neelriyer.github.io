@@ -3,9 +3,9 @@ layout: post
 title: KMeans Clustering for Satellite Imagery
 ---
 
-Recently, I applied KMeans clustering to Satellite Imagery and was impressed by the results. I'll tell you the tricks I learned so you don't waste your time. 
-
 ![alt text](/images/kmeans/kmeans_trained_on_ea36717ca661ca3cca59d5ea43a81afc.png)
+
+Recently, I applied KMeans clustering to Satellite Imagery and was impressed by the results. I'll tell you the tricks I learned so you don't waste your time. 
 
 Things to note:
 
