@@ -5,7 +5,7 @@ title: KMeans Clustering on Satellite Imagery
 
 ![alt text](/images/kmeans/kmeans_trained_on_ea36717ca661ca3cca59d5ea43a81afc.png)
 
-_Using Rasterio and Sklean Segment Satellite Imagery_
+_Using Rasterio and Sklean to Segment Satellite Imagery_
 
 Recently, I applied KMeans clustering to Satellite Imagery and was impressed by the results. I'll tell you the tricks I learned so you don't waste your time. 
 
