@@ -1,9 +1,11 @@
 ---
 layout: post
-title: KMeans Clustering for Satellite Imagery
+title: KMeans Clustering on Satellite Imagery
 ---
 
 ![alt text](/images/kmeans/kmeans_trained_on_ea36717ca661ca3cca59d5ea43a81afc.png)
+
+_Using Rasterio and Sklean Segment Satellite Imagery_
 
 Recently, I applied KMeans clustering to Satellite Imagery and was impressed by the results. I'll tell you the tricks I learned so you don't waste your time. 
 
@@ -165,6 +167,8 @@ This function will take in the stacked bands and saved model. it will then run t
 
 This saved jpg is for visualisation purposes only. Don't use it for further calculations. I accidentally did that and got very confused. 
 
+This code was adapted from [this](https://github.com/wathela/Sentinel2-clustering/blob/master/Sentinel2_Image_clustering.ipynb) github repo.
+
 ```python
 from tqdm.notebook import tqdm
 
@@ -273,8 +277,8 @@ More satellite imagery would be required to comprehensively assess its performan
 
 I did this work for a [small startup in Sydney](https://flurosat.com/). I learned so much from the experienced professionals at this startup. I couldn't have created this without their help. 
 
-I hope this post helps someone out there. It certaintly would've helped me when I started. The full code can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/canopy_cover_blog_post.ipynb)
+I hope this post helps someone out there. It certaintly would've helped me when I started. The full code can be found on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/canopy_cover_blog_post.ipynb).
 
-If I've made a mistake please reach out to me on [twitter](https://twitter.com/neeliyer11)
+If I've made a mistake please reach out to me on [twitter](https://twitter.com/neeliyer11).
 
 
