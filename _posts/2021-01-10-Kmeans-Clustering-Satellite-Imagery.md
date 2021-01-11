@@ -11,7 +11,7 @@ Recently, I applied KMeans clustering to Satellite Imagery and was impressed by 
 
 Things to note:
 
-- Use [rasterio](https://rasterio.readthedocs.io/en/latest/) not [gdal](https://gdal.org/). Rasterio is more [pythonic](https://github.com/inbo/niche_vlaanderen/issues/11#issue-259235891) and just [better](https://blog.mapbox.com/rasterio-gdal-especially-for-python-programmers-553dabf7dd71).
+- Use [rasterio](https://rasterio.readthedocs.io/en/latest/) not [gdal](https://gdal.org/). Rasterio is more [pythonic](https://blog.mapbox.com/rasterio-gdal-especially-for-python-programmers-553dabf7dd71).
 
 - For this example I'll be using [Terravion imagery](http://www.terravion.com/). This gives high resolution low level satellite imagery. The Terravion imagery comes in 8 different [bands](https://gsp.humboldt.edu/OLM/Courses/GSP_216_Online/lesson3-1/bands.html).
 
