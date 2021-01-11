@@ -16,9 +16,9 @@ Things to note:
 - For this example I'll be using [Terravion imagery](http://www.terravion.com/). This gives high resolution low level satellite imagery. The Terravion imagery comes in 8 different [bands](https://gsp.humboldt.edu/OLM/Courses/GSP_216_Online/lesson3-1/bands.html).
 
 -  I'll have 3 clusters. These will include:
-  - Canopy cover (trees, vegetation, etc. ) 
-  - Soil
-  - Background 
+	- Canopy cover (trees, vegetation, etc. ) 
+	- Soil
+	- Background 
 
 
 
