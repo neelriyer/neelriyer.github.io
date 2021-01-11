@@ -34,7 +34,7 @@ Here's a small version:
 
 # Stack Bands
 
-Each Terravion image has the following bands (yours may vary):
+Each Terravion image has the following [bands](](https://gsp.humboldt.edu/OLM/Courses/GSP_216_Online/lesson3-1/bands.html) (yours may vary):
 
  - `red2.tif`
  - `alpha.tif`
