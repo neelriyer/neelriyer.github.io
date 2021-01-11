@@ -167,7 +167,7 @@ This function will take in the stacked bands and saved model. it will then run t
 
 This saved jpg is for visualisation purposes only. Don't use it for further calculations. I accidentally did that and got very confused. 
 
-This code was adapted from [this](https://github.com/wathela/Sentinel2-clustering/blob/master/Sentinel2_Image_clustering.ipynb) github repo.
+The following code was adapted from [this](https://github.com/wathela/Sentinel2-clustering/blob/master/Sentinel2_Image_clustering.ipynb) github repo.
 
 ```python
 from tqdm.notebook import tqdm
