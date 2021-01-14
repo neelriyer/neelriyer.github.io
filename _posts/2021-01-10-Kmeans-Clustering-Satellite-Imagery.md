@@ -269,7 +269,6 @@ The KMeans output is on the 1st row. The RBG original image is on the 2nd row. W
 
 
 
-
 More satellite imagery would be required to comprehensively assess its performance. But this is a decent start.
 
 
