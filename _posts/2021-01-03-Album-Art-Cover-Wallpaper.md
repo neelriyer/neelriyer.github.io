@@ -1,11 +1,11 @@
----
+<!-- ---
 layout: post
 title: Album Art Collage Wallpaper
 ---
 
 ![img](/images/album_art/created_wallpaper.jpg)
 
-<!-- <div style="text-align: center"><img src="/images/album_art/original_wallpaper.jpg" width="500" /></div> -->
+<div style="text-align: center"><img src="/images/album_art/original_wallpaper.jpg" width="500" /></div>
 
 I'm often asked: *"What music do you listen to?"*. And I'd like to say something cool like 'The Clash' or 'Black Sabbath'. But in reality I listen to a lot of uncool bands (Tears for fears for example).
 
@@ -86,7 +86,6 @@ The output is saved as `wallpaper.jpg` in the same folder as the script.
 
 ![img](/images/album_art/created_wallpaper.jpg)
 
-<!-- <div style="text-align: center"><img src="/images/album_art/created_wallpaper.jpg" width="500" /></div> -->
 
 It looks good! Now I just need to get this script to automatically update. But that's for another evening. 
 
@@ -97,3 +96,4 @@ The full code for this can be found on [Github](https://github.com/spiyer99/albu
 
 
 
+ -->
