@@ -5,7 +5,7 @@ title: Segment Satellite Imagery using NDVI
 
 _Use rasterio to Segment Canopy Cover from Soil Easily_
 
-In this post we'll be trying to segment canopy cover and soil satellite imagery. So ideally we want to go from a regular satellite image:
+In this post we'll be trying to segment canopy cover and soil on satellite imagery. So ideally we want to go from a regular satellite image:
 
 ![alt text](/images/satellite_segmentation_ndvi/example_image_start.png)
 
@@ -13,7 +13,7 @@ To this:
 
 ![alt text](/images/satellite_segmentation_ndvi/example_image_end.png)
 
-Where the orange is soil. The red is vegetation.
+The orange is soil. The red is vegetation.
 
 We'll be borrowing ideas from [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0196605). It implements exactly what we need for sorghum. 
 
@@ -28,7 +28,7 @@ As the paper notes we'll need to extract the Normalized difference vegetation in
 
 And here's the formula:
 
-<img src="https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm" alt="img" width="300"/> 
+<img src="https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm" alt="img" align = "center" width="300"/> 
 
 <!-- ![formula]() -->
 
