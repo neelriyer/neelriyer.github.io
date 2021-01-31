@@ -26,6 +26,8 @@ As the paper notes we'll need to extract the Normalized difference vegetation in
 
 ![ndvi](https://i2.wp.com/www.geoawesomeness.com/wp-content/uploads/2016/02/NDVI-image-Drone-Remote-Sensing-Geoawesomeness.png?resize=975%2C708&ssl=1). 
 
+And here's the formula:
+
 ![formula](https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm)
 
 Here's my code to obtain the NDVI image in a numpy array.
@@ -103,9 +105,9 @@ We'll need to change the threshold value later on.
 
 Now we can recreate the plots on page 7 of the paper. We'll be plotting fractional vegeation cover vs NDVI for each image. 
 
-We also want to plot a line of best fit calculated by least squares. Then we also want to extract the R^2 value associated with the regression.
+We also want to plot a line of best fit calculated by least squares. Then we extract the R^2 value associated with that regression.
 
-This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. This code is part of a class. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for details. 
+This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. This function is part of a class. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for details. 
 
 ```python
 def plot_fc_vs_ndvi(self, fc, ndvi):
@@ -137,11 +139,13 @@ def plot_fc_vs_ndvi(self, fc, ndvi):
     f.show()
 ```
 
-Now we can change the THRESHOLD value set earlier and see how that affects the regression. The paper notes that we should select the threshold value which has the best regression model.
+Now we can change the `threshold` value set earlier and see how that affects the regression. The paper notes that we should select the `threshold` value which has the best regression model.
 
 We'll run this code for all images and plot the results.
 
-![alt text](/images/satellite_segmentation_ndvi/fractioncal_cover_vs_ndvi_matrix_colour_coded_red2.png)
+<img src="/images/satellite_segmentation_ndvi/fractioncal_cover_vs_ndvi_matrix_colour_coded_red2.png" alt="img" width="400"/> 
+
+<!-- ![alt text](/images/satellite_segmentation_ndvi/fractioncal_cover_vs_ndvi_matrix_colour_coded_red2.png) -->
 
 From this we can see that the highest R^2 is associated with a threshold of 0.45. 
 
