@@ -3,6 +3,8 @@ layout: post
 title: Segment Satellite Imagery using NDVI
 ---
 
+![alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzsP3E6RZiYXmMScYhIw8Xrpyyf8ltdYQluw&usqp=CAU)
+
 _Use rasterio to Segment Canopy Cover from Soil Easily_
 
 In this post we'll be trying to segment canopy cover and soil on satellite imagery. So ideally we want to go from a regular satellite image:
