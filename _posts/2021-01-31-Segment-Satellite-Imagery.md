@@ -3,7 +3,7 @@ layout: post
 title: Segment Satellite Imagery using NDVI
 ---
 
-![alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzsP3E6RZiYXmMScYhIw8Xrpyyf8ltdYQluw&usqp=CAU)
+![alt text](/images/satellite_segmentation_ndvi/background.jpg)
 
 _Use rasterio to Segment Canopy Cover from Soil Easily_
 
