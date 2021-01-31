@@ -105,7 +105,7 @@ Now we can recreate the plots on page 7 of the paper. We'll be plotting fraction
 
 We also want to plot a line of best fit calculated by least squares. Then we also want to extract the R^2 value associated with the regression.
 
-This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. This code is part of a class. See the full code for details. 
+This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. This code is part of a class. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for details. 
 
 ```python
 def plot_fc_vs_ndvi(self, fc, ndvi):
@@ -153,7 +153,7 @@ We can apply this threshold to all images. Any NDVI value greater than 0.45 is v
 Using the 0.45 threshold we can create a binary array. This is the second image shown in the introduction. 
 
 
-This bit of code does exactly that. The threshold is defined by in the `__init__` function. See the full code for details. 
+This bit of code does exactly that. The threshold is defined by in the `__init__` function. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for details. 
 
 ```python
 def create_mask(self, red_file):
@@ -192,6 +192,8 @@ Here's the output
 In this blog post. I described a way you can segment satellite imagery using NDVI. 
 
 I did this work for a [small startup in Sydney](https://flurosat.com/). I could not have done this without their help. I learned so much from them. 
+
+Here's the full code on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb).
 
 I hope this helps people out there. Please reach out to me on [twitter](https://twitter.com/neeliyer11) if I've made a mistake somewhere. Thanks!
 
