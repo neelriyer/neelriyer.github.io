@@ -28,7 +28,9 @@ As the paper notes we'll need to extract the Normalized difference vegetation in
 
 And here's the formula:
 
-![formula](https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm)
+<img src="https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm" alt="img" width="300"/> 
+
+<!-- ![formula]() -->
 
 Here's my code to obtain the NDVI image in a numpy array.
 
