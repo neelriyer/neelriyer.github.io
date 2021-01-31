@@ -9,13 +9,13 @@ In this post we'll be trying to segment canopy cover and soil on satellite image
 
 ![alt text](/images/satellite_segmentation_ndvi/example_image_start.png)
 
-I've shown th RGB form for visualisation purposes. In reality I'll be using the `.tif` files. 
+<sub>(I've shown th RGB form for visualisation purposes. In reality I'll be using the `.tif` files)</sub>
 
 To this:
 
 ![alt text](/images/satellite_segmentation_ndvi/example_image_end.png)
 
-The orange is soil. The red is vegetation.
+<sub>The orange is soil. The red is vegetation.</sub>
 
 We'll be borrowing ideas from [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0196605). It implements exactly what we need for sorghum. 
 
