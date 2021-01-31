@@ -9,6 +9,8 @@ In this post we'll be trying to segment canopy cover and soil on satellite image
 
 ![alt text](/images/satellite_segmentation_ndvi/example_image_start.png)
 
+I've shown th RGB form for visualisation purposes. In reality I'll be using the `.tif` files. 
+
 To this:
 
 ![alt text](/images/satellite_segmentation_ndvi/example_image_end.png)
