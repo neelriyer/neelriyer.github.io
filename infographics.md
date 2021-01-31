@@ -6,6 +6,14 @@ permalink: /infographics/
 
 A collection of the infographics I've made.
 
+### PCA
+
+<div style="text-align: center"><img src="/images/infographics/PCA.png" width="500" /></div>
+
+[reddit](https://www.reddit.com/r/learnmachinelearning/comments/kx0cu6/infographic_to_explain_principal_component/)
+
+[high res](https://drive.google.com/file/d/1dW9RYz8yUOSvrASi38HY6wGS_acXBchb/view?usp=sharing)
+
 ### SVM
 
 <div style="text-align: center"><img src="/images/infographics/SVM_updated.png" width="500" /></div>
