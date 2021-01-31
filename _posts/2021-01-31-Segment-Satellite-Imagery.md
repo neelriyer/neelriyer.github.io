@@ -143,7 +143,7 @@ Now we can change the `threshold` value set earlier and see how that affects the
 
 We'll run this code for all images and plot the results.
 
-<img src="/images/satellite_segmentation_ndvi/fractioncal_cover_vs_ndvi_matrix_colour_coded_red2.png" alt="img" width="400"/> 
+<img src="/images/satellite_segmentation_ndvi/fractioncal_cover_vs_ndvi_matrix_colour_coded_red2.png" alt="img" width="750"/> 
 
 <!-- ![alt text](/images/satellite_segmentation_ndvi/fractioncal_cover_vs_ndvi_matrix_colour_coded_red2.png) -->
 
@@ -183,21 +183,23 @@ def create_mask(self, red_file):
 
 ```
 
-Here's the output
+Here's the output in a cleaner form. The first row is the thresholded canopy cover. The second row is the RBG satellite image.
 
 ![alt text](/images/satellite_segmentation_ndvi/9bbd67cfb0d660551d74decf916b2df2_ndvi_thresholded_0-45.png)
 
 
 ![alt text](/images/satellite_segmentation_ndvi/ea36717ca661ca3cca59d5ea43a81afc_ndvi_thresholded_0-45.png)
 
+We can see that it does a pretty decent job of separating canopy cover from soil. This is much better than my [previous attempt](https://spiyer99.github.io/Kmeans-Clustering-Satellite-Imagery/) with K-Means Clustering.
+
 
 # Conclusion
 
-In this blog post. I described a way you can segment satellite imagery using NDVI. 
+In this blog post, I described a way you can segment satellite imagery using NDVI. 
 
 I did this work for a [small startup in Sydney](https://flurosat.com/). I could not have done this without their help. I learned so much from them. 
 
-Here's the full code on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb).
+The full code is on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb).
 
 I hope this helps people out there. Please reach out to me on [twitter](https://twitter.com/neeliyer11) if I've made a mistake somewhere. Thanks!
 
