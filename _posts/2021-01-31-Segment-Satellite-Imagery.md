@@ -212,7 +212,7 @@ I did this work for a [small startup in Sydney](https://flurosat.com/). I could 
 
 The full code is on [Github](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb).
 
-I hope this helps people out there. Please reach out to me on [twitter](https://twitter.com/neeliyer11) if I've made a mistake somewhere. Thanks!
+I hope this helps people out there. Please reach out to me on [twitter](https://twitter.com/neeliyer11) if I've made a mistake. Thanks!
 
 
 
