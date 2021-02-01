@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Segment Satellite Imagery using NDVI in 3 minutes
+title: Segment Satellite Imagery using NDVI
 ---
 
 <!-- ![alt text](/images/satellite_segmentation_ndvi/background.jpg) -->
@@ -22,7 +22,7 @@ Ideally we want to go from a regular satellite image:
 
 To this:
 
-<img src="images/satellite_segmentation_ndvi/example_image_end.png" alt="img" align = "center" width="250"/> 
+<img src="/images/satellite_segmentation_ndvi/example_image_end.png" alt="img" align = "center" width="250"/> 
 
 <!-- ![alt text](/images/satellite_segmentation_ndvi/example_image_end.png) -->
 
