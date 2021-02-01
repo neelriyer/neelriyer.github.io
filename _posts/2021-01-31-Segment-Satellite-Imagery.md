@@ -40,7 +40,7 @@ And here's the formula:
 
 <img src="https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm" alt="img" align = "center" width="300"/>
 
-Here's my code to obtain the NDVI image in a numpy array.
+Here's my code to obtain the NDVI image as a numpy array.
 
 ```python
 def get_ndvi(red_file):
@@ -64,10 +64,9 @@ The NDVI is calculated for a certain region of interest. This is defined in the 
 For each field plot, a region of interest (ROI) was established manually by choosing the central two rows and mean value of vegetation indices were extracted corresponding to each plot.
 >
 
-Here's my code to extract the region of interest for an ndvi array.
+This is pretty simple to implement in python.
 
 ```python
-
 # get average ndvi of center two rows
   def get_region_of_interest(ndvi, multiplier = 1/2):
 
@@ -106,49 +105,41 @@ def get_fc(ndvi):
     return fractional_cover
 ```
 
-We'll need to change the threshold value later on.
+We'll need to change that threshold value later on.
 
 
 # Plot Fractional Vegetation Cover vs NDVI
 
 Now we can recreate the plots on page 7 of the paper. We'll be plotting fractional vegeation cover vs NDVI for each image. 
 
-We also want to plot a line of best fit calculated by least squares.
+We also want to plot the least squares regression line.
 
-This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. 
+Here's a snippet of code that allows us to do that.
 
 ```python
-def plot_fc_vs_ndvi(self, fc, ndvi):
+def plot_fc_vs_ndvi(fc, ndvi):
 
     y = np.array(fc).reshape(1, -1)
     x = np.array(ndvi).reshape(1,-1)
 
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
 
-    # append slopes and intercepts to global variables
-    self.slopes += [slope]
-    self.intercepts += [intercept]
-
     x = np.linspace(min(ndvi),max(ndvi),100)
     f, ax = plt.subplots(1,1,figsize=(10,10))
     ax.plot(x, slope*x+intercept, '-r', label='fc='+str(round(slope, 2))+'*ndvi+'+str(round(intercept, 2)), color='black')
-    ax.set_title('Fractional Cover vs NDVI at threshold of '+ str(self.ndvi_threshold))
+    ax.set_title('Fractional Cover vs NDVI at threshold of '+ str(THRESHOLD))
 
-    scatter = ax.scatter(x=ndvi, y=fc, c=self.roi_ndvi_pixel_count, edgecolors='black', s=[100 for i in range(len(ndvi))])
-    legend = ax.legend(*scatter.legend_elements(), loc="upper left", title="Region of Interest Pixel count")
-    ax.add_artist(legend)
+    scatter = ax.scatter(x=ndvi, y=fc, edgecolors='black')
 
     ax.set_xlabel('Normalized difference vegetation index (NDVI)')
     ax.set_ylabel('Fractional Cover (fc)')
-    # ax.text(0.6, 0.5,s='R^2 = {}'.format(round((r_value**2), 4)), fontdict={'fontsize':14, 'fontweight':'bold'})
+
     ax.text(min(ndvi)+0.8*(max(ndvi)-min(ndvi)), min(fc)+0.2*(max(fc)-min(fc)),s='R^2 = {}'.format(round((r_value**2), 4)), fontdict={'fontsize':14, 'fontweight':'bold'})
     f.savefig('fc_vs_ndvi_plots/fc_vs_ndvi_'+str(self.plot_counter)+'.jpg')
-    self.plot_counter +=1
     f.show()
 ```
 
-This function is part of a class. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for more details. 
-
+See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for more details. 
 
 We can change the `threshold` value set earlier and see how that affects the regression. The paper notes that we should select the `threshold` value which has the best regression model.
 
@@ -165,8 +156,7 @@ We can apply this threshold to all images. Any NDVI value greater than 0.45 is v
 
 # Create Binary Array
 
-Using the 0.45 threshold we can create a binary array. This is the second image shown in the introduction. 
-
+Using the 0.45 threshold we can create a binary array. In the array 1 denotes vegetation. 0 denotes soil.
 
 This bit of code does exactly that. The threshold is defined by in the `__init__` function. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for details. 
 
@@ -198,15 +188,13 @@ Here's the output in a cleaner form. The first row is the thresholded canopy cov
 
 ![alt text](/images/satellite_segmentation_ndvi/9bbd67cfb0d660551d74decf916b2df2_ndvi_thresholded_0-45.png)
 
-
 ![alt text](/images/satellite_segmentation_ndvi/ea36717ca661ca3cca59d5ea43a81afc_ndvi_thresholded_0-45.png)
 
 We can see that it does a pretty decent job of separating canopy cover from soil. This is much better than my [previous attempt](https://spiyer99.github.io/Kmeans-Clustering-Satellite-Imagery/) with K-Means Clustering.
 
-
 # Conclusion
 
-In this blog post, I described a way you can segment satellite imagery using NDVI. 
+In this blog post, I described a way you can segment satellite imagery using NDVI and rasterio. 
 
 I did this work for a [small startup in Sydney](https://flurosat.com/). I could not have done this without their help. I learned so much from them. 
 
