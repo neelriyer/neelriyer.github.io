@@ -1,41 +1,45 @@
 ---
 layout: post
-title: Segment Satellite Imagery using NDVI
+title: Segment Satellite Imagery using NDVI in 3 minutes
 ---
 
+<!-- ![alt text](/images/satellite_segmentation_ndvi/background.jpg) -->
 
-![alt text](/images/satellite_segmentation_ndvi/background.jpg)
+<!-- _Easily Segment Canopy Cover from Soil_ -->
 
-_Use rasterio to Segment Canopy Cover from Soil Easily_
+In this post we'll be trying to segment canopy cover and soil in satellite imagery.
 
-In this post we'll be trying to segment canopy cover and soil on satellite imagery. So ideally we want to go from a regular satellite image:
+We'll be borrowing ideas from [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0196605). It implements exactly what we need for sorghum. I'll also be using ideas from my [previous](https://towardsdatascience.com/segment-satellite-images-using-rasterio-and-scikit-learn-fc048f465874) blog post on this topic.
 
-![alt text](/images/satellite_segmentation_ndvi/example_image_start.png)
 
-<sub><sup>I've shown the RGB form for visualisation purposes. In reality I'll be using the `.tif` files</sup></sub>
+Ideally we want to go from a regular satellite image:
+
+<img src="/images/satellite_segmentation_ndvi/example_image_start.png" alt="img" align = "center" width="250"/> 
+
+<!-- ![alt text](/images/satellite_segmentation_ndvi/example_image_start.png) -->
+
+<!-- <sub><sup>I've shown the RGB form for visualisation purposes. In reality I'll be using the `.tif` files</sup></sub> -->
 
 To this:
 
-![alt text](/images/satellite_segmentation_ndvi/example_image_end.png)
+<img src="images/satellite_segmentation_ndvi/example_image_end.png" alt="img" align = "center" width="250"/> 
+
+<!-- ![alt text](/images/satellite_segmentation_ndvi/example_image_end.png) -->
 
 <sub><sup>The orange is soil. The red is vegetation.</sup></sub>
-
-We'll be borrowing ideas from [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0196605). It implements exactly what we need for sorghum. 
-
-I'll also be using ideas from my [previous](https://towardsdatascience.com/segment-satellite-images-using-rasterio-and-scikit-learn-fc048f465874) blog post on this topic.
 
 
 # NDVI
 
 As the paper notes we'll need to extract the Normalized difference vegetation index. This is a useful index for vegetation. Here's an example of a NDVI image:
 
-![ndvi](https://i2.wp.com/www.geoawesomeness.com/wp-content/uploads/2016/02/NDVI-image-Drone-Remote-Sensing-Geoawesomeness.png?resize=975%2C708&ssl=1). 
+<img src="https://i2.wp.com/www.geoawesomeness.com/wp-content/uploads/2016/02/NDVI-image-Drone-Remote-Sensing-Geoawesomeness.png" alt="img" align = "center" width="250"/> 
+
+<!-- ![ndvi](https://i2.wp.com/www.geoawesomeness.com/wp-content/uploads/2016/02/NDVI-image-Drone-Remote-Sensing-Geoawesomeness.png?resize=975%2C708&ssl=1).  -->
 
 And here's the formula:
 
-<img src="https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm" alt="img" align = "center" width="300"/> 
-
-<!-- ![formula]() -->
+<img src="https://www.researchgate.net/publication/342413913/figure/fig2/AS:905930921226240@1593002171931/Formula-used-to-calculate-the-normalized-difference-vegetation-index-NDVI.ppm" alt="img" align = "center" width="300"/>
 
 Here's my code to obtain the NDVI image in a numpy array.
 
@@ -61,7 +65,7 @@ The NDVI is calculated for a certain region of interest. This is defined in the 
 For each field plot, a region of interest (ROI) was established manually by choosing the central two rows and mean value of vegetation indices were extracted corresponding to each plot.
 >
 
-Here's my code to do exactly that.
+Here's my code to extract the region of interest for an ndvi array.
 
 ```python
 
@@ -87,12 +91,10 @@ Here's my code to do exactly that.
 
 The paper also makes reference to fractional vegetation cover. I'll calculate this by setting a threshold. Any NDVI value above that threshold will be vegetation. Anything below that will be soil. 
 
-Here's the code:
-
 ```python
 THRESHOLD = 0.3
 
-def get_fc(self, ndvi):
+def get_fc(ndvi):
 
     ndvi_copy = ndvi.copy()
 
@@ -112,9 +114,9 @@ We'll need to change the threshold value later on.
 
 Now we can recreate the plots on page 7 of the paper. We'll be plotting fractional vegeation cover vs NDVI for each image. 
 
-We also want to plot a line of best fit calculated by least squares. Then we extract the R^2 value associated with that regression.
+We also want to plot a line of best fit calculated by least squares.
 
-This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. This function is part of a class. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for details. 
+This turned out to be slightly complex. We're dealing with many different numpy arrays so that is to be expected I suppose. 
 
 ```python
 def plot_fc_vs_ndvi(self, fc, ndvi):
@@ -146,7 +148,10 @@ def plot_fc_vs_ndvi(self, fc, ndvi):
     f.show()
 ```
 
-Now we can change the `threshold` value set earlier and see how that affects the regression. The paper notes that we should select the `threshold` value which has the best regression model.
+This function is part of a class. See the [full code](https://github.com/spiyer99/spiyer99.github.io/blob/master/nbs/blog_post_segment_satellite_ndvi.ipynb) for more details. 
+
+
+We can change the `threshold` value set earlier and see how that affects the regression. The paper notes that we should select the `threshold` value which has the best regression model.
 
 We'll run this code for all images and plot the results.
 
@@ -190,7 +195,7 @@ def create_mask(self, red_file):
 
 ```
 
-Here's the output in a cleaner form. The first row is the thresholded canopy cover. The second row is the RBG satellite image.
+Here's the output in a cleaner form. The first row is the thresholded canopy cover. The second row is the RGB satellite image.
 
 ![alt text](/images/satellite_segmentation_ndvi/9bbd67cfb0d660551d74decf916b2df2_ndvi_thresholded_0-45.png)
 
