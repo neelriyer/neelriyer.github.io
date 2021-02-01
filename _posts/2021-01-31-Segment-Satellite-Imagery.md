@@ -2,8 +2,7 @@
 layout: post
 title: Segment Satellite Imagery using NDVI
 ---
-
-<!-- ![alt text](/images/satellite_segmentation_ndvi/background.jpg) -->
+![alt text](/images/satellite_segmentation_ndvi/9bbd67cfb0d660551d74decf916b2df2_ndvi_thresholded_0-45.png)
 
 <!-- _Easily Segment Canopy Cover from Soil_ -->
 
