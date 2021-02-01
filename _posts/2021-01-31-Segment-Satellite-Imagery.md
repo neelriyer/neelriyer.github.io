@@ -8,7 +8,7 @@ title: Segment Satellite Imagery using NDVI and Rasterio
 
 In this post we'll be trying to segment canopy cover and soil in satellite imagery.
 
-We'll be borrowing ideas from [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0196605). It implements exactly what we need for sorghum. I'll also be using ideas from my [previous](https://towardsdatascience.com/segment-satellite-images-using-rasterio-and-scikit-learn-fc048f465874) blog post on this topic.
+We'll be borrowing ideas from [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0196605). I'll also be using ideas from my [previous](https://towardsdatascience.com/segment-satellite-images-using-rasterio-and-scikit-learn-fc048f465874) blog post on this topic.
 
 
 Ideally we want to go from a regular satellite image:
