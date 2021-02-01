@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Segment Satellite Imagery using NDVI
+title: Segment Satellite Imagery using NDVI and Rasterio
 ---
 ![alt text](/images/satellite_segmentation_ndvi/9bbd67cfb0d660551d74decf916b2df2_ndvi_thresholded_0-45.png)
 
