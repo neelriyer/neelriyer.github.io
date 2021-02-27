@@ -29,11 +29,6 @@ First we'll need to install a few things
 ```
 !pip install -q torch==1.7.0+cu101 torchvision==0.8.1+cu101 torchaudio==0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
 !pip install -q -U fastai fastcore pydub ffmpy
-```
-
-I really like `ipython-autotime`. It automatically lets me know how long cells take to run. So there's no need to run a `%%time` in each cell. 
-
-```
 !pip install ipython-autotime
 %load_ext autotime
 ```
