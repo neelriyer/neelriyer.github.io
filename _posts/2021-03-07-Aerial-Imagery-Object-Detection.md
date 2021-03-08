@@ -12,7 +12,7 @@ There's a lot of talk about swimming pool detection from aerial imagery.
 
 But you're probably interested in a code first example. I was too. But I couldn't find one. 
 
-So here goes.
+So I decided to make my own.
 
 It's not perfect. It's not pretty. But it seems to work.
 
@@ -49,6 +49,8 @@ And here's some failures.
 I deployed the model using docker. I describe how I make this in a [previous article](https://spiyer99.github.io/Detectron2-Web-App/).
 
 If I can improve the model I might deploy this to google cloud so everyone can use it.
+
+Again the code for deployment is on [Github]()
 
 
 # Conclusion
