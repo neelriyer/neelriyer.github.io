@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Pool Detection from Aerial Imagery
+title: Pool Detection from Aerial Imagery (draft)
 ---
 ![alt text](/images/aerial_object_detection/background.png)
 
