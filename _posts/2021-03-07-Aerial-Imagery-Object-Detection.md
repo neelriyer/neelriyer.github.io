@@ -59,8 +59,6 @@ This is really just a first step. Please feel free to contribute and make this b
 
 I would really like to implement the relative luminance transform in icevision. [Apparently](https://towardsdatascience.com/weekend-project-detecting-solar-panels-from-satellite-imagery-f6f5d5e0da40) it is very useful for this kind of thing. But icevision currently [converts](https://github.com/airctic/icevision/blob/5a92bcd0ec8aa791ce9f37aded7763b09fe0e8be/icevision/utils/imageio.py#L13) the image to a RGB. This makes it tricky to implement a transform on the alpha channel.
 
-Code is on [Github](https://github.com/spiyer99).
-
 If you liked this or found it useful, please let me know on [twitter](https://twitter.com/neeliyer11).
 
 
