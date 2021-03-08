@@ -28,7 +28,7 @@ I also managed to find a dataset on [kaggle](https://www.kaggle.com/kbhartiya83/
 
 # Model
 
-Initially I created the model using [icevision](https://github.com/airctic/icevision/). It's this new deep learning framework that integrates well with fastai and pytorch with icevision. Maybe I'm doing something wrong. Maybe it's just not that good. Who knows?
+Initially I created the model using [icevision](https://github.com/airctic/icevision/). It's this new deep learning framework that integrates well with fastai and pytorch with icevision. But the results we're that good. Maybe I'm doing something wrong. Maybe it's just not that good. Who knows?
 
 I also experimented with Detectron2 from facebook research. This performed much better straight out of the box. However I wasn't able to easily implement things like test time augmentation, Mixup, learning rate finder, etc. Fastai makes these things incredibly simple.
 
