@@ -10,7 +10,7 @@ __Unfinished post__
 
 There's a lot of talk about swimming pool detection from aerial imagery.
 
-But you're probably interested in a code first example. I was too. However I couldn't find one.
+You're probably interested in a code first example. I was too. But I couldn't find one.
 
 I decided to make my own.
 
