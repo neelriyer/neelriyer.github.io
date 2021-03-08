@@ -28,7 +28,7 @@ I also managed to find a dataset on [kaggle](https://www.kaggle.com/kbhartiya83/
 
 # Model
 
-Initially I created the model using [icevision](https://github.com/airctic/icevision/). It's this new deep learning framework that integrates well with fastai and pytorch with icevision. But the results we're that good. Maybe I'm doing something wrong. Maybe it's just not that good. Who knows?
+Initially I created the model using [icevision](https://github.com/airctic/icevision/). It's this new deep learning framework that integrates well with fastai and pytorch with icevision. But the results were not that good. Maybe I'm doing something wrong. Maybe icevision is just not that good. Who knows?
 
 I also experimented with Detectron2 from facebook research. This performed much better straight out of the box. However I wasn't able to easily implement things like test time augmentation, Mixup, learning rate finder, etc. Fastai makes these things incredibly simple.
 
@@ -50,7 +50,7 @@ I deployed the model using docker. I describe how I make this in a [previous art
 
 If I can improve the model I might deploy this to google cloud so everyone can use it.
 
-Again the code for deployment is on [Github]()
+Again the code for deployment is on [Github](https://github.com/spiyer99/aerial_object_detection)
 
 
 # Conclusion
