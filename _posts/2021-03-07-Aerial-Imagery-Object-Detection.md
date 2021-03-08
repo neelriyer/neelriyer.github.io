@@ -16,7 +16,7 @@ So I decided to make my own.
 
 It's not perfect. It's not pretty. But it seems to work.
 
-All code is on [Github](). Criticism is appreciated. 
+All code is on [Github](https://github.com/spiyer99/aerial_object_detection). Criticism is appreciated. 
 
 # Dataset
 
