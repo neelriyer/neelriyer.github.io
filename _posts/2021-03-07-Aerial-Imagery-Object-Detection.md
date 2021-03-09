@@ -2,9 +2,9 @@
 layout: post
 title: Pool Detection from Aerial Imagery using Detectron2
 ---
-![alt text](/images/aerial_object_detection/background.png)
+![alt text](/images/aerial_object_detection/meme.png)
 
-<sub>Image by Nick Dambrosia on [Unsplash](https://unsplash.com/photos/XN1wsJMh2lo)</sub>
+<!-- <sub>Image by Nick Dambrosia on [Unsplash](https://unsplash.com/photos/XN1wsJMh2lo)</sub> -->
 
 __Unfinished post__
 
