@@ -6,8 +6,6 @@ title: Pool Detection from Aerial Imagery
 
 <!-- <sub>Image by Nick Dambrosia on [Unsplash](https://unsplash.com/photos/XN1wsJMh2lo)</sub> -->
 
-__Unfinished post__
-
 There's a lot of talk about swimming pool detection from aerial imagery.
 
 You're probably interested in a code first example. I was too. But I couldn't find one.
