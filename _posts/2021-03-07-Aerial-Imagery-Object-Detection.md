@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Pool Detection from Aerial Imagery using Detectron2
+title: Pool Detection from Aerial Imagery
 ---
 ![alt text](/images/aerial_object_detection/meme.jpg)
 
