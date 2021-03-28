@@ -23,7 +23,9 @@ Recently I thought that if I release the dataset (link Mark Saroufim post), mayb
 
 Making this dataset wasn't easy. It took me some time to figure it out. I hope this is useful for people. 
 
-Here's the dataset: https://www.kaggle.com/spiyer/old-film-restoration-dataset/
+Here's the dataset: [https://www.kaggle.com/spiyer/old-film-restoration-dataset/](https://www.kaggle.com/spiyer/old-film-restoration-dataset/)
+
+Please let me know if this was useful on [twitter](https://twitter.com/neeliyer11). I'm just trying this out. 
 
 
 
