@@ -7,11 +7,11 @@ title:  Film Restoration Dataset
 
 # TLDR
 
-I've created a dataset for training film restoration models. 
+I've created a dataset for training film restoration models.
 
-The video above shows a sample of the dataset. On the left is a video of a great star wars scene. On the right is the same video made crappier. 
+The video above shows a sample. On the left is a video of a great star wars scene. On the right is the same video made crappier.
 
-I've added cue marks, scratches to the film and generally just made the things worse. Enjoy!
+The extracted frames are available here: https://www.kaggle.com/spiyer/old-film-restoration-dataset/. You could use this to train a film restoration model (like I've been doing). Enjoy!
 
 # Why did I do this?
 
