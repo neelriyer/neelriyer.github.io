@@ -19,7 +19,7 @@ Properly cleaned data is not as abundant as people make it out to be.
 
 I've been trying to restore the star wars deleted scenes for some time now. My attempts have been far from perfect. 
 
-Recently I thought that if I release the dataset (link Mark Saroufim post), maybe, just maybe someone out there could train a better model. Thanks in advance, kind stranger!
+Recently I thought that if I release the dataset, maybe, just maybe someone out there could train a better model. Thanks in advance, kind stranger!
 
 Making this dataset wasn't easy. It took me some time to figure it out. I hope this is useful for people. 
 
