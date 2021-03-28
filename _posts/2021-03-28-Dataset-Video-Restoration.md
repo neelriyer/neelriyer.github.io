@@ -1,19 +1,15 @@
 ---
 layout: post
-title:  Instance Segmentation Web App
+title:  Film Restoration Dataset
 ---
-
-# TLDR
-
-I've created a dataset for training film restoration models.
-
-Here's a sample:
 
 {% include youtubePlayer.html id="9E3xR-hIOKo?autoplay=1&mute=1&loop=1&playlist=9E3xR-hIOKo" %}
 
-On the left is a video of a great star wars scene. 
+# TLDR
 
-On the right is the same video made crappier. 
+I've created a dataset for training film restoration models. 
+
+The video above shows a sample of the dataset. On the left is a video of a great star wars scene. On the right is the same video made crappier. 
 
 I've added cue marks, scratches to the film and generally just made the things worse. Enjoy!
 
