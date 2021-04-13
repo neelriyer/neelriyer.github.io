@@ -6,6 +6,12 @@ permalink: /infographics/
 
 A collection of the infographics I've made.
 
+### Random Forest
+
+<div style="text-align: center"><img src="/images/infographics/random_forest_with_feedback1.png" width="500" /></div>
+
+[reddit](https://www.reddit.com/r/learnmachinelearning/comments/mh30f8/random_forest_infographic_feedback_appreciated/)
+
 ### PCA
 
 <div style="text-align: center"><img src="/images/infographics/PCA.png" width="500" /></div>
