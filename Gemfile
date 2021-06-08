@@ -9,6 +9,9 @@ group :jekyll_plugins do
   # gem "jekyll-theme-clean-blog"
 end
 
+gem "rexml", ">= 3.2.5"
+gem "kramdown", ">= 2.3.1"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
