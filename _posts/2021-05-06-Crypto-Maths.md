@@ -17,7 +17,6 @@ I couldn't do it either. Nor can a computer.
 
 This is the guiding principle behind Crypto Maths.
 
-
 In this post we'll go from a private key to an address using all the mathematical functions in between. Much of this comes from Chapter 4 of the ethereumbook. 
 
 # Private Keys
