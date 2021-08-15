@@ -3,14 +3,14 @@ layout: post
 title: Pre-Commit Error
 ---
 
+
 ![img1](https://memegenerator.net/img/instances/67061932.jpg)
 
-Have you seen this error before? Is this error annoying you as well?
+Have you seen the following error before?
 
 If you're on OSX I might've found a solution for you.
 
 ```
-
 An unexpected error has occurred: OperationalError: unable to open database file
 Failed to write to log at /Users/neeliyer/.cache/pre-commit/pre-commit.log
 ### version information
@@ -29,7 +29,6 @@ sys.platform: darwin
 
 
 An unexpected error has occurred: OperationalError: unable to open database file
-
 
 
 Traceback (most recent call last):
@@ -60,10 +59,9 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/pre_commit/store.py", line 101, in connect
     with contextlib.closing(sqlite3.connect(db_path)) as db:
 sqlite3.OperationalError: unable to open database file
-
 ```
 
-I usually received the above error after running `pre-commit install` then `git commit`. 
+I usually received the above error after running `pre-commit install` followed by a  `git commit`. 
 
 Here's what worked for me:
 
@@ -72,11 +70,11 @@ pre-commit install
 sudo git commit -m "WIP lol"
 ```
 
-And that's it!
+And that's it! You just add a `sudo` before `git commit`.
 
 I couldn't find a lot of information on this error. So I hope this helps someone out there.
 
-Trust me, I spent a while looking. Far too long.
+Trust me, I spent a while looking for a solution. Far too long.
 
 
 
